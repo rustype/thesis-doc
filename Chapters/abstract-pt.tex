@@ -6,38 +6,37 @@
 %% Abstract in Portuguese
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\typeout{NT FILE abstrac-pt.tex}
+\typeout{NT FILE abstract-pt.tex}
 
-Independentemente da língua em que a dissertação esteja redigida, é necessário um resumo na mesma língua do texto principal e outro resumo noutra língua. Pressupõe-se que as duas línguas em questão sejam o português e o inglês.
+À medida que as nossas vidas estão cada vez mais dependentes de software,
+os erros do mesmo têm o potencial de causar problemas significativos.
+Prevenir estes erros torna-se uma tarefa prioritária durante o desenvolvimento de sistemas confiáveis.
+Erradicar erros por completo é impossível, mas é possível eliminar certos conjuntos.
 
-Os resumos devem aparecer primeiro na língua do texto principal e depois na outra língua. Por exemplo, se a dissertação for redigida em português, o resumo em português aparecerá primeiro, seguido do resumo em inglês (\emph{abstract}), seguido do texto principal em português. Se a dissertação for redigida em inglês, o resumo em inglês (\emph{abstract} aparecerá primeiro, seguido do resumo em português, seguido do texto principal em inglês.
+Rust é uma linguagem de programação de sistemas que, por desenho, endereça erros de gestão de memória.
+Para o conseguir, a linguagem inclui no sistema de tipos informação sobre o tempo de vida dos objetos,
+permitindo assim que o compilador conheça a utilização dos mesmos e detecte erros de utilização de memória.
+Apesar da prevenção de erros de memória ter um papel importante na segurança de software,
+existem ainda outras categorias de erros em Rust,
+como o uso incorrecto de interfaces de programação, em que o programador não respeita as restrições impostas pela mesma, o que resulta numa falha do programa.
 
-Na versão \LaTeX\, o template NOVAthesis irá ordenar automaticamente os dois resumos tendo em consideração a língua do texto principal. É possível alterar este comportamento adicionando
-\begin{verbatim}
-    \abstractorder(<MAIN_LANG>):={<LANG_1>,...,<LANG_N>}
-\end{verbatim}
-\noindent à zona de customização no preâmbulo do documento, e.g.,
-\begin{verbatim}
-    \abstractorder(de):={de,en,it}
-\end{verbatim}
+\emph{Typestates} elevam o conceito de estado para o sistema de tipos,
+permitindo a aplicação das restrições da interface durante a fase de compilação.
+Este conceito permite assim aliviar o programador da responsabilidade que é conceptualizar e manter o estado do programa em mente durante o desenvolvimento, prevenindo o mau uso das interfaces.
+Apesar de Rust não suportar \emph{typestates} de uma forma natural,
+o sistema de tipos permite expressar e validar \emph{typestates}.
 
-Os resumos não devem ultrapassar uma página e, de forma genérica, devem responder às seguintes questões (é essencial adaptá-los às práticas habituais da sua área científica):
-
-\begin{enumerate}
-  \item Qual é o problema?
-  \item Porque é que é um problema interessante/desafiante?
-  \item Qual é a proposta de abordagem/solução?
-  \item Quais são as consequências/resultados da solução proposta?
-\end{enumerate}
-
-% E agora vamos fazer um teste com uma quebra de linha no hífen a ver se a \LaTeX\ duplica o hífen na linha seguinte se usarmos \verb+"-+… em vez de \verb+-+.
-%
-% zzzz zzz zzzz zzz zzzz zzz zzzz zzz zzzz zzz zzzz zzz zzzz zzz zzzz zzz zzzz comentar"-lhe zzz zzzz zzz zzzz
-%
-% Sim!  Funciona! :)
+O objetivo desta tese é aproximar os \emph{typestates} do Rust em produção,
+desenvolvendo uma ferramenta que permite aos programadores tirar partido dos \emph{typestates}.
+A ferramenta toma a forma de uma DSL embebida em Rust, apoiada por macros,
+permitindo que a abordagem não se desvie da sintaxe de Rust e seja fácil de usar.
+O programador especifica \emph{typestates} pelo uso de anotações no código.
+Apartir da especificação, extrai-se uma máquina de estados que é depois verificada por erros comuns de \emph{typestates},
+garantindo propriedades extra em comparação com \emph{typestates} comuns.
+A ferramenta tira partido do sistema de tipos de Rust para garantir que o código está em acordo com os \emph{typestates}.
 
 % Palavras-chave do resumo em Português
 \begin{keywords}
-Palavra-chave 1, Palavra-chave 2, Palavra-chave 3,  \ldots
+Tipos comportamentais, \emph{typestates}, meta-programação, macros, Rust
 \end{keywords}
 % to add an extra black line

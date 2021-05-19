@@ -8,18 +8,211 @@
 
 \typeout{NT FILE chapter4.tex}
 
-\chapter{Lorem Ipsum}
-\label{cha:lorem_ipsum}
+\chapter{Rust \& Typestates}
 
-\lipsum[1-100]
-\lipsum[1-100]
-\lipsum[1-100]
-% \lipsum[1-100]
-% \lipsum[1-700]
-% \lipsum[1-700]
-% \lipsum[1-700]
-% \lipsum[1-700]
-% \lipsum[1-700]
-% \lipsum[1-700]
-% \lipsum[1-700]
-% \lipsum[1-700]
+So far, I have discussed Rust's macro system and its potential, however,
+to provide a typestate DSL we also need to represent typestates.
+
+Previously, Rust had first-class typestates, while it is no longer the case,
+Rust is still able to represent and work with typestates.
+
+In this chapter I will explain how a developer might implement typestates in Rust
+and possible pitfalls when doing so.
+
+The motivating example for
+
+\chapter{The \annotation{typestate} macro}\label{cha:macro}
+
+I now present the core contribution of this thesis, the \annotation{typestate} macro.
+In \autoref{sec:hand-implementation}, I start by demonstrating how to implement Rust typestates by hand.
+In \autoref{sec:architecture} I discuss the macro high-level architecture,
+the DSL is discussed in \autoref{sec:macro-dsl},
+followed by the validation process in \autoref{sec:validation} and
+extra features offered by the macro in \autoref{sec:extra-features}.
+
+\section{Handwritten Implementation}\label{sec:hand-implementation}
+
+In this section I demonstrate the development process from a state machine specification to a functional prototype,
+developing all the required components by hand.
+
+The example will be a vending machine, its automaton is illustrated in \autoref{fig:vending-machine}.
+
+We start by designing our \emph{typestated} structure, the \texttt{VendingMachine};
+to do so, we will use a \texttt{State} generic type parameter to model the current state.
+
+\begin{minted}{rust}
+struct VendingMachine<State>;
+\end{minted}
+
+However, this code does not compile since \texttt{State} is an unused type parameter;
+we can use it in two ways:
+\begin{compactitem}
+    \item Declaring a \texttt{PhantomData} field using \texttt{State} as its type parameter.
+    This approach is useful if the types used in \texttt{State} do not carry more information other than its type.
+    \item Declaring a field of type \texttt{State}.
+    This approach allows us to use more information other than its type alone, such as structure fields.
+\end{compactitem}
+
+In our case, some states will require fields others will not,
+this forces us to use the second approach:
+
+\begin{minted}{rust}
+struct VendingMachine<State> {
+    state: State,
+}
+\end{minted}
+
+While our vending machine is now able to deal with the concept of state,
+it is unable to sell anything, we need some place to store our items!
+To simplify the example, each item will simply be an integer, representing its price.
+
+\begin{minted}{rust}
+struct VendingMachine<State> {
+    contents: Vec<u64>,
+    state: State,
+}
+\end{minted}
+
+We can now move on to model each of the vending machine's states,
+declaring each state as a structure.
+
+\begin{minted}{rust}
+struct Waiting;         // the machine is waiting for interaction
+struct HasMoney {       // the machine has received money
+    money: u64          // - the amount of money inserted so far
+}
+struct HasPick {        // the machine has received a selection
+    picked_slot: usize  // - the selected vending machine slot
+}
+struct NeedMoney {      // the machine has received both, but not enough money
+    money: u64,
+    picked_slot: usize
+}
+struct Finish;          // the transaction is ongoing/finished
+\end{minted}
+
+Moving on to transitions, we need to make sure there are no aliases to the current state;
+while in other languages that is unfeasible, Rust's ownership system allows us to take up ownership of an object,
+enforcing that no aliases to it exist.
+
+To declare transitions we declare Rust \keyword{impl}s which define the used \texttt{State} structure.
+
+\begin{minted}{rust}
+impl VendingMachine<Waiting> {
+    fn insert_money(self, money: u64) -> VendingMachine<HasMoney> { /* ... */ }
+    fn pick_slot(self, picked_slot: usize) -> VendingMachine<HasPick> { /* ... */ }
+}
+\end{minted}
+
+Notice how each function takes \keyword{self} and returns a new \texttt{VendingMachine} instance,
+using another state as its type parameter.
+
+To better understand what is going on, lets implement the \texttt{insert\_money} transition.
+
+\begin{minted}{rust}
+fn insert_money(self, money: u64) -> VendingMachine<HasMoney> {
+    VendingMachine::<HasMoney> {
+        contents: self.contents, // pass the machine's contents
+        state: HasMoney {        // new state
+            money                // pass the received money
+        }
+    }
+}
+\end{minted}
+
+In this case, all we need to do is to simply pass some fields around and declare all structures,
+given that \keyword{self} is used, we can be sure no aliases exist, and we are free to use it as we wish.
+
+Before we go further, a quick recap over what has been done so far:
+\begin{compactitem}
+    \item Declared the \texttt{VendingMachine}.
+    \item Declared its states.
+    \item Declared \emph{some} of its transitions.
+\end{compactitem}
+
+I say \quotes{some} transitions, since we have not addressed the diamonds in \autoref{fig:vending-machine},
+and that is what we will do next.
+
+Those diamonds represent decisions in the representation described by \autocite{Trindade2020},
+we will use Rust's enumerations to model them;
+this will also force the user to match the enumeration and deal with possible cases.
+
+We continue our path and following the \texttt{pick\_slot} transition from the \texttt{HasMoney} state,
+we have \emph{either} the \texttt{Finish} state or the \texttt{NeedsMoney} state.
+
+\begin{minted}{rust}
+// We reuse the type name as the enumeration's variant name to avoid name guessing
+enum CheckFinish {
+    NeedsMoney(VendingMachine<NeedsMoney>),
+    Finish(VendingMachine<Finish>),
+}
+\end{minted}
+
+Using the declared enumeration, we can define \texttt{pick\_slot} as follows:
+\begin{minted}{rust}
+
+\end{minted}
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \tikzstyle{state}=[font=\ttfamily]
+        \tikzstyle{transition}=[font=\small\ttfamily]
+
+        \node[state, draw, ellipse, accepting] (state-waiting) at (0, 0) {Waiting};
+        \node[state, draw, ellipse] (state-hasmoney) at (-2, -2) {HasMoney};
+        \node[state, draw, ellipse] (state-haspick) at (2, -2) {HasPick};
+        \node[state, draw, ellipse] (state-finish) at (0, -6) {Finish};
+        \node[state, draw, ellipse] (state-needsmoney) at (0, -10) {NeedsMoney};
+        \node[draw, diamond] (decision-1) at (-2, -4) {};
+        \node[draw, diamond] (decision-2) at (2, -4) {};
+        \node[draw, diamond] (decision-3) at (0, -8) {};
+
+        \draw[->] (-.75, .9) -- node[transition, left] {on} (state-waiting);
+        \draw[->] (state-waiting) edge[out=35, in=75, looseness=5] node[transition, right] {off} (state-waiting);
+
+        \draw[->] (state-waiting) edge[out=180, in=90] node[transition, left] {insert\_money} (state-hasmoney);
+        \draw[->] (state-waiting) edge[out=0, in=90] node[transition, right] {pick\_slot} (state-haspick);
+
+        \draw[->] (state-hasmoney) -- node[transition, left] {pick\_slot} (decision-1);
+        \draw[->] (state-haspick) -- node[transition, right] {insert\_money} (decision-2);
+
+        \draw[->] (decision-1) edge[out=-90, in=180] node[transition, fill=white] {!enough} (state-needsmoney);
+        \draw[->] (decision-2) edge[out=-90, in=0] node[transition, fill=white] {!enough} (state-needsmoney);
+
+        \draw[->] (decision-1) -- node[transition, fill=white] {enough} (state-finish);
+        \draw[->] (decision-2) -- node[transition, fill=white] {enough} (state-finish);
+
+        \draw[->] (state-needsmoney) -- node[transition, left] {insert\_money} (decision-3);
+
+        \draw[->] (decision-3) -- node[transition, fill=white] {enough} (state-finish);
+        \draw[->] (decision-3) edge[out=-15, in=35] node[transition, right] {!enough} (state-needsmoney);
+
+        \draw[->] (state-finish) -- node[transition, fill=white] {finish} (state-waiting);
+    \end{tikzpicture}
+    \caption{Vending machine automaton.}
+    \label{fig:vending-machine}
+\end{figure}
+
+\section{Architecture}\label{sec:architecture}
+
+\section{Macro DSL}\label{sec:macro-dsl}
+
+\subsection{Syntax \& Automaton Extraction}
+
+\subsection{Advanced Features}
+
+
+
+
+\section{Validation}\label{sec:validation}
+
+\subsection{Typestate}\label{sec:validation:typestate}
+
+\subsection{Automaton \& Graph}\label{sec:validation:automaton}
+
+\section{Extra Features}\label{sec:extra-features}
+
+\subsection{Automata Visualization}\label{sec:extra-features:automata-visualization}
+
+\subsection{Documentation Generation}\label{sec:extra-features:documentation-generation}

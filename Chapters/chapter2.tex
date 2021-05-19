@@ -8,303 +8,523 @@
 
 \typeout{NT FILE chapter2.tex}
 
-\chapter{NOVAthesis Template \emph{User's Manual}}
-\label{cha:users_manual}
+\chapter{Background}\label{cha:background}
 
-\glsresetall
+\section{Systems Programming Languages}\label{sec:systems-programming}
 
-\begin{center}
-  \fbox{\LARGE
-    This manual is outdated and must be revised!}
-\end{center}
+The definition of the term \emph{systems programming language} is not agreed upon,
+being somewhat flexible and ever-changing due to constant shift in requirements for applications.
 
-\section{Introduction} % (fold)
-\label{sec:introduction}
+Before the cloud, in the age of C, a systems programming language would
+most likely be a language able to provide an adequate interface between the programmer and the machine.
+Nowadays, the definition is more vague, as machines and software grow in complexity,
+and the definition of system grows from single computer to a distributed system,
+interfacing with the hardware in a more direct fashion is mostly not required.
+Systems programming languages become about being able to produce a standalone
+binary able to run on a variety of machines without requiring extra software.
 
-This chapter describes how to use the \gls{novathesis}\ and the \gls{novathesisclass} file.
+\subsection{C}
 
-Let's start with some simple suggestions: \cite{Moss85,DBLP:conf/atva/2004}.
+C is a general-purpose programming language, while it can be considered a high-level programming language
+when put besides assembly, it also fits the description of a low-level level programming language when besides languages like Python.
+It was originally designed by Dennis Ritchie for the PDP-11 and has been around since 1972 \autocite{Kernighan1988},
+C is by no means modern, being older than myself and most likely to outlive me.
 
-% \printbibliography[heading=subbibliography, segment=\therefsegment, title={\bibname\ for chapter~\thechapter}]
+Designed in a different time, C's mental model is also different, the language is simple and straight forward,
+the designers had goals to achieve and designed the language with them in mind.
+Such mentality is noticeable when using the language,
+it is simple as the hardware was and the level of control C provides is unparalleled,
+being both a major benefit and a hindrance.
+An expert programmer is able to take advantage of the language to produce highly-efficient software,
+but a novice programmer will often find himself battling memory and pointer management bugs.
 
-\begin{enumerate}
-  \item No! You don't have to use this template to write your thesis.  You don't even have to use \LaTeX.  However, writing a thesis is serious stuff, and which tool you shall use to write it is not a decision to make lighthearted.
-  \item \LaTeX\ is hard enough by itself.  This template aims at making your life easier, but not easy. If you choose to use this template to write your thesis, you are very welcome.  However, don't expect me to provide you help with \LaTeX.  Look for help with your friends (you have some friends, don't you?), or search the web, or try even to read some book(s) on \LaTeX. In the end you will certainly find the experience rewarding.
-  \item So, don't forget, when you come to the point of “\emph{How do I do this with \LaTeX?}” look for help!  Google is your best friend. 
-  \item If you believe the difficulty is related with the \gls{novathesis}\ template itself (and not with \LaTeX), please \textbf{do not} send me an email asking for help.  Please look for help in the \gls{novathesis}\ Google Group (URL) and the \gls{novathesis}\ Facebook group (URL).  If you can't find help there from previous posts/messages, then post your own question. Hopefully someone will answer you.
-\end{enumerate}
+The language influence echoes in the modern languages,
+whether in the form of syntax (i.e. the famous C-style syntax) or in the problems it tries to solve.
+Languages such as Java take from C their syntax as well as one problem to solve, memory management;
+other languages like Julia \autocite{Bezanson2017} aim to achieve similar performance.
 
-Now, let's go to a major issue for Windows users.  Characters have to be encoded in files as numbers, and that is how character encodings were born. ASCII and EBCDIC standards are long lost in the past.  The world now uses UTF-8.  Well, not all the world… Windows is still stick in its \emph{codepages}, and “latin1” is what windows uses as the codepage for Western Europe. This messes up with the template. Please be sure you use an editor with UTF-8 support.  \emph{Go to the preferences/options/… of your text editor and set up its default file encoding as UTF-8.}
+While not as popular as other languages, C was able to stay relevant in the modern development landscape,
+some of the most used software in the world is either written or powered by C.
+The Linux kernel, which powers servers, the world's most powerful computers
+and serves as a base for Android and other mobile devices,
+git, Redis and nginx are also software examples which reached the top of their respective fields.
 
-% section introduction (end)
+\subsection{C++}
 
-% ====================
-% = Folder Structure =
-% ====================
-\section{Folder Structure} % (fold)
-\label{sec:folder_structure}
+Introduced in 1985 as an extension to C; the author, Bjarne Stroustrup writes:
 
-The \gls{novathesis}\ template is organized into files and folders. At the main level it includes the following files and folders:
+\begin{displayquote}[{\autocite[Section 1.2]{Stroustrup1986}}]
+    C++  is  based  on  the idea of providing both:
+    \begin{compactitem}
+        \item direct mappings of built-in operations and types to hardware to provide efficient memory use and efficient low-level operations, and
+        \item affordable and flexible abstraction mechanisms to provide user-defined types with the same notational support, range of uses, and performance as built-in types.
+    \end{compactitem}
+\end{displayquote}
 
-\noindent
-\begin{tabularx}{\linewidth}{>{\ttfamily}l>{\itshape}l>{\upshape}X}
-novathesis.cls     & file    & 
-The main class file. It will include additional files from \texttt{NOVAthesisFiles} folder. 
-\\ 
-template.tex      & file    & 
-The main user file. Use this file as the main file for your thesis. 
-\\
-bibliography.bib  & file    & 
-An example of a bibliography file. You may have has many as you want. \\
-template.pdf      & file    & 
-A possible result of applying pdf\LaTeX\ to the \texttt{template.tex} file. The template supports multiple types of documents (e.g., MSc dissertation, PhD thesis, …) and multiple Schools (e.g., FCT-NOVA, FCSH-NOVA, IST-UL, FC-UL, …) and each will produce different results.
-\\
-Chapters          & folder  & Examples of thesis chapters. Replace them with your own chapters. 
-\\
-Examples          & folder  & Some more examples of the use of the template for different document types and Schools. 
-\\
-Scripts           & folder  & Some (possibly useful) scripts for Unix-based systems (Linux, Mac OSx). If you are a windows user, ignore this folder (you may safely delete it if you want). 
-\\
-NOVAthesisFiles   & folder  & 
-Additional files for the \gls{novathesisclass}\ file.  Unless you know what you are doing, avoid messing up with the files and folders inside this folder (except for deleting the unused Schools, see below). 
-\\
-\end{tabularx}
+The language has since gone on to conquer the programming world, being used in a wide variety of software and hardware.
+Currently, companies such as Google, Amazon and Microsoft have widespread adoption of C++ in their codebases.
+Industries requiring the best performance as possible of the host, such as scientific computing,
+financial software, AAA games and visual effects will most likely be running C++.
 
-The \texttt{NOVAthesisFiles} folder contains additional files and folders that complement the main \gls{novathesisclass}\ file.  These are:
-
-\noindent
-\begin{tabularx}{\linewidth}{>{\ttfamily}l>{\itshape}l>{\upshape}X}
-README.txt      & file    &
-A file that should be read!  :) 
-\\
-fix-babel.tex   & file    &
-Simple fixes to the \texttt{babel} package.
-\\
-lang-text.ldf   & file    &
-Translations of important strings used in the template.  Currently fully supported are Portuguese and English, but French is on the way.  If you add translations for your own language, please be so kind and send them to me. Thank you!
-\\
-options.tex     & file    &
-Processing of \gls{novathesisclass}\ options.  \emph{Don't mess with this!}
-\\
-packages.tex    & file    &
-Additional packages to be loaded into the \gls{novathesis}\ template. \emph{You should not mess with this!}
-\\
-spine.tex       & file    &
-This file is loaded only if the option \texttt{spine=true}, and includes the typesetting of the book spine.
-\\
-ChapStyles      & folder  &
-Contains a lot of files, one for each chapter style.  If you really know what you are doing, you may add your own chapter style here.
-\\
-FontStyles      & folder  &
-Contains a few files, one for each set of fonts (main text font, chapter font, section font, subsection font, etc).  If you really know what you are doing, you may add your own set here.
-\\
-Schools         & folder  &
-Configuration files for each school.  This folder is organized into subfolders, one for each university.  \emph{You may safely delete all the subfolders except the one for your University.}  Then open the subfolder of your University and \emph{you may safely delete all the subfolders except the one for your School/Faculty}.
-\\
-\end{tabularx}
-
-As stated above, the \texttt{Schools} folder contains per-university folders and per-school (faculty) subfolders.  Currently these are the available folders:
-
-\noindent
-\begin{tabularx}{\linewidth}{>{\ttfamily}r@{~/~}>{\ttfamily}l>{\itshape}l>{\upshape}X}
-ul     & ist    & folder  & 
-The folder for the \href{http://www.tecnico.ulisboa.pt}{\emph{Instituto Superior Técnico}} of the \emph{University of Lisbon}.
-\\
-nova    & fcsh   & folder  & 
-The folder for the \href{http:www.fcsh.unl.pt}{\emph{Faculty of Human and Social Sciences}}  of the \emph{NOVA University of Lisbon}.
-\\
-nova    & fct    & folder  & 
-The folder for the \href{http:www.fct.unl.pt}{\emph{Faculty of Sciences and Technology}} of the \emph{NOVA University of Lisbon}.
-\\
-nova    & novaims    & folder  & 
-The folder for the \href{http:www.novaims.unl.pt}{\emph{Information and Management School}} of the \emph{NOVA University of Lisbon}.
-\\
-\end{tabularx}
-
-% section folder_structure (end)
-
-% ===================
-% = Package options =
-% ===================
-\section{\glsfmtshort{novathesisclass}\ Class Options} % (fold)
-\label{sec:package_options}
-
-The \gls{novathesisclass}\ can be customized with the options listed below.
-
-\newcommand{\classoption}[3]{\textbf{#1=OPT}\qquad #2\\\qquad\emph{#3}\\}
-
-\noindent
-\begin{ctabular}{@{}p{\linewidth}@{}}
-  \toprule
-  \classoption{docdegree}%
-    {phd(*), phdplan, phdprop, msc, mscplan, bsc}%
-    {The type of the document: PhD Thesis (default), PhD Plan, PhD Proposal, MSc Dissertation, MSc Plan, BSc Report}
-    \midrule
-  \classoption{school}%
-		{nova/fct(*), nova/fcsh, nova/ims, ul/ist, ul/fc}%
-    {The name of the school. This option changes the typesetting of the cover and some School specific formating, like margins, fonts, paragraph spacing and indentation, etc…}
-    \midrule
-  \classoption{lang}%
-    {en(*), pt}%
-    {The main language for the document.  Currently only Portuguese and English are supported.  Other languages are expected to be support in forthcoming versions.}
-    \midrule
-  \classoption{fontstyle}%
-    {bookman, charter, fourier, kpfonts(*), mathpazo1, mathpazo2, newcent}%
-    {The font set to be used in the document.  Please note that a font set include definitions for the main text, headings, maths, etc.}
-    \midrule
-  \classoption{chapstyle}%
-    {bianchi, bluebox, brotherton, dash, default, elegant(*), ell, ger, hansen, ist, jenor, lyhne, madsen, pedersen, veelo, vz14, vz34, vz43}%
-    {The chapter style, i.e., the look of the chapter beginning.}
-    \midrule
-  \classoption{converlang}%
-    {en, pt(*)}%
-    {The language to be used when typesetting the cover page.}
-    \midrule
-  \classoption{otherlistsat}%
-    {front(*), back}%
-    {Where to put the other lists besides the table of contents. The default is (\texttt{front}) before the main text.  But some scientific areas prefer them at the end of the document (\texttt{back}), just before the Appendixes.}
-    \midrule
-  \classoption{statement}%
-    {true, false(*)}%
-    {Include or don't include the contents of the “\texttt{statement}” file. The default is for this file to be ignored (if it exists).}
-    \midrule
-  \classoption{linkscolor}%
-    {darkblue(*), black}%
-    {The color for all the hyperlinks in the PDF file.  The “\texttt{media=paper}” option (see below) will override this option to “\texttt{black}”}
-    \midrule
-  \classoption{spine}%
-    {true, false(*)}%
-    {Generate the book spine and the last page in the PDF.}
-    \midrule
-  \classoption{biblatex}%
-    {OPT=\{list of options for \texttt{biblatex}\}}%
-    {Customize \texttt{biblatex}, the bibliography management system used in this class. Probably you will want to change the value of the \texttt{biblatex} “\texttt{style}” option. For other customizations of \texttt{biblatex} check its manual.}
-    \midrule
-  \classoption{memoir}%
-    {OPT=\{list of options for \texttt{memoir}\}}%
-    {Customize the base class \texttt{memoir}. The \texttt{memoir} manual should be the first document to be consulted when looking for “\textbf{how can I do this?}” You may what to change the base font size from 11pt to a smaller (10pt) or larger (12pt) size.  Also, remember to change the “\texttt{draft}” to final when your document is finished.}
-    \midrule
-  \classoption{media}%
-    {screen(*), paper}%
-    {Behavior to be customized in the school options/configuration. Expected definitions for screen are: left and right margins are equal and use colored links. Expected definitions for paper are: left and right margins are different and use black links.}
-    \bottomrule
-\end{ctabular}
-
-\section{Additional considerations about the class options} % (fold)
-\label{sec:additional_considerations}
-
-In this section we will provide some additional considerations about some of the customizations available as class options.
-
-\subsection{The main language} % (fold)
-\label{sub:the_main_language}
-
-The choice of the main language with the option “\texttt{lang=OPT}” affects:
-
-\begin{itemize}
-	\item \textbf{The order of the summaries.} First is printed the abstract in the main language and then in the foreign language. This means that if your main language for the document in English, you will see first the “abstract” (in English) and then the “resumo” (in Portuguese). If you switch the main language for the document for Portuguese, it will also automatically switch the order of the summaries to “resumo” and then “abstract”.
-	\item \textbf{The names for document sectioning.} E.g., ``Chapter'' vs.\ ``Capítulo'', ``Table of Contents'' vs.\ ``Índice'', ``Figure'' vs.\ ``Figura'', etc.
-	\item \textbf{The type of documents in the bibliography.} E.g., ``Technical Report'' vs.\ ``Relatório Técnico'', ``PhD Thesis'' vs.\ ``Tese de Doutoramento'', etc.
-\end{itemize} 
-
-No mater which language you chose, you will always have the appropriate hyphenation rules according to the language at that point. You always get Portuguese hyphenation rules in the ``Resumo'', English hyphenation rules in the ``Abstract'', and then the main language hyphenation rules for the rest of the document.
-
-% subsection the_main_language (end).
-
-% section additional_consideration (end)
+Just like C, C++ is far from perfect.
+The language is enormous, with very complicated parts (e.g. templates) and compilation for big projects is very slow,
+the author acknowledges this in \autocite{Torre2014}.
+Furthermore, as the language provides a high level of control over the system, it has manual memory management,
+suffering from the same problems as C.
+Even with smart pointers (e.g. \texttt{unique\_ptr}) the problem is not considered solved,
+as they introduce overhead in the most demanding applications.
 
 
-\subsection{Class of Text} % (fold)
-\label{sub:class_of_text}
+\subsection{Ada}
 
-You must choose the class of text for the document. The available options are:
+Ada was developed in 1980, during a standardization effort in the USA's Department of Defense,
+with the goal of unifying projects spanning over 450 programming languages \autocite{Ada2021}.
+Ada's main focus was the development of embedded applications,
+currently the Ada language is mostly used in the critical domain due to the strong emphasis on safety,
+some Ada success stories are the London Metro Victoria Line and the Paris Metro Line \autocite{SIGAda2021}.
+The language is also used in several other domains, such as aviation, space vehicles, financial systems and more \autocite{Feldman2014}.
 
-\begin{enumerate}
-	\item \textbf{bsc} --- BSc graduation report.
-	\item \textbf{*mscplan} --- Preparation of MSc dissertation. This is a preliminary report graduate students at DI-FCT-NOVA must prepare to conclude the first semester of the two-semesters MSc work. The files specified by \verb!\ntdedicatoryfile! and \verb!\acknowledgmentsfile! are ignored, even if present, for this class of document.
-	\item \textbf{msc} --- MSc dissertation.
-	\item \textbf{phdprop} ---  Proposal for a PhD work. The files specified by \verb!\ntdedicatoryfile! and \verb!\acknowledgmentsfile! are ignored, even if present, for this class of document.
-	\item \textbf{prepphd} ---  Preparation of a PhD thesis. This is a preliminary report PhD students at DI-FCT-NOVA must prepare before the end of the third semester of PhD work. The files specified by \verb!\ntdedicatoryfile! and \verb!\acknowledgmentsfile! are ignored, even if present, for this class of document.
-	\item \textbf{phd} --- PhD dissertation.
-\end{enumerate}
-% subsection class_of_text (end)
+In comparison with the other languages in this section, Ada is eclipsed, barely showing in the GitHub rankings \autocite{Palmer2021}.
+However, given that Ada's compiler is mostly a product, it makes sense that most Ada code is not open-source.
+Regardless, when one views the list of features Ada has, the first arising question is “\emph{why is Ada not popular?}”.
 
-% ============
-% = Printing =
-% ============
-\subsection{Printing} % (fold)
-\label{sub:printing}
+An old article in AdaPower \autocite{Heaney1998} provides some possible insight over the question,
+referring to the compiler's price and the Hoare's harsh critics.
+From my point of view, the critics to the compiler and ecosystem pricing still make sense,
+as access to the full tooling is limited.
+The lack of programmers goes on to deepen the lack of adoption in the industry
+and this cycle ends up limiting Ada's reach in the market.
 
-You must choose how your document will be printed. The available options are:
-\begin{enumerate}
-	\item \textbf{oneside} --- Single side page printing.
-	\item \textbf{*twoside} --- Double sided page printing.
-\end{enumerate}
-% subsection printing (end)
+\subsection{Go}
 
-% =============
-% = Font Size =
-% =============
-\subsection{Font Size} % (fold)
-\label{ssec:font_size}
+The Go programming language (or \texttt{golang}) is a Google project,
+according the language folklore, it was designed by the authors while they waited for their C++ code to compile.
+Go tried to address several of the criticisms to C, namely memory management,
+which it solved by using a garbage collector.
+While it has made a name for itself in the network and distributed systems sector,
+being the main language behind projects like Docker \autocite{Docker2021} and Kubernetes \autocite{Kubernetes2021},
+Go's categorization as a systems programming language can be discussed.
 
-You must select the encoding for your text. The available options are:
-\begin{enumerate}
-	\item \textbf{11pt} --- Eleven (11) points font size.
-	\item \textbf{*12pt} --- Twelve (12) points font size. You should really stick to 12pt\ldots
-\end{enumerate}
-% subsection font_size (end)
+Sometimes, however, the performance might not be enough,
+as was the case for Discord, the popular internet voice server company, as demand increased,
+Go was not able to meet the expected performance requirements and the company replaced it with Rust \autocite{Howarth2020}.
+In \autocite{Torre2014}, one of Go's authors, Rob Pike, says that he regrets categorizing Go as a systems programming language,
+being rather a server programming language that evolved into a cloud infrastructure language.
+Regardless of discussion, Go has proven to be a viable alternative to existing counterparts,
+compromising extreme performance in name of safety and simplicity.
 
-% =================
-% = Text encoding =
-% =================
-\subsection{Text Encoding} % (fold)
-\label{ssec:text_encoding}
+\subsection{Summary}
 
-You must choose the font size for your document. The available options are:
-\begin{enumerate}
-	\item \textbf{latin1} --- Use Latin-1 (\href{http://en.wikipedia.org/wiki/ISO/IEC_8859-1}{ISO 8859-1}) encoding.  Most probably you should use this option if you use Windows;
-	\item \textbf{utf8} --- Use \href{http://en.wikipedia.org/wiki/UTF-8}{UTF8} encoding.    Most probably you should use this option if you are not using Windows.
-\end{enumerate}
-% subsection font_size (end)
+I reviewed four system programming languages, suited for different kinds of environments,
+C, C++ and Ada can be considered the traditional system languages kind, with a strong emphasis on efficiency
+and support for embedded devices.
+Go on the other hand, could be considered a new generation systems programming language, a language for cloud infrastructure.
+Among the four, only Ada places strong emphasis on safety, with several features allowing for more guarantees at compile time,
+such as contract based programming and non-nullable types by default,
+being the only one which does not suffer from the “\emph{billion dollar mistake}” \autocite{Hoare2009}.
 
-% ============
-% = Examples =
-% ============
-\subsection{Examples} % (fold)
-\label{ssec:examples}
+\section{The Rust Language}\label{sec:rust-lang}
 
-Let's have a look at a couple of examples:
+Rust is a fairly recent systems programming language,
+it started as a side project of the author Graydon Hoare and the language public history dates back to 2010 \autocite{Hoare2010}.
+In 2012 Mozilla picked up Rust to help develop the Servo browser engine, the successor to the previous Gecko engine;
+as a way to test Rust's capabilities \autocite{Klabnik2016}.
 
-\begin{itemize}
-	\item Preparation of PhD thesis, in portuguese, with 11pt size and to be printed single sided (I wonder why one would do this!)\\
-	\verb!\documentclass[prepphd,pt,11pt,oneside,latin1]{thesisdifct-nova}!
-	\item MSc dissertation, in English, with 12pt size and to be printed double sided\\
-	\verb!\documentclass[msc,en,12pt,twoside,utf8]{thesisdifct-nova}!
-\end{itemize}
-% subsection examples (end)
+\subsection{What makes Rust different?}
 
-\section{How to Write Using \LaTeX} % (fold)
-\label{sec:how_to_write_using_latex}
+In comparison with other languages, one of the first things someone new to Rust ought to notice is the emphasis put on safety.
+Being a competitor to C++ and achieving memory safety while still providing C++-level performance is quite an accomplishment.
+Rust, however, also aims to allow users to be productive without sacrificing safety or performance.
 
-Please have a look at Chapter~\ref{cha:a_short_latex_tutorial_with_examples}, where you may find many examples of \LaTeX constructs, such as Sectioning, inserting Figures and Tables, writing Equations, Theorems and algorithms, exhibit code listings, etc.
-
-% section how_to_write_using_latex (end)
+The key to all the promises Rust makes is the ownership system and borrow checker.
+The borrow checker is a completely new mechanism when compared with other mainstream languages.
+However, it is a product of years of research both in academia and the industry.
+This mechanism merits most of Rust's accomplishments and also the biggest problem, the learning curve.
+While Rust has become more accessible over the years,
+ownership and the borrow checker still require some effort on the part of the developer to learn.
+I provide a small overview of ownership, the borrow checker and their part in Rust's promise of “\emph{fearless concurrency}”.
 
 
+\subsection{Ownership}\label{sec:rust-lang:ownership}
 
-\section{Example glossary, acronyms, and symbols}
-%
-% \todo[inline]{A a note in a line by itself.}
-%
-This is the first occurrence of an abbreviation: \gls{abbrev}. And now the second occurrence of the same abbreviation: \gls{abbrev}. And a new acronym with capital letter: \Gls{xpt} and reused \gls{xpt}.  Let's also use a few other acronyms such as \gls{aaa}, \gls{aab}, \gls{aba}, \gls{bbb} and \gls{xpt}.
-In geometry, the area enclosed by a circle of radius \gls{r} is $\pi r^2$. Here the Greek letter \gls{pi} is equal to the ratio of the circumference of any circle to its diameter.
-Lets add ``\gls{computer}'' to the glossary!
-%
-% Please note that
-% \begin{center}
-%   \textbf{\large this package and template are not official for FCT/NOVA}.
-% \end{center}
+Ownership is the mechanism used by Rust to ensure no memory block stays allocated longer than it is required to.
+Through ownership, the compiler is able to free memory when required,
+inserting the respective deallocation calls in the output program.
+Behind ownership, there are three rules:
+
+\begin{displayquote}[{\autocite[Section 4.1]{RustBook2021}}]
+    \begin{compactitem}
+        \item Each value in Rust has a variable that’s called the owner.
+        \item There can only be one owner at a time.
+        \item When the owner goes out of scope, the value will be dropped.
+    \end{compactitem}
+\end{displayquote}
+
+To illustrate the rules, consider \autoref{lst:rust-move}, where we have two variables \texttt{x} and \texttt{y}.
+First, \texttt{"Hello"}\footnotemark~is assigned to \texttt{x}, thus \texttt{x} now owns \texttt{"Hello"}.
+After, \texttt{x} is assigned to \texttt{y}, consider the second rule of ownership, since we can only have one owner,
+\texttt{x}'s value ownership is transferred to \texttt{y}.
+Since we transferred \texttt{x}'s value to \texttt{y}, \texttt{x} is no longer valid, consequently,
+when compiling the code an error will be issued due to \texttt{x} being moved.
+
+Notice how \texttt{String::from} is used instead of another type,
+since \keyword{String} type does not implement \keyword{Copy} it can only be moved.
+If the used type implemented \keyword{Copy}, the value would have been copied instead of moved.
+
+\input{Chapters/Listings/C2/rust-move.tex}
+
+So far this illustrates the first two rules. The last rule can be considered invisible,
+as it happens during compilation and the user would not notice it usually.
+What happens is that at the end of the scope, any variable whose owner is in scope, will be freed.
+While the developer is not required to explicitly free the memory, the compiler will insert the calls for the developer.
+
+\subsection{Borrowing}\label{sec:rust-lang:borrowing}
+
+If the developer could only copy or move memory the usability of the language would be severely limited.
+For example, functions that read a variable and produce a new value,
+not requiring the variable to be consumed would be impossible.
+To cope with this, Rust allows values to be \emph{borrowed}, in other words,
+the owner of the variable allows for it to be read by others.
+
+To borrow a value, one writes \texttt{\&value}, this creates a read-only reference to \texttt{value}.
+There can be an unlimited number of read-only references to a value, but only a single mutable reference.
+This is discussed in \autoref{sec:rust-lang:concurrency}. Consider the example \autoref{lst:rust-borrow}.
+In the example, \texttt{x} is now possible to be printed since it was not moved into \texttt{y}.
+Rather, \texttt{y} borrowed \texttt{x} through a reference.
+
+Going back to the rules (\autoref{sec:rust-lang:ownership}), Rust's references obey them just like all other values.
+The variable containing them has ownership \emph{over the reference}; it still is a single owner
+(if \mintinline{Rust}{let z = y;} was to be added, the reference would be copied instead of moved);
+and finally, when the owner goes out of scope \emph{the reference is dropped}, but not the original value.
+
+\input{Chapters/Listings/C2/rust-borrow.tex}
+
+\subsubsection*{Mutable Borrows}
+
+One last thing to consider are mutable borrows.
+As previously discussed, in Rust it is possible to create multiple immutable references but only one mutable reference.
+Regarding mutable references there are two cases to consider:
+
+\paragraph{$N$ mutable references,} see \autoref{lst:rust-borrow-n-mut}.
+Understanding why only one mutable reference can exist at a time is trivial,
+as multiple mutable references to the same object would allow it to be mutated concurrently,
+which could lead to inconsistent values.
+
+\paragraph{$N$ immutable references and $1$ mutable reference,} see \autoref{lst:rust-borrow-n-immut-1-mut}.
+The reason behind not allowing a mutable reference to coexist is similar.
+Consider that each value can be executed by a different thread,
+the first two (\texttt{r1} and \texttt{r2}) are only read and the third (\texttt{r3}) can be read and written.
+While there will be no conflicts between writers, it is possible for the readers to read an inconsistent value,
+since it can happen during the write operation.
+
+\input{Chapters/Listings/C2/rust-borrow-n-mut.tex}
+
+\input{Chapters/Listings/C2/rust-borrow-n-immut-1-mut.tex}
+
+\subsection{Concurrency}\label{sec:rust-lang:concurrency}
+
+\begin{displayquote}[{\autocite[Section 16]{RustBook2021}}]
+    Initially, the Rust team thought that ensuring memory safety and preventing concurrency problems were two separate challenges to be solved with different methods.
+    Over time, the team discovered that the ownership and type systems are a powerful set of tools to help manage memory safety and concurrency problems!
+    By leveraging ownership and type checking, many concurrency errors are compile-time errors in Rust rather than runtime errors.
+\end{displayquote}
+
+Rust provides several kinds of mechanisms to prevent concurrency related problems.
+Mechanisms as \emph{message-passing}, \emph{shared-state} and
+traits to enable developers to extend upon the existing abstractions.
+
+\subsubsection*{Message-passing}
+
+Rust's message-passing library is inspired on Go's approach to concurrency,
+prioritizing message passing over other kinds of concurrent approaches, such as locking.
+
+\begin{displayquote}[{\autocite[Concurrency]{Go2021}}]
+    Do not communicate by sharing memory; instead, share memory by communicating.
+\end{displayquote}
+
+Rust defines channels which have two ends, the transmitter and the receiver.
+The former can also be seen as the sender, and when is declared with the message type,
+the latter is also declared with the message type, they can be the same or distinct.
+
+The ownership system comes in when the transmitter sends a message,
+when received the ownership of the message is taken on by the receiver end.
+This enforces that values cannot be in both sides of the communication at the same time,
+preventing concurrent accesses.
+
+\subsubsection*{Shared-state}
+
+Along with message-passing, Rust allows memory to be shared in a concurrent, safe way.
+Just as before, Rust's ownership system also helps with mutexes' biggest problem, locking and unlocking.
+
+In a language like Java, whenever a thread is able to call \texttt{lock} on a mutex,
+it is required to call \texttt{unlock} on it, only then can other threads can use it.
+The problem is that this approach is subject to human error,
+forgetting to call unlock or calling unlock in the wrong place is possible.
+Making use of the ownership system, Rust is able to know when the lock reached the end of the scope and should be dropped.
+
+\subsection{Why Rust instead of Language X?}
+
+The main obstacle between typestates and programming languages is the requirement for aliasing control.
+In short, typestates are incompatible with aliasing (details are provided in \autoref{sec:typestates}).
+
+So to implement a language from the ground up, it is required that aliasing is handled,
+however, instead of building a new one, the goal is to extend an existing one, Rust.
+As discussed in \autoref{sec:rust-lang:borrowing}, Rust's ownership system allows for aliasing control.
+Using moves to enforce the consumption of values,
+immutable references for pure functions and mutable ones for limited mutability,
+it is possible to emulate typestates. This takes care of aliasing concerns.
+
+When designing on top of another language, two more ingredients are required,
+a powerful extension mechanism (i.e. Rust's macros, discussed in \autoref{sec:rust-macros})
+and a strong type system, able to provide the necessary abstractions.
+Rust provides both, the type systems goes as far as allowing zero-sized types,
+allowing type-level abstractions to incur no runtime overhead.
+This is a key ingredient in our DSL, aiming to provide the minimal possible runtime with an expressive language.
+
+\section{Behavioral Types}\label{sec:behavioral-types}
+
+As previously discussed, with the growth in software complexity, developers are required to develop better tools to tame such complexity.
+Such tools require a theoretical body of work to support them, behavioral types are part of such body of work.
+The theory behind them encompasses several domains, and they can be applied over a wide range of entities, from an object to a web service.
+
+The work on behavioral types arose in the context of type systems able to capture properties of computations \autocite{Huttel2016}.
+Session types and typestates are part of this field of study,
+both capturing distinct property kinds while aiming for a common goal,
+stronger type systems and better static assurances.
+
+\begin{displayquote}[\autocite{Ancona2016}]
+    Roughly speaking, a behavioral type describes a software entity, such as an object, a communication channel,
+    or a Web Service, in terms of the sequences of operations that allow for a correct interaction among the involved entities.
+\end{displayquote}
+
+Behavioral types allow developers to model a protocol,
+define the communication messages and possible interactions and
+check that certain requirements are met when implementing.
+Consider the protocol from \autoref{fig:login-protocol},
+where a user tries to authenticate.
+A developer can use it as a specification
+(for simplicity consider the uppercase messages to be simple strings),
+using behavioral types the developer could be able to specify the described interactions and all boilerplate could be generated for him.
+While using strings as a payload is not very “\emph{interesting}”,
+consider instead that the object in transit is an encrypted payload,
+the boilerplate will take care of decryption and deserialization.
+Furthermore, consider the constraint that \emph{all interactions end with a message from the server}.
+If the specification has an interaction that is not compliant with such rule,
+the code should not compile, raising an error.
+
+\input{Chapters/Figures/C2/login-protocol.tex}
+
+\subsection{Session Types}
+
+Session types are a subset of behavioral types, focused on communication,
+from entities in a distributed system to threads in a computer.
+Session types are based on process calculi and can be thought as “\emph{types for protocols}” \autocite{Honda1993, Honda1998}.
+They elevate communication to the type level, allowing expressing them as types in a program,
+in turn this enables the compiler to reason about the protocol during compile-time \autocite{Vasconcelos2006, Gay2015}.
+
+In Rust, a channel is created with \mintinline{Rust}{let (tx, rx) = channel::<SenderT, ReceiverT>()},
+where \texttt{SenderT} and \texttt{ReceiverT} are the types sent and received by the channel.
+Channels are well-typed, meaning that if \mintinline{Rust}{SenderT = String},
+sending another type over the channel will result in a type error.
+
+% \input{Chapters/Listings/C2/rust-login-chan.tex}
+
+Session types extend on this notion, not only allowing for a single type to be sent or received,
+but also model the protocol.
+Consider \autoref{lst:rust-login-chan}, the example has unnecessary complexity,
+for each receive the developer is required to match all possible replies.
+Ideally, we declare the steps and possible outcomes beforehand.
+
+For example, in plain English:
+\begin{compactenum}
+    \item Send login credentials.
+    \item If successful, send a message to user \texttt{jmgd}.
+    \item Otherwise, exit.
+\end{compactenum}
+
+And now using session types (\autoref{eq:session-types}
+with syntax adapted from \autocite{Vasconcelos2006},
+where the first four assignments ($:=$) are simple aliases, to simplify reading):
+
+\input{Chapters/Figures/C2/session-types.tex}
+
+Consider $!$ to be \emph{sends}, $?$ to be \emph{receives}, $.$ the \emph{sequence} operator finally,
+$\&$ the \emph{choice offering} and $\oplus$ the \emph{choice selection}.
+Using session types effectively offloads complexity to the type system,
+resulting in more complex types, but simpler implementations,
+since protocol compliance can be checked during compilation and boilerplate can be added by the compiler.
+No message is matching required, the compiler does it for the developer.
+Using session types it is possible to write it in a simpler form, where a type is assigned to each endpoint.
+Notice how the server provides more than one operation, but the user does not call them all.
+
+\subsection{Typestates}\label{sec:typestates}
+
+\begin{displayquote}[{\autocite{Strom1983}}]
+    ... traditional strong type checking was enhanced with \textbf{typestate checking}
+    a new mechanism in which the compiler guarantees that for all execution paths,
+    the sequence of operations on each variable obeys a finite state grammar associated with that variable's type.
+\end{displayquote}
+
+The first language to make use of typestates was NIL~\autocite{Strom1983},
+afterwards languages like Hermes~\autocite{Strom1990} and Plaid~\autocite{Aldrich2009}
+extended the concept with new techniques.
+
+\subsubsection*{Automata}
+
+A possible question on the reader's mind is “\emph{how are automata and typestates related?}”.
+This section tries to address that question and exemplify how automata helps prove typestates properties.
+It is possible to express typestates as automata, as the reader can observe in \autoref{fig:file-automata}.
+Each state is a possible state the object can be in, transitions are done through methods.
+Methods can either mutate the object state, such as \texttt{open} and \texttt{close},
+or leave it unchanged, such as \texttt{nextLine}.
+
+\input{Chapters/Figures/C2/file-automata.tex}
+
+\paragraph{Real-world scenario.}
+In production applications, the API is not this simple.
+In fact, the \keyword{Scanner} API is not this simple, however it was simplified for the example.
+Complex APIs can be designed by a team and implemented by another,
+specifications can be changed and during project development some details may be lost.
+Such details can be costly, imagine for example that a method call reaches a state, which has no outgoing edges,
+but it is not a final state. This is a problem addressed by existing automata algorithms.
+Representing typestates as automata, extracting all necessary information and applying such algorithms provides the API with extra safety.
+
+\subsubsection*{The case for typestates}
+
+As discussed in \autoref{sec:context}, bugs in systems programming are costly,
+thus, bugs must be minimized.
+Several tools, such as static analyzers, fuzzers, testing frameworks and others,
+aid in this purpose, if we have all these external tools,
+why should we not try and leverage the programming language itself?
+
+\paragraph{Moving towards better languages.}
+Programming languages allow the programmer to express a set of actions to be taken by the computer,
+they are tools which enable us to achieve a goal.
+Being essential to our work, better tools enable developers to be more productive and achieve higher quality work.
+The remaining question is “\emph{why do we not create better languages?}”.
+Even when considering languages to be cheap to develop,
+the amount of work between a \emph{working} language to be \emph{production ready} is not cheap.
+Furthermore, while adopting a new language for a hobby project is easy,
+the same does not apply for enterprise level projects,
+requiring several developers to know the ins and outs of the language.
+
+\paragraph{Static typed languages.}
+The current trend is to move from dynamically typed languages,
+to statically typed ones, or at the very least, add typing support to existing dynamic languages.
+Typescript~\autocite{typescript},
+Reason~\autocite{reason} and
+PureScript~\autocite{purescript}
+are all examples of languages built to bridge the gap between static type systems and JavaScript.
+Python and Ruby, two popular dynamic languages, have also pushed for type adoption
+with the addition of type hint support in recent
+releases~\autocite{PythonTyping, RubyRBS}.
+
+\paragraph{Where do typestates fit?}
+Typestates are a complex subject, able to be adopted at several levels,
+just like type hints, they can be partially used in some languages,
+through tools such as Mungo~\autocite{Voinea2020},
+by contract-style assertions as in Ada2012, Eiffel or pre-0.4 Rust,
+or finally by leveraging the existing type system to write typestate enabled code as it is possible in
+Rust~\autocite{Duarte2020}.
+Typestate-related concepts were also used in Singularity OS \autocite[Section 6]{Ancona2016},
+a reliable operating system prototype where programs were written using Sing\# --- a language derived from C\# which supports behavioral typing,
+specifically contracts in a similar capacity to typestates.
+
+\paragraph{Why use typestates?}
+By leveraging the state to the type system, the compiler is able to aid the programmer during development,
+a given set of transitions will be impossible by default, since the types do not implement them.
+By reducing the need for developers to check for a certain set of conditions through the use of typestates,
+it becomes possible to reduce the number of runtime assertions and
+completely eliminate the need for illegal state exceptions since illegal transitions are checked at compile time.
 
 
+\subsubsection*{Typestates in action}
 
-% \printbibliography[heading=subbibliography, segment=\therefsegment, title={\bibname\ for chapter~\thechapter}]
+As a simple example, consider the Java application in \autoref{lst:java-read} which simply which reads two lines from \texttt{stdin}.
+The application will throw an exception on line 6,
+since the programmer closed the \texttt{Scanner} in line 5.
+In this example, the error is simple to catch,
+the program is short and the \texttt{Scanner} can either be open or closed,
+however, real-world applications are not that simple.
+
+\input{Chapters/Listings/C2/java-read.tex}
+
+In the case of \emph{typestated} programming,
+the type system will provide the programmer with better tools to express state,
+furthermore, the compiler will then catch errors regarding state,
+such as the previous \emph{use-after-close}.
+
+\autoref{lst:java-read-typestate} shows the \texttt{Read} program written in a \emph{typestated} fashion,
+notice that the \texttt{Scanner} type is now augmented with state and
+the compiler is able to catch the misuse of the \texttt{Scanner[Closed]} interface.
+
+\input{Chapters/Listings/C2/java-read-typestate.tex}
+
+\paragraph{Plaid} is a typestate-oriented programming language \autocite{Aldrich2009},
+instead of \keyword{class}es users write \keyword{typestate}s.
+Each typestate represents a class and possible states,
+the class methods and behavior change during runtime as state changes,
+in contrast with other languages (e.g. Java) where public methods and fields are always available.
+In \autoref{lst:plaid-file-use}, the \keyword{File} passes through states as it is open, read and closed in \texttt{readClosedFile}.
+
+This property allows the type system to enforce certain properties at compile time,
+such as certain methods will never be called in a given state since it is not possible by design
+(i.e. they are not available in the interface).
+
+\input{Chapters/Listings/C2/plaid-file-use.tex}
+
+\paragraph{Obsidian} is a language targeting Hyperledger Fabric \autocite{Fabric2021},
+among other features it makes use of typestates to reduce the amount of bugs when dealing with assets.
+
+In \autocite{Coblenz2020} an empirical study tested and proved Obsidian claims,
+when compared with Solidity, the leading blockchain language,
+users inserted fewer bugs and were able to start developing safer code faster.
+
+Consider \autoref{lst:obsidian-state}, in which a light switch is modeled,
+the same can either be \texttt{On} or \texttt{Off}, but not both.
+The \texttt{brightness} field can only be accessed if \texttt{LightSwitch} is in the \texttt{On} state,
+however the \texttt{switchLocation} field can be accessed from both states.
+Furthermore, consider that upon instantiation, the \texttt{LightSwitch} is set to the \texttt{Off} state.
+Notice that in \autoref{lst:obsidian-transaction-ok} the user is able to call \texttt{turnOn},
+as the switch is in the \texttt{Off} state, as expected.
+However, the user is unable to call \texttt{turnOff} in \autoref{lst:obsidian-transaction-err},
+since the switch is already set to the \texttt{Off} state.
+The Obsidian compiler is able to notice such invalid transitions and provide an error during compile time.
+
+\input{Chapters/Listings/C2/obsidian-state.tex}
+
+\input{Chapters/Listings/C2/obsidian-transaction-ok.tex}
+
+\input{Chapters/Listings/C2/obsidian-transaction-error.tex}
+
+
+\paragraph{Rust.}
+As discussed in \autoref{sec:rust-lang}, Rust takes the commitment with safety with seriousness,
+providing the necessary tools to users.
+While Rust does not support first-class typestates,
+it is possible to emulate them using the type system (as demonstrated in \autocite{Duarte2020}),
+this is discussed in further sections of this document.
+
+While the file example does not apply in Rust, since files and other objects are closed as they leave the scopes,
+enforcing protocols is important and an aspect not covered by the language.
+Consider \autoref{lst:rust-protocol}, the example is expected to call first \texttt{F1}, followed by \texttt{F2} and finally \texttt{F3},
+however such does not happen and the error may only be caught during runtime.
+
+\input{Chapters/Listings/C2/rust-protocol.tex}
+
+As the next paragraph discusses, this behavior can be prevented using the language's type system.
+However, such utilization requires complex (and possibly hard to read) types.
+Since it is not “\emph{part}” of the language, most users will neither use it nor be aware of it.
+
+\paragraph{Embedded Rust.} As any systems programming language, Rust penetrated the embedded development space.
+Providing features in line with the area's requirements, along with community efforts to make Rust viable in embedded systems.
+
+\emph{The Embedded Rust Book}'s~\autocite{Rust2021} Chapter 4 is dedicated to static guarantees,
+introducing programmers to the concepts of typestate in Section 4.1, and their usage in embedded systems.
+
+As for real-world usage, typestates are abundantly used in the area (not just discussed in the book),
+under \autocite{Stm32} one finds several repositories (suffixed with \texttt{-hal})
+which implement typestates
+(e.g. \href{https://github.com/stm32-rs/stm32h7xx-hal/blob/master/src/gpio.rs#L51-L128}{\texttt{gpio.rs}}
+from \texttt{stm32h7xx-hal}).
+
