@@ -8,19 +8,6 @@
 
 \typeout{NT FILE chapter4.tex}
 
-\chapter{Rust \& Typestates}
-
-So far, I have discussed Rust's macro system and its potential, however,
-to provide a typestate DSL we also need to represent typestates.
-
-Previously, Rust had first-class typestates, while it is no longer the case,
-Rust is still able to represent and work with typestates.
-
-In this chapter I will explain how a developer might implement typestates in Rust
-and possible pitfalls when doing so.
-
-The motivating example for
-
 \chapter{The \annotation{typestate} macro}\label{cha:macro}
 
 I now present the core contribution of this thesis, the \annotation{typestate} macro.
@@ -30,169 +17,327 @@ the DSL is discussed in \autoref{sec:macro-dsl},
 followed by the validation process in \autoref{sec:validation} and
 extra features offered by the macro in \autoref{sec:extra-features}.
 
-\section{Handwritten Implementation}\label{sec:hand-implementation}
+\section{Typestates: The Hard Way}\label{sec:hand-implementation}
 
 In this section I demonstrate the development process from a state machine specification to a functional prototype,
 developing all the required components by hand.
-
 The example will be a vending machine, its automaton is illustrated in \autoref{fig:vending-machine}.
+To simplify the example, consider the following:
+\begin{compactitem}
+    \item The machine houses an infinite stock of each of the available snacks.
+    \item Each snack is addressed by its index and the only information available about it is its price.
+    \item The machine does not make change.
+\end{compactitem}
+
+% TODO maybe add an ingredients subsubsection
+
+\input{Chapters/Figures/C4/vending-machine.tex}
 
 We start by designing our \emph{typestated} structure, the \texttt{VendingMachine};
 to do so, we will use a \texttt{State} generic type parameter to model the current state.
 
-\begin{minted}{rust}
+\begin{minted}[linenos=false]{rust}
 struct VendingMachine<State>;
 \end{minted}
 
-However, this code does not compile since \texttt{State} is an unused type parameter;
-we can use it in two ways:
+However, since \texttt{State} is an unused type parameter the compiler issue an error;
+we can fix the error in one of two ways:
 \begin{compactitem}
-    \item Declaring a \texttt{PhantomData} field using \texttt{State} as its type parameter.
+    % TODO PhantomData needs background
+    \item Declaring a \texttt{PhantomData}\footnotemark~field using \texttt{State} as its type parameter.
     This approach is useful if the types used in \texttt{State} do not carry more information other than its type.
+    \begin{minted}[linenos=false]{rust}
+struct VendingMachine<State> { state: PhantomData<State> }
+    \end{minted}
     \item Declaring a field of type \texttt{State}.
     This approach allows us to use more information other than its type alone, such as structure fields.
+    \begin{minted}[linenos=false]{rust}
+struct VendingMachine<State> { state: State }
+    \end{minted}
 \end{compactitem}
-
-In our case, some states will require fields others will not,
-this forces us to use the second approach:
-
-\begin{minted}{rust}
-struct VendingMachine<State> {
-    state: State,
+\footnotetext{
+    \texttt{PhantomData} is a zero-sized type used to \quotes{pretend} that it owns a previously-unused type parameter (or lifetime).
+    This is required since Rust's compiler will complain in the case that a type parameter is unused. % NOTE this is kinda repeated
+    To know more about \texttt{PhantomData},
+    please refer to its documentation page --- \url{https://doc.rust-lang.org/std/marker/struct.PhantomData.html};
+    or to its page on \emph{The Rustonomicon} --- \url{https://doc.rust-lang.org/nomicon/phantom-data.html}.
 }
-\end{minted}
+
+There are cases where all states are simply markers \ie{do not carry additional information},
+however, consider that the vending machine is required to keep track of both the client's pick along with the inserted money so far.
+Given we are modelling our machine \quotes{by states},
+we should not be required to track neither of those in the initial or final states \ie{\texttt{Waiting} and \texttt{Finish}, respectively}.
+With that in mind, we are required to take the second approach, enabling states to have inner values.
 
 While our vending machine is now able to deal with the concept of state,
-it is unable to sell anything, we need some place to store our items!
-To simplify the example, each item will simply be an integer, representing its price.
+it is unable to sell anything, we need some place to store the items available for sale and all the money we made.
+We will use a vector for the items and an unsigned 64-bit integer for monetary values, see \autoref{lst:vending-machine-struct}.
+These values are available for any state, as they are \quotes{part of the machine} and not specific to a given state.
 
+\begin{listing}
 \begin{minted}{rust}
 struct VendingMachine<State> {
-    contents: Vec<u64>,
+    /// The money made so far.
+    balance: u64,
+    /// The available item's prices.
+    items: Vec<u64>,
+    /// The current machine state.
     state: State,
 }
 \end{minted}
+\caption{The vending machine main \texttt{struct}.}
+\label{lst:vending-machine-struct}
+\end{listing}
 
-We can now move on to model each of the vending machine's states,
-declaring each state as a structure.
+Currently, we have a machine supporting states, but no states.
+To address this we need to declare each state as a structure;
+each structure can then contain its own fields, only available for that state.
 
+Looking back at \autoref{fig:vending-machine}, we can infer the following:
+\begin{compactitem}
+    \item The \texttt{Waiting} and \texttt{Finish} states do not require any fields.
+    \item The \texttt{HasMoney} and \texttt{HasPick} states require their own fields,
+    the money inserted so far and the slot picked by the client, respectively.
+    \item The \texttt{NeedMoney} state requires both the money and picked slot.
+\end{compactitem}
+
+The states' structure declarations are listed and documented in \autoref{lst:vending-machine-states}.
+
+\begin{listing}
 \begin{minted}{rust}
-struct Waiting;         // the machine is waiting for interaction
-struct HasMoney {       // the machine has received money
-    money: u64          // - the amount of money inserted so far
+/// The machine is waiting for interaction.
+struct Waiting;
+/// The machine has received some amount of money
+struct HasMoney {
+    /// The insert amount of money
+    money: u64
 }
-struct HasPick {        // the machine has received a selection
-    picked_slot: usize  // - the selected vending machine slot
+/// The machine has received a slot pick.
+struct HasPick {
+    /// The selected slot.
+    picked_slot: usize
 }
-struct NeedMoney {      // the machine has received both, but not enough money
+/// The machine has received both money and a slot pick,
+/// but not enough money to complete the purchase.
+struct NeedMoney {
     money: u64,
     picked_slot: usize
 }
-struct Finish;          // the transaction is ongoing/finished
+/// The purchase is complete.
+struct Finish;
 \end{minted}
+\caption{The vending machine's states, as illustrated in \autoref{fig:vending-machine}.}
+\label{lst:vending-machine-states}
+\end{listing}
 
-Moving on to transitions, we need to make sure there are no aliases to the current state;
-while in other languages that is unfeasible, Rust's ownership system allows us to take up ownership of an object,
-enforcing that no aliases to it exist.
+Moving on to transitions, we need to ensure that there are no aliases to the current state;
+Rust's borrow checker helps us achieve that goal,
+we can restrict the usage of the current state to only be possible in the case \keyword{self} is owned,
+the borrow checker will then make sure that is true when time comes to use the method.
 
-To declare transitions we declare Rust \keyword{impl}s which define the used \texttt{State} structure.
+To declare a transition, we first open an \keyword{impl}\footnotemark~block which will contain our transition,
+the block will implement a concrete state of the state machine by specifying the generic type parameter to be one of the declared states, line 1 of \autoref{lst:vending-machine-state-impl};
+inside the block, we declare the transition function, it will take \keyword{self} as a first parameter, consuming the first state, and return the next state;
+exemplified in lines 2 \& 3 of \autoref{lst:vending-machine-state-impl}.
+\footnotetext{
+    The \keyword{impl} keyword is used for implementation blocks, whether it is for inherent or trait implementations.
+    For further details, refer to \emph{The Rust Reference} --- \url{https://doc.rust-lang.org/reference/items/implementations.html}.
+}
 
+\begin{listing}
 \begin{minted}{rust}
 impl VendingMachine<Waiting> {
     fn insert_money(self, money: u64) -> VendingMachine<HasMoney> { /* ... */ }
     fn pick_slot(self, picked_slot: usize) -> VendingMachine<HasPick> { /* ... */ }
 }
 \end{minted}
+\caption{The vending machine's \texttt{Waiting} implementation.}
+\label{lst:vending-machine-state-impl}
+\end{listing}
 
-Notice how each function takes \keyword{self} and returns a new \texttt{VendingMachine} instance,
-using another state as its type parameter.
+To better understand what is going on, lets implement the \texttt{insert\_money} transition;
+all we need to do is simply transition from the \texttt{Waiting} state (declared as the generic parameter in line 1 of \autoref{lst:vending-machine-waiting-insert-money}),
+to the \texttt{HasMoney} state, declared as the generic parameter of the \texttt{VendingMachine} return type, line 3 of \autoref{lst:vending-machine-waiting-insert-money}.
 
-To better understand what is going on, lets implement the \texttt{insert\_money} transition.
-
+\begin{listing}
 \begin{minted}{rust}
-fn insert_money(self, money: u64) -> VendingMachine<HasMoney> {
-    VendingMachine::<HasMoney> {
-        contents: self.contents, // pass the machine's contents
-        state: HasMoney {        // new state
-            money                // pass the received money
+impl VendingMachine<Waiting> {
+    /// The user has inserted some amount of money into the machine.
+    fn insert_money(self, money: u64) -> VendingMachine<HasMoney> {
+        VendingMachine::<HasMoney> {
+            contents: self.contents, // pass the machine's contents
+            state: HasMoney {        // new state
+                money                // pass the received money
+            }
         }
     }
+    // ...
 }
 \end{minted}
+\caption{The implementation of \texttt{insert\_money} for the machine's \texttt{Waiting} state.}
+\label{lst:vending-machine-waiting-insert-money}
+\end{listing}
 
-In this case, all we need to do is to simply pass some fields around and declare all structures,
-given that \keyword{self} is used, we can be sure no aliases exist, and we are free to use it as we wish.
+Before we go further, a quick recap over what has been done so far ---
+we have declared the vending machine, its states and its \emph{some} of its transitions.
 
-Before we go further, a quick recap over what has been done so far:
-\begin{compactitem}
-    \item Declared the \texttt{VendingMachine}.
-    \item Declared its states.
-    \item Declared \emph{some} of its transitions.
-\end{compactitem}
+I say \quotes{some} transitions, because we have not addressed how the diamonds in \autoref{fig:vending-machine} work.
+We use the diamonds to represent a decision between $N$ possible paths, I will refer to them as \emph{decision nodes};
+this representation closely resembles \emph{Deterministic Object Automata} \cite{Trindade2020}.
+To model our decision nodes, we can use Rust's enumerations,
+these allow us to declare possible outcomes and force the \gls{API} client to match them.
 
-I say \quotes{some} transitions, since we have not addressed the diamonds in \autoref{fig:vending-machine},
-and that is what we will do next.
+We continue our path, following the \texttt{pick\_slot} transition from the \texttt{HasMoney} state,
+we have \emph{either} the \texttt{Finish} state or the \texttt{NeedsMoney} state,
+a decision node; its implementation is described in \autoref{lst:vending-machine-check-finish}.
 
-Those diamonds represent decisions in the representation described by \autocite{Trindade2020},
-we will use Rust's enumerations to model them;
-this will also force the user to match the enumeration and deal with possible cases.
-
-We continue our path and following the \texttt{pick\_slot} transition from the \texttt{HasMoney} state,
-we have \emph{either} the \texttt{Finish} state or the \texttt{NeedsMoney} state.
-
+\begin{listing}
 \begin{minted}{rust}
-// We reuse the type name as the enumeration's variant name to avoid name guessing
+// To simplify naming, we reuse the state's names
 enum CheckFinish {
     NeedsMoney(VendingMachine<NeedsMoney>),
     Finish(VendingMachine<Finish>),
 }
 \end{minted}
+\caption{Vending machine's decision node as a Rust \keyword{enum}.}
+\label{lst:vending-machine-check-finish}
+\end{listing}
 
-Using the declared enumeration, we can define \texttt{pick\_slot} as follows:
+Using the \texttt{CheckFinish} enumeration, we are now able to properly define \texttt{HasMoney}'s \texttt{pick\_slot} function;
+if the user has inserted enough money, a purchase is made (\autoref{lst:vending-machine-pick-slot} --- lines 6-13),
+otherwise, the vending machine asks for more money (\autoref{lst:vending-machine-pick-slot} --- lines 14-22),
+in either case, it returns a variant of the declared \keyword{enum}.
+
+\begin{listing}
 \begin{minted}{rust}
-
+impl VendingMachine<HasMoney> {
+    fn pick_slot(self, picked_slot: usize) -> CheckFinish {
+        let money = self.state.money;
+        let price = self.contents[picked_slot]; // get the pick's price
+        // Check if there is enough money
+        if money >= price {
+            // If yes, return the `Finish` state
+            CheckFinish::Finish(VendingMachine::<Finish> {
+                // update the machine's balance
+                balance: self.balance + money,
+                contents: self.contents,
+                state: Finish,
+            })
+        } else {
+            // If not, return the `NeedMoney` state
+            CheckFinish::NeedMoney(VendingMachine::<NeedMoney> {
+                balance: self.balance,
+                contents: self.contents,
+                state: NeedMoney { money, picked_slot },
+            })
+        }
+    }
+}
 \end{minted}
+\caption{The \texttt{pick\_slot} implementation for the vending machine during the \texttt{HasMoney} state.}
+\label{lst:vending-machine-pick-slot}
+\end{listing}
 
-\begin{figure}
-    \centering
-    \begin{tikzpicture}
-        \tikzstyle{state}=[font=\ttfamily]
-        \tikzstyle{transition}=[font=\small\ttfamily]
+The \gls{API} client will now be required to match the enumeration,
+which implies the user needs to (or at least try to) deal with all possible outcomes;
+exemplified in \autoref{lst:vending-machine-check-finish-match}.
 
-        \node[state, draw, ellipse, accepting] (state-waiting) at (0, 0) {Waiting};
-        \node[state, draw, ellipse] (state-hasmoney) at (-2, -2) {HasMoney};
-        \node[state, draw, ellipse] (state-haspick) at (2, -2) {HasPick};
-        \node[state, draw, ellipse] (state-finish) at (0, -6) {Finish};
-        \node[state, draw, ellipse] (state-needsmoney) at (0, -10) {NeedsMoney};
-        \node[draw, diamond] (decision-1) at (-2, -4) {};
-        \node[draw, diamond] (decision-2) at (2, -4) {};
-        \node[draw, diamond] (decision-3) at (0, -8) {};
+\begin{listing}
+\begin{minted}{rust}
+let mut vm: CheckFinish = vm.pick_slot(0);
+while let CheckFinish::NeedMoney(vm_) = vm {
+    vm = vm_.insert_money(1);
+}
+match vm {
+    CheckFinish::Finish(vm) => vm.finish().off(),
+    CheckFinish::NeedMoney(_) =>
+        unreachable!("if we left the loop this should be unreachable"),
+}
+\end{minted}
+\caption{
+    Matching \texttt{CheckFinish} in two different ways;
+    lines 2-4 --- using a \keyword{while} loop,
+    lines 5-9 --- using common \keyword{match}.
+}
+\label{lst:vending-machine-check-finish-match}
+\end{listing}
 
-        \draw[->] (-.75, .9) -- node[transition, left] {on} (state-waiting);
-        \draw[->] (state-waiting) edge[out=35, in=75, looseness=5] node[transition, right] {off} (state-waiting);
+This concludes the implementation of the state machine,
+the states I did not cover follow the same implementation pattern,
+as the automaton is \quotes{symmetric}, although the functions perform different actions.
 
-        \draw[->] (state-waiting) edge[out=180, in=90] node[transition, left] {insert\_money} (state-hasmoney);
-        \draw[->] (state-waiting) edge[out=0, in=90] node[transition, right] {pick\_slot} (state-haspick);
+To test if our typestates work, we can try to call a function in a state where such function is unavailable (\autoref{lst:vending-machine-wrong-call});
+this will not compile the compiler will even be helpful enough as to tell us that
+\texttt{finish} was not found for the \texttt{Waiting} state (\autoref{lst:vending-machine-wrong-call-error}).
 
-        \draw[->] (state-hasmoney) -- node[transition, left] {pick\_slot} (decision-1);
-        \draw[->] (state-haspick) -- node[transition, right] {insert\_money} (decision-2);
+\begin{listing}
+\begin{minted}[linenos=false]{rust}
+let vm = VendingMachine::<Waiting>::on() // Start the vending machine
+    .finish();                           // Finish a purchase
+\end{minted}
+\caption{Calling the \texttt{finish} function in the \texttt{Waiting} state.}
+\label{lst:vending-machine-wrong-call}
+\end{listing}
 
-        \draw[->] (decision-1) edge[out=-90, in=180] node[transition, fill=white] {!enough} (state-needsmoney);
-        \draw[->] (decision-2) edge[out=-90, in=0] node[transition, fill=white] {!enough} (state-needsmoney);
+\begin{listing}
+\begin{minted}[linenos=false]{text}
+no method named `finish` found for struct `VendingMachine<Waiting>`
+in the current scope items from traits can only be used if the trait is
+implemented and in scope the following trait defines an item `finish`,
+perhaps you need to implement it:
+candidate #1: `Hasher`
+\end{minted}
+\caption{The error resulting from \autoref{lst:vending-machine-wrong-call}.}
+\label{lst:vending-machine-wrong-call-error}
+\end{listing}
 
-        \draw[->] (decision-1) -- node[transition, fill=white] {enough} (state-finish);
-        \draw[->] (decision-2) -- node[transition, fill=white] {enough} (state-finish);
+\subsection{Future Proofing}
 
-        \draw[->] (state-needsmoney) -- node[transition, left] {insert\_money} (decision-3);
+Our \gls{API} seems to be rock-solid,
+methods cannot be called in state they do not belong to and the compiler will even provide helpful messages.
 
-        \draw[->] (decision-3) -- node[transition, fill=white] {enough} (state-finish);
-        \draw[->] (decision-3) edge[out=-15, in=35] node[transition, right] {!enough} (state-needsmoney);
+However, there is a problem, nothing stops a developer from extending the \gls{API} by implementing a \quotes{foreign} type
+(in this context, consider \quotes{foreign} to be a type which is not a state), such as the unit type --- \texttt{()}.
+Disregarding the fact that implementing the unit type as a type parameter of our vending machine makes no sense;
+we need to avoid these situations and to do so \emph{The Rust API Guidelines}\footnote{\url{https://rust-lang.github.io/api-guidelines/future-proofing.html\#sealed-traits-protect-against-downstream-implementations-c-sealed}} offer an answer! % CITE
 
-        \draw[->] (state-finish) -- node[transition, fill=white] {finish} (state-waiting);
-    \end{tikzpicture}
-    \caption{Vending machine automaton.}
-    \label{fig:vending-machine}
-\end{figure}
+We can implement the \quotes{sealed trait pattern},
+which is just a way of stopping downstream users from modifying our state hierarchy.
+
+% TODO explain the trait keyword
+Following the guidelines, we need to first create a public \keyword{trait} which every state will implement (\autoref{lst:vending-machine-sealed} --- lines 13-23);
+we need to further restrict the state set with a private \keyword{trait} (\autoref{lst:vending-machine-sealed} --- lines 1-11), also implemented by every state,
+it is required to be private so downstream users are unable to access and implement it.
+
+\begin{listing}
+\begin{minted}{rust}
+mod private {
+    /// The `Sealed` trait, unable to implemented by downstream users.
+    pub trait Sealed {}
+
+    // The trait implementations for each state.
+    impl Sealed for Waiting;
+    impl Sealed for HasMoney;
+    impl Sealed for HasPick;
+    impl Sealed for NeedMoney;
+    impl Sealed for Finish;
+}
+
+/// The `State` trait. While any user can *technically* implement it,
+/// its bound requires `private::Sealed` to also be implemented,
+/// which is impossible because it is not accessible to downstream users.
+pub trait State: private::Sealed {}
+
+// The `State` trait implementations.
+impl State for Waiting;
+impl State for HasMoney;
+impl State for HasPick;
+impl State for NeedMoney;
+impl State for Finish;
+\end{minted}
+\caption{The implementation of the sealed trait pattern for our vending machine automaton.}
+\label{lst:vending-machine-sealed}
+\end{listing}
 
 \section{Architecture}\label{sec:architecture}
 

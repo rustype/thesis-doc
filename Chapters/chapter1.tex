@@ -91,7 +91,7 @@ as debugging errors like these is neither an effective time use nor pleasant.
 
 \subsection{API Misuse}
 
-Consider Java's \keyword{Scanner}, the API allows the developer to write code like \autoref{lst:java-scanner}.
+Consider Java's \keyword{Scanner}, the \gls{API} allows the developer to write code like \autoref{lst:java-scanner}.
 Such code will compile without issuing any errors or warnings (even with the \texttt{-Xlint:all} flag),
 however, it will also crash during runtime.
 Since it is not possible to read from a closed source, the thrown exception is an \texttt{IllegalStateException},
@@ -115,7 +115,7 @@ the compiler is now able to tell us there is an error during compilation.
 This approach also solves \autoref{lst:java-scanner-null}, as the type is required to be explicitly \emph{nullable}.
 The remaining question is:
 \begin{displayquote}
-    How can we avoid API misusages without creating a new full-fledged programming language?
+    How can we avoid \gls{API} misusages without creating a new full-fledged programming language?
 \end{displayquote}
 
 \begin{listing}

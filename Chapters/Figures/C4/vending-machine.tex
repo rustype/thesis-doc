@@ -1,0 +1,40 @@
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \tikzstyle{state}=[font=\ttfamily]
+        \tikzstyle{transition}=[font=\small\ttfamily]
+
+        \node[state, draw, ellipse, accepting] (state-waiting) at (0, 0) {Waiting};
+        \node[state, draw, ellipse] (state-hasmoney) at (-2, -2) {HasMoney};
+        \node[state, draw, ellipse] (state-haspick) at (2, -2) {HasPick};
+        \node[state, draw, ellipse] (state-finish) at (0, -6) {Finish};
+        \node[state, draw, ellipse] (state-needsmoney) at (0, -10) {NeedsMoney};
+        \node[draw, diamond] (decision-1) at (-2, -4) {};
+        \node[draw, diamond] (decision-2) at (2, -4) {};
+        \node[draw, diamond] (decision-3) at (0, -8) {};
+
+        \draw[->] (-.75, .9) -- node[transition, left] {on} (state-waiting);
+        \draw[->] (state-waiting) edge[out=35, in=75, looseness=5] node[transition, right] {off} (state-waiting);
+
+        \draw[->] (state-waiting) edge[out=180, in=90] node[transition, left] {insert\_money} (state-hasmoney);
+        \draw[->] (state-waiting) edge[out=0, in=90] node[transition, right] {pick\_slot} (state-haspick);
+
+        \draw[->] (state-hasmoney) -- node[transition, left] {pick\_slot} (decision-1);
+        \draw[->] (state-haspick) -- node[transition, right] {insert\_money} (decision-2);
+
+        \draw[->] (decision-1) edge[out=-90, in=180] node[transition, fill=white] {!enough} (state-needsmoney);
+        \draw[->] (decision-2) edge[out=-90, in=0] node[transition, fill=white] {!enough} (state-needsmoney);
+
+        \draw[->] (decision-1) -- node[transition, fill=white] {enough} (state-finish);
+        \draw[->] (decision-2) -- node[transition, fill=white] {enough} (state-finish);
+
+        \draw[->] (state-needsmoney) -- node[transition, left] {insert\_money} (decision-3);
+
+        \draw[->] (decision-3) -- node[transition, fill=white] {enough} (state-finish);
+        \draw[->] (decision-3) edge[out=-15, in=35] node[transition, right] {!enough} (state-needsmoney);
+
+        \draw[->] (state-finish) -- node[transition, fill=white] {finish} (state-waiting);
+    \end{tikzpicture}
+    \caption{Vending machine automaton.}
+    \label{fig:vending-machine}
+\end{figure}

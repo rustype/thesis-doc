@@ -381,13 +381,13 @@ or leave it unchanged, such as \texttt{nextLine}.
 \input{Chapters/Figures/C2/file-automata.tex}
 
 \paragraph{Real-world scenario.}
-In production applications, the API is not this simple.
-In fact, the \keyword{Scanner} API is not this simple, however it was simplified for the example.
-Complex APIs can be designed by a team and implemented by another,
+In production applications, the \gls{API} is not this simple.
+In fact, the \keyword{Scanner} \gls{API} is not this simple, however it was simplified for the example.
+Complex \gls{API}s can be designed by a team and implemented by another,
 specifications can be changed and during project development some details may be lost.
 Such details can be costly, imagine for example that a method call reaches a state, which has no outgoing edges,
 but it is not a final state. This is a problem addressed by existing automata algorithms.
-Representing typestates as automata, extracting all necessary information and applying such algorithms provides the API with extra safety.
+Representing typestates as automata, extracting all necessary information and applying such algorithms provides the \gls{API} with extra safety.
 
 \subsubsection*{The case for typestates}
 
