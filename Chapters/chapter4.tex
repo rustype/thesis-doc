@@ -316,11 +316,11 @@ mod private {
     pub trait Sealed {}
 
     // The trait implementations for each state.
-    impl Sealed for Waiting;
-    impl Sealed for HasMoney;
-    impl Sealed for HasPick;
-    impl Sealed for NeedMoney;
-    impl Sealed for Finish;
+    impl Sealed for Waiting {}
+    impl Sealed for HasMoney {}
+    impl Sealed for HasPick {}
+    impl Sealed for NeedMoney {}
+    impl Sealed for Finish {}
 }
 
 /// The `State` trait. While any user can *technically* implement it,
@@ -329,21 +329,72 @@ mod private {
 pub trait State: private::Sealed {}
 
 // The `State` trait implementations.
-impl State for Waiting;
-impl State for HasMoney;
-impl State for HasPick;
-impl State for NeedMoney;
-impl State for Finish;
+impl State for Waiting {}
+impl State for HasMoney {}
+impl State for HasPick {}
+impl State for NeedMoney {}
+impl State for Finish {}
 \end{minted}
 \caption{The implementation of the sealed trait pattern for our vending machine automaton.}
 \label{lst:vending-machine-sealed}
 \end{listing}
 
-\section{Architecture}\label{sec:architecture}
 
 \section{Macro DSL}\label{sec:macro-dsl}
 
+Now that we know how to build our own typestates,
+we want to automate part of the process.
+While automating said process, we will add some checks to ensure our typestate adheres to a set of properties.
+
+% The set of properties we are checking for are:
+% \begin{description}
+%     \item[]
+% \end{description}
+
+\subsection{Architecture}\label{sec:architecture}
+\input{Chapters/Figures/C4/dsl-processing.tex}
+I now discuss our macro's architecture,
+
 \subsection{Syntax \& Automaton Extraction}
+
+\annotation{typestate}'s DSL syntax is interlinked with its automaton extraction process,
+hence I will discuss them in conjunction.
+As we go, I will present parts of the syntax and explain how it relates with the automaton.
+We will reuse the vending machine example, illustrated in \autoref{fig:vending-machine} and model it using our DSL.
+
+\paragraph{The \annotation{typestate} annotation} is the DSL's entrypoint and
+it only supports being attached to modules.
+Given that we want to access several parts of Rust's syntax \eg{\keyword{struct}, \keyword{enum}, etc} we can take one of two approaches ---
+either analyze the whole file, or annotate and process the best next thing, the module.
+
+The module provides most of the syntax elements available to \quotes{top-level} Rust,
+while being possible to analyze using the macro system;
+inside a module we can declare structures, enumerations, free functions and so on.
+
+To start modeling the vending machine we first declare a module, to which we will call \texttt{vending\_machine\_api},
+and annotate it with \annotation{typestate}; as shown in \autoref{lst:vending-machine-typestate-module}.
+This alone is not enough, as the macro will throw an error due to the lack of an automaton, shown in \autoref{lst:vending-machine-typestate-missing-automaton}.
+
+\begin{listing}
+    \begin{minted}[linenos=false]{Rust}
+#[typestate] mod vending_machine_api {}
+    \end{minted}
+\caption{The vending machine's \gls{API} module, annotated with the \annotation{typestate} macro.}
+\label{lst:vending-machine-typestate-module}
+\end{listing}
+
+\begin{listing}
+    \begin{minted}[linenos=false]{text}
+error: Missing `#[automaton]` struct.
+    |
+    | #[typestate]
+    | ^^^^^^^^^^^^
+    \end{minted}
+\caption{The error issued by the code in \autoref{lst:vending-machine-typestate-module}.}
+\label{lst:vending-machine-typestate-missing-automaton}
+\end{listing}
+
+
 
 \subsection{Advanced Features}
 
