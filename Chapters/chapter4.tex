@@ -11,13 +11,13 @@
 \chapter{The \annotation{typestate} macro}\label{cha:macro}
 
 I now present the core contribution of this thesis, the \annotation{typestate} macro.
-In \autoref{sec:hand-implementation}, I start by demonstrating how to implement Rust typestates by hand.
+In \autoref{sec:typestates-hard-way}, I start by demonstrating how to implement Rust typestates by hand.
 In \autoref{sec:architecture} I discuss the macro high-level architecture,
 the DSL is discussed in \autoref{sec:macro-dsl},
 followed by the validation process in \autoref{sec:validation} and
 extra features offered by the macro in \autoref{sec:extra-features}.
 
-\section{Typestates: The Hard Way}\label{sec:hand-implementation}
+\section{Typestates: The Hard Way}\label{sec:typestates-hard-way}
 
 In this section I demonstrate the development process from a state machine specification to a functional prototype,
 developing all the required components by hand.
@@ -291,7 +291,7 @@ candidate #1: `Hasher`
 \label{lst:vending-machine-wrong-call-error}
 \end{listing}
 
-\subsection{Future Proofing}
+\subsection{Future Proofing}\label{sec:typestates-hard-way:future}
 
 Our \gls{API} seems to be rock-solid,
 methods cannot be called in state they do not belong to and the compiler will even provide helpful messages.
@@ -362,7 +362,7 @@ hence I will discuss them in conjunction.
 As we go, I will present parts of the syntax and explain how it relates with the automaton.
 We will reuse the vending machine example, illustrated in \autoref{fig:vending-machine} and model it using our DSL.
 
-\paragraph{The \annotation{typestate} annotation} is the DSL's entrypoint and
+\paragraph{The \annotation{typestate} macro} is the DSL's entrypoint and
 it only supports being attached to modules.
 Given that we want to access several parts of Rust's syntax \eg{\keyword{struct}, \keyword{enum}, etc} we can take one of two approaches ---
 either analyze the whole file, or annotate and process the best next thing, the module.
@@ -373,7 +373,7 @@ inside a module we can declare structures, enumerations, free functions and so o
 
 To start modeling the vending machine we first declare a module, to which we will call \texttt{vending\_machine\_api},
 and annotate it with \annotation{typestate}; as shown in \autoref{lst:vending-machine-typestate-module}.
-This alone is not enough, as the macro will throw an error due to the lack of an automaton, shown in \autoref{lst:vending-machine-typestate-missing-automaton}.
+This alone is not enough, as the macro will throw an error due to the lack of an automaton; shown in \autoref{lst:vending-machine-typestate-missing-automaton-error}.
 
 \begin{listing}
     \begin{minted}[linenos=false]{Rust}
@@ -391,10 +391,160 @@ error: Missing `#[automaton]` struct.
     | ^^^^^^^^^^^^
     \end{minted}
 \caption{The error issued by the code in \autoref{lst:vending-machine-typestate-module}.}
-\label{lst:vending-machine-typestate-missing-automaton}
+\label{lst:vending-machine-typestate-missing-automaton-error}
+\end{listing}
+
+\paragraph{The \annotation{automaton} annotation} is attachable to structures only, % TODO check this
+and allows the macro to know which of the declared structures is the automaton.
+
+\autoref{lst:vending-machine-typestate-module-automaton} fixes the error of \autoref{lst:vending-machine-typestate-module},
+by adding the \texttt{VendingMachine} structure and annotating it with \annotation{automaton}
+the macro is now able to know which structure is the main state machine \ie{which structure will be \quotes{typestated}}.
+
+\begin{listing}
+    \begin{minted}[linenos=false]{Rust}
+#[typestate] mod vending_machine_api {
+    #[automata] pub struct VendingMachine;
+}
+    \end{minted}
+\caption{\autoref{lst:vending-machine-typestate-module}; with an automaton declaration.}
+\label{lst:vending-machine-typestate-module-automaton}
+\end{listing}
+
+Notice how the code from \autoref{lst:vending-machine-typestate-module-automaton-expansion} does not contain any reference to the current state,
+this is added by macro through the \annotation{automaton} annotation,
+along with the sealed pattern skeleton, described in \autoref{sec:typestates-hard-way:future}.
+
+\begin{listing}
+    \begin{minted}[linenos=false]{Rust}
+mod vending_machine_api {
+    mod private {
+        pub trait Sealed {}
+    }
+    pub trait State: private::Sealed {}
+    pub struct VendingMachine<S> where S: State {
+        state: S
+    }
+}
+    \end{minted}
+\caption{Code resulting from \autoref{lst:vending-machine-typestate-module-automaton} expansion.}
+\label{lst:vending-machine-typestate-module-automaton-expansion}
+\end{listing}
+
+Once again, this still does not make the macro happy, while we now have an automaton, we are lacking initial and final states;
+as shown in \autoref{lst:vending-machine-typestate-missing-states-error}.
+
+\paragraph{The \annotation{state} annotation,} like the \annotation{automaton} annotation, is only attachable to structures;
+it marks structures as states and also implements the necessary traits to include the state in the sealed trait state set (\autoref{sec:typestates-hard-way:future}).
+
+As we can observe in \autoref{lst:vending-machine-typestate-module-states},
+declaring states is as simple as attaching the annotation to an existing structure.
+In \autoref{lst:vending-machine-typestate-module-states-expansion} we can see the expansion of the \texttt{NeedMoney} state;
+implementing the sealed trait pattern.
+
+\begin{listing}
+    \begin{minted}[linenos=false]{Rust}
+#[typestate] mod vending_machine_api {
+    #[automata] pub struct VendingMachine;
+    #[state] pub struct Waiting;
+    #[state] pub struct HasMoney { money: u64 }
+    #[state] pub struct HasPick { picked_slot: usize }
+    #[state] pub struct Finish;
+    #[state] pub struct NeedMoney {
+        pub money: u64,
+        pub picked_slot: usize,
+    }
+}
+    \end{minted}
+\caption{\autoref{lst:vending-machine-typestate-module-automaton}; with all states declared.}
+\label{lst:vending-machine-typestate-module-states}
+\end{listing}
+
+\begin{listing}
+    \begin{minted}[linenos=false]{Rust}
+mod vending_machine_api {
+    // ...
+    pub struct NeedMoney {
+        pub money: u64,
+        pub picked_slot: usize,
+    }
+    // using the qualified path (i.e. `private::Sealed`) we sidestep the
+    // requirement of being *inside* the `private` module
+    // to implement the `Sealed' trait
+    impl private::Sealed for NeedMoney {}
+    impl State for NeedMoney {}
+}
+    \end{minted}
+\caption{Expansion of the \texttt{NeedMoney} state, declared in \autoref{lst:vending-machine-typestate-module-states}.}
+\label{lst:vending-machine-typestate-module-states-expansion}
+\end{listing}
+
+While we have declared our states, we still have the same error (\autoref{lst:vending-machine-typestate-missing-states-error});
+that is because, currently, we only have loose states, we have not connected them in any meaningful way.
+
+\begin{listing}
+    \begin{minted}[linenos=false]{text}
+error: Missing initial state. To declare an initial state you can use a
+function with signature like `fn f() -> T` where `T` is a declared state.
+--> vm-typestate/src/main.rs:15:1
+    |
+    | #[typestate]
+    | ^^^^^^^^^^^^
+    |
+
+error: Missing final state. To declare a final state you can use a
+function with signature like `fn f(self) -> T` where `T` is not a declared state.
+--> vm-typestate/src/main.rs:15:1
+    |
+    | #[typestate]
+    | ^^^^^^^^^^^^
+    |
+    \end{minted}
+\caption{The error issued by the code in \autoref{lst:vending-machine-typestate-module}.}
+\label{lst:vending-machine-typestate-missing-states-error}
 \end{listing}
 
 
+\paragraph{Function declarations} allow us to declare transitions without any kind of annotations;
+we can simply look at the function signature and infer the kind of transition,
+however to do so, we first need to establish rules, those are:
+
+\begin{compactitem}
+    \item If a function takes \keyword{self} and returns a valid state,
+    the function is considered to be a transition between the current state and the returned state.
+    \item If a function \emph{does not} take \keyword{self} as an argument and returns the current state,
+    it describes the current state as an initial state.
+    \item If a function takes \keyword{self} as an argument and \emph{does not} return a valid state,
+    it describes the consumed state as a final state.
+\end{compactitem}
+
+To declare functions, we first need to declare a \keyword{trait} with the same name as the target state,
+by doing this, the macro is able to know which state we are currently referring to;
+inside the trait, we can declare all functions to be implemented by the current state.
+
+In \autoref{lst:vending-machine-typestate-module-transitions},
+we use the \texttt{Waiting} state as it contains all the previously described types of transitions.
+
+\begin{listing}
+    \begin{minted}[linenos=false]{Rust}
+#[typestate] mod vending_machine_api {
+    #[state] pub struct Waiting;
+    // The trait is named after the `Waiting` state,
+    // thus, the macro knows which state is the *current* one.
+    pub trait Waiting {
+        // Does not consume self, returns the current state: initial state
+        fn on() -> Waiting;
+        // Consumes self, does not return: final state
+        fn off(self);
+        // Consume self and return a valid state: transitions
+        fn insert_money(self, money: u64) -> HasMoney;
+        fn pick_slot(self, picked_slot: usize) -> HasPick;
+    }
+}
+    \end{minted}
+\caption{Expansion of the \texttt{NeedMoney} state, declared in \autoref{lst:vending-machine-typestate-module-states}.}
+\label{lst:vending-machine-typestate-module-transitions}
+\end{listing}
 
 \subsection{Advanced Features}
 
