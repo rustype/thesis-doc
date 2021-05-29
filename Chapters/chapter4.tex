@@ -633,8 +633,130 @@ In \autoref{sec:macro-dsl:syntax} we have learned about the basic features of th
 armed with them, the reader should be able to write typestates.
 However, some typestates will require more complex mechanisms, both to develop and use,
 that is the purpose of this section.
-
 Once more, we will expand on the vending machine example; illustrated in \autoref{fig:vending-machine}.
+
+\subsubsection{Self-transitions}
+
+Consider that we are asked to display a message containing the amount left to pay in the \texttt{NeedMoney} state;
+to do so we can simply add a new function to the \texttt{NeedMoney} trait, like in line 3 of \autoref{lst:vending-machine-advanced-trait}.
+Notice how the new method takes \keyword{\&self} instead of \keyword{self}, thus,
+it takes the state as an \emph{immutable} reference, instead of consuming the state;
+disabling mutation of the current state.
+Mutable references are also supported,
+consider that the user should be able to update its selected snack;
+line 4 of \autoref{lst:vending-machine-advanced-trait} declares a method taking a mutable reference to the current state,
+which in turn updates the user's snack selection.
+
+\begin{listing}
+    \begin{minted}{rust}
+pub trait NeedMoney {
+    fn insert_money(self, money: u64) -> CheckFinish;
+    fn get_message(&self) -> String;
+    fn update_pick(&mut self, new_pick: usize);
+}
+    \end{minted}
+    \caption{The \texttt{NeedMoney}, extended with the \texttt{get\_message} and \texttt{update\_pick} functions.}
+    \label{lst:vending-machine-advanced-trait}
+\end{listing}
+
+\begin{listing}
+    \begin{minted}{rust}
+impl NeedMoneyState for VendingMachine<NeedMoney> {
+    // ...
+    /// Return the message to be displayed.
+    fn get_message(&self) -> String {
+        let state = &self.state;
+        let unpaid_amount = self.contents[state.picked_slot] - state.money;
+        format!("{} left to go!", &unpaid_amount)
+    }
+    /// Update the current user pick.
+    fn update_pick(&mut self, new_pick: usize) {
+        self.state.picked_slot = new_pick;
+    }
+}
+    \end{minted}
+    \caption{The implementation of \texttt{NeedMoney}'s new functions, as declared in lines 3 \& 4 of \autoref{lst:vending-machine-advanced-trait}.}
+    \label{lst:vending-machine-advanced-trait-impl}
+\end{listing}
+
+When working with automata we need to consider that every transition has both a source and a destination,
+in the case of functions that take references to \keyword{self}, immutable or not,
+they still represent transitions, in this case, the source and destination are the same state;
+hence the name of \emph{self-transitions}.
+
+\subsubsection{State enumeration}
+
+There are some cases in which an enumeration might come in handy,
+one of them is when you are required to loop forever,
+and you may \quotes{stop during processing} \ie{not complete a full \texttt{Waiting} to \texttt{Waiting} cycle};
+in this case you will need a variable that can contain one of the many possible states the machine might be in,
+given that you cannot replace a variable's type once it is assigned, you will need to use Rust's enumerations.
+
+For large state machines, writing an enumeration by hand not only it is not practical, it is also error-prone;
+to address these issues \annotation{typestate} offers the \texttt{enumerate} macro attribute.
+
+By changing the attached \annotation{typestate} annotation to \annotation{typestate(enumerate)},
+as demonstrated in \autoref{lst:vending-machine-advanced-enumerate},
+it will generate the enumeration described in \autoref{lst:vending-machine-advanced-enumerate-expansion}.
+Along with the enumeration, the macro will also implement the \texttt{Into} conversion trait between the enumeration and the respective states;
+this way, if the API client wishes to convert a \texttt{VendingMachine<Waiting>} into \texttt{EVendingMachine},
+they will be able to perform the conversion using \texttt{.into()}.
+% TODO: maybe show the expansion for the Into trait too
+
+\begin{listing}
+    \begin{minted}[linenos=false]{rust}
+#[typestate(enumerate)] mod vending_machine { /* ... */ }
+    \end{minted}
+    \caption{Using the \texttt{enumerate} macro attribute.}
+    \label{lst:vending-machine-advanced-enumerate}
+\end{listing}
+
+\begin{listing}
+    \begin{minted}{rust}
+enum EVendingMachine {
+    Waiting(VendingMachine<Waiting>),
+    HasMoney(VendingMachine<HasMoney>),
+    HasPick(VendingMachine<HasPick>),
+    NeedMoney(VendingMachine<NeedMoney>),
+    Finish(VendingMachine<Finish>),
+}
+    \end{minted}
+    \caption{The resulting enumeration of the \texttt{enumerate} attribute, demonstrated in \autoref{lst:vending-machine-advanced-enumerate}.}
+    \label{lst:vending-machine-advanced-enumerate-expansion}
+\end{listing}
+
+\subsubsection{State constructors}
+
+A small quality-of-life improvement is the automatic declaration of state constructors,
+shortening the declaration of a new state instance;
+these are only generated for states containing named fields and
+the constructor's parameters will be named after them. % TODO: "them" might be confusing
+Its usage is similar to that of the \texttt{enumerate} attribute, as shown in \autoref{lst:vending-machine-advanced-constructors},
+declaring \annotation{typestate(state\_constructors)} will generate the constructors with the default name \texttt{new\_state},
+demonstrated in \autoref{lst:vending-machine-advanced-constructors-expansion}.
+
+\begin{listing}
+    \begin{minted}[linenos=false]{rust}
+#[typestate(state_constructors)] mod vending_machine { /* ... */ }
+    \end{minted}
+    \caption{Using the \texttt{state\_constructors} macro attribute.}
+    \label{lst:vending-machine-advanced-constructors}
+\end{listing}
+
+
+\begin{listing}
+    \begin{minted}[linenos=false]{rust}
+impl NeedMoney {
+    pub fn new_state(money: u64, picked_slot: usize) -> Self {
+        Self { money, picked_slot }
+    }
+}
+    \end{minted}
+    \caption{The generated constructor for the \texttt{NeedMoney} state.}
+    \label{lst:vending-machine-advanced-constructors-expansion}
+\end{listing}
+
+
 
 \section{Validation}\label{sec:validation}
 
