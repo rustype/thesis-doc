@@ -12,7 +12,7 @@
 
 I now present the core contribution of this thesis, the \annotation{typestate} macro.
 In \autoref{sec:typestates-hard-way}, I start by demonstrating how to implement Rust typestates by hand.
-In \autoref{sec:architecture} I discuss the macro high-level architecture,
+In \autoref{sec:macro-dsl:architecture} I discuss the macro high-level architecture,
 the DSL is discussed in \autoref{sec:macro-dsl},
 followed by the validation process in \autoref{sec:validation} and
 extra features offered by the macro in \autoref{sec:extra-features}.
@@ -75,7 +75,7 @@ We will use a vector for the items and an unsigned 64-bit integer for monetary v
 These values are available for any state, as they are \quotes{part of the machine} and not specific to a given state.
 
 \begin{listing}
-\begin{minted}{rust}
+    \begin{minted}{rust}
 struct VendingMachine<State> {
     /// The money made so far.
     balance: u64,
@@ -85,8 +85,8 @@ struct VendingMachine<State> {
     state: State,
 }
 \end{minted}
-\caption{The vending machine main \texttt{struct}.}
-\label{lst:vending-machine-struct}
+    \caption{The vending machine main \texttt{struct}.}
+    \label{lst:vending-machine-struct}
 \end{listing}
 
 Currently, we have a machine supporting states, but no states.
@@ -104,7 +104,7 @@ Looking back at \autoref{fig:vending-machine}, we can infer the following:
 The states' structure declarations are listed and documented in \autoref{lst:vending-machine-states}.
 
 \begin{listing}
-\begin{minted}{rust}
+    \begin{minted}{rust}
 /// The machine is waiting for interaction.
 struct Waiting;
 /// The machine has received some amount of money
@@ -126,8 +126,8 @@ struct NeedMoney {
 /// The purchase is complete.
 struct Finish;
 \end{minted}
-\caption{The vending machine's states, as illustrated in \autoref{fig:vending-machine}.}
-\label{lst:vending-machine-states}
+    \caption{The vending machine's states, as illustrated in \autoref{fig:vending-machine}.}
+    \label{lst:vending-machine-states}
 \end{listing}
 
 Moving on to transitions, we need to ensure that there are no aliases to the current state;
@@ -138,29 +138,37 @@ the borrow checker will then make sure that is true when time comes to use the m
 To declare a transition, we first open an \keyword{impl}\footnotemark~block which will contain our transition,
 the block will implement a concrete state of the state machine by specifying the generic type parameter to be one of the declared states, line 1 of \autoref{lst:vending-machine-state-impl};
 inside the block, we declare the transition function, it will take \keyword{self} as a first parameter, consuming the first state, and return the next state;
-exemplified in lines 2 \& 3 of \autoref{lst:vending-machine-state-impl}.
+exemplified in lines 4 \& 5 of \autoref{lst:vending-machine-state-impl}.
 \footnotetext{
     The \keyword{impl} keyword is used for implementation blocks, whether it is for inherent or trait implementations.
     For further details, refer to \emph{The Rust Reference} --- \url{https://doc.rust-lang.org/reference/items/implementations.html}.
 }
 
 \begin{listing}
-\begin{minted}{rust}
+    \begin{minted}{rust}
 impl VendingMachine<Waiting> {
+    fn on() -> Self { /* ... */ }
+    fn off(self) { /* ... */ }
     fn insert_money(self, money: u64) -> VendingMachine<HasMoney> { /* ... */ }
     fn pick_slot(self, picked_slot: usize) -> VendingMachine<HasPick> { /* ... */ }
 }
 \end{minted}
-\caption{The vending machine's \texttt{Waiting} implementation.}
-\label{lst:vending-machine-state-impl}
+    \caption[test]{The vending machine's \texttt{Waiting} implementation\footnotemark.}
+    \label{lst:vending-machine-state-impl}
 \end{listing}
+\footnotetext{
+    \keyword{Self} is a keyword which acts as a type alias to the \quotes{current} type,
+    it is native to Rust and works in the context of traits and their implementations.
+    In \autoref{lst:vending-machine-state-impl} the \keyword{Self} will refer to \texttt{VendingMachine<Waiting>}.
+    For more information on \keyword{Self}, refer to \url{https://doc.rust-lang.org/std/keyword.SelfTy.html}
+}
 
 To better understand what is going on, lets implement the \texttt{insert\_money} transition;
 all we need to do is simply transition from the \texttt{Waiting} state (declared as the generic parameter in line 1 of \autoref{lst:vending-machine-waiting-insert-money}),
 to the \texttt{HasMoney} state, declared as the generic parameter of the \texttt{VendingMachine} return type, line 3 of \autoref{lst:vending-machine-waiting-insert-money}.
 
 \begin{listing}
-\begin{minted}{rust}
+    \begin{minted}{rust}
 impl VendingMachine<Waiting> {
     /// The user has inserted some amount of money into the machine.
     fn insert_money(self, money: u64) -> VendingMachine<HasMoney> {
@@ -174,8 +182,8 @@ impl VendingMachine<Waiting> {
     // ...
 }
 \end{minted}
-\caption{The implementation of \texttt{insert\_money} for the machine's \texttt{Waiting} state.}
-\label{lst:vending-machine-waiting-insert-money}
+    \caption{The implementation of \texttt{insert\_money} for the machine's \texttt{Waiting} state.}
+    \label{lst:vending-machine-waiting-insert-money}
 \end{listing}
 
 Before we go further, a quick recap over what has been done so far ---
@@ -192,15 +200,15 @@ we have \emph{either} the \texttt{Finish} state or the \texttt{NeedsMoney} state
 a decision node; its implementation is described in \autoref{lst:vending-machine-check-finish}.
 
 \begin{listing}
-\begin{minted}{rust}
+    \begin{minted}{rust}
 // To simplify naming, we reuse the state's names
 enum CheckFinish {
     NeedsMoney(VendingMachine<NeedsMoney>),
     Finish(VendingMachine<Finish>),
 }
 \end{minted}
-\caption{Vending machine's decision node as a Rust \keyword{enum}.}
-\label{lst:vending-machine-check-finish}
+    \caption{Vending machine's decision node as a Rust \keyword{enum}.}
+    \label{lst:vending-machine-check-finish}
 \end{listing}
 
 Using the \texttt{CheckFinish} enumeration, we are now able to properly define \texttt{HasMoney}'s \texttt{pick\_slot} function;
@@ -209,7 +217,7 @@ otherwise, the vending machine asks for more money (\autoref{lst:vending-machine
 in either case, it returns a variant of the declared \keyword{enum}.
 
 \begin{listing}
-\begin{minted}{rust}
+    \begin{minted}{rust}
 impl VendingMachine<HasMoney> {
     fn pick_slot(self, picked_slot: usize) -> CheckFinish {
         let money = self.state.money;
@@ -234,8 +242,8 @@ impl VendingMachine<HasMoney> {
     }
 }
 \end{minted}
-\caption{The \texttt{pick\_slot} implementation for the vending machine during the \texttt{HasMoney} state.}
-\label{lst:vending-machine-pick-slot}
+    \caption{The \texttt{pick\_slot} implementation for the vending machine during the \texttt{HasMoney} state.}
+    \label{lst:vending-machine-pick-slot}
 \end{listing}
 
 The \gls{API} client will now be required to match the enumeration,
@@ -243,7 +251,7 @@ which implies the user needs to (or at least try to) deal with all possible outc
 exemplified in \autoref{lst:vending-machine-check-finish-match}.
 
 \begin{listing}
-\begin{minted}{rust}
+    \begin{minted}{rust}
 let mut vm: CheckFinish = vm.pick_slot(0);
 while let CheckFinish::NeedMoney(vm_) = vm {
     vm = vm_.insert_money(1);
@@ -254,12 +262,12 @@ match vm {
         unreachable!("if we left the loop this should be unreachable"),
 }
 \end{minted}
-\caption{
-    Matching \texttt{CheckFinish} in two different ways;
-    lines 2-4 --- using a \keyword{while} loop,
-    lines 5-9 --- using common \keyword{match}.
-}
-\label{lst:vending-machine-check-finish-match}
+    \caption{
+        Matching \texttt{CheckFinish} in two different ways;
+        lines 2-4 --- using a \keyword{while} loop,
+        lines 5-9 --- using common \keyword{match}.
+    }
+    \label{lst:vending-machine-check-finish-match}
 \end{listing}
 
 This concludes the implementation of the state machine,
@@ -271,24 +279,24 @@ this will not compile the compiler will even be helpful enough as to tell us tha
 \texttt{finish} was not found for the \texttt{Waiting} state (\autoref{lst:vending-machine-wrong-call-error}).
 
 \begin{listing}
-\begin{minted}[linenos=false]{rust}
+    \begin{minted}[linenos=false]{rust}
 let vm = VendingMachine::<Waiting>::on() // Start the vending machine
     .finish();                           // Finish a purchase
 \end{minted}
-\caption{Calling the \texttt{finish} function in the \texttt{Waiting} state.}
-\label{lst:vending-machine-wrong-call}
+    \caption{Calling the \texttt{finish} function in the \texttt{Waiting} state.}
+    \label{lst:vending-machine-wrong-call}
 \end{listing}
 
 \begin{listing}
-\begin{minted}[linenos=false]{text}
+    \begin{minted}[linenos=false]{text}
 no method named `finish` found for struct `VendingMachine<Waiting>`
 in the current scope items from traits can only be used if the trait is
 implemented and in scope the following trait defines an item `finish`,
 perhaps you need to implement it:
 candidate #1: `Hasher`
 \end{minted}
-\caption{The error resulting from \autoref{lst:vending-machine-wrong-call}.}
-\label{lst:vending-machine-wrong-call-error}
+    \caption{The error resulting from \autoref{lst:vending-machine-wrong-call}.}
+    \label{lst:vending-machine-wrong-call-error}
 \end{listing}
 
 \subsection{Future Proofing}\label{sec:typestates-hard-way:future}
@@ -310,7 +318,7 @@ we need to further restrict the state set with a private \keyword{trait} (\autor
 it is required to be private so downstream users are unable to access and implement it.
 
 \begin{listing}
-\begin{minted}{rust}
+    \begin{minted}{rust}
 mod private {
     /// The `Sealed` trait, unable to implemented by downstream users.
     pub trait Sealed {}
@@ -335,8 +343,8 @@ impl State for HasPick {}
 impl State for NeedMoney {}
 impl State for Finish {}
 \end{minted}
-\caption{The implementation of the sealed trait pattern for our vending machine automaton.}
-\label{lst:vending-machine-sealed}
+    \caption{The implementation of the sealed trait pattern for our vending machine automaton.}
+    \label{lst:vending-machine-sealed}
 \end{listing}
 
 
@@ -351,11 +359,14 @@ While automating said process, we will add some checks to ensure our typestate a
 %     \item[]
 % \end{description}
 
-\subsection{Architecture}\label{sec:architecture}
+\subsection{Architecture}\label{sec:macro-dsl:architecture}
 \input{Chapters/Figures/C4/dsl-processing.tex}
 I now discuss our macro's architecture,
 
-\subsection{Syntax \& Automaton Extraction}
+\subsubsection{Parsing}
+% TODO: discuss the usage of syn, the visitor pattern and the typestate::generated macro
+
+\subsection{Syntax \& Automaton Extraction}\label{sec:macro-dsl:syntax}
 
 \annotation{typestate}'s DSL syntax is interlinked with its automaton extraction process,
 hence I will discuss them in conjunction.
@@ -379,8 +390,8 @@ This alone is not enough, as the macro will throw an error due to the lack of an
     \begin{minted}[linenos=false]{Rust}
 #[typestate] mod vending_machine_api {}
     \end{minted}
-\caption{The vending machine's \gls{API} module, annotated with the \annotation{typestate} macro.}
-\label{lst:vending-machine-typestate-module}
+    \caption{The vending machine's \gls{API} module, annotated with the \annotation{typestate} macro.}
+    \label{lst:vending-machine-typestate-module}
 \end{listing}
 
 \begin{listing}
@@ -390,8 +401,8 @@ error: Missing `#[automaton]` struct.
     | #[typestate]
     | ^^^^^^^^^^^^
     \end{minted}
-\caption{The error issued by the code in \autoref{lst:vending-machine-typestate-module}.}
-\label{lst:vending-machine-typestate-missing-automaton-error}
+    \caption{The error issued by the code in \autoref{lst:vending-machine-typestate-module}.}
+    \label{lst:vending-machine-typestate-missing-automaton-error}
 \end{listing}
 
 \paragraph{The \annotation{automaton} annotation} is attachable to structures only, % TODO check this
@@ -404,11 +415,11 @@ the macro is now able to know which structure is the main state machine \ie{whic
 \begin{listing}
     \begin{minted}[linenos=false]{Rust}
 #[typestate] mod vending_machine_api {
-    #[automata] pub struct VendingMachine;
+    #[automaton] pub struct VendingMachine;
 }
     \end{minted}
-\caption{\autoref{lst:vending-machine-typestate-module}; with an automaton declaration.}
-\label{lst:vending-machine-typestate-module-automaton}
+    \caption{\autoref{lst:vending-machine-typestate-module}; with an automaton declaration.}
+    \label{lst:vending-machine-typestate-module-automaton}
 \end{listing}
 
 Notice how the code from \autoref{lst:vending-machine-typestate-module-automaton-expansion} does not contain any reference to the current state,
@@ -427,8 +438,8 @@ mod vending_machine_api {
     }
 }
     \end{minted}
-\caption{Code resulting from \autoref{lst:vending-machine-typestate-module-automaton} expansion.}
-\label{lst:vending-machine-typestate-module-automaton-expansion}
+    \caption{Code resulting from \autoref{lst:vending-machine-typestate-module-automaton} expansion.}
+    \label{lst:vending-machine-typestate-module-automaton-expansion}
 \end{listing}
 
 Once again, this still does not make the macro happy, while we now have an automaton, we are lacking initial and final states;
@@ -445,7 +456,7 @@ implementing the sealed trait pattern.
 \begin{listing}
     \begin{minted}[linenos=false]{Rust}
 #[typestate] mod vending_machine_api {
-    #[automata] pub struct VendingMachine;
+    #[automaton] pub struct VendingMachine;
     #[state] pub struct Waiting;
     #[state] pub struct HasMoney { money: u64 }
     #[state] pub struct HasPick { picked_slot: usize }
@@ -456,8 +467,8 @@ implementing the sealed trait pattern.
     }
 }
     \end{minted}
-\caption{\autoref{lst:vending-machine-typestate-module-automaton}; with all states declared.}
-\label{lst:vending-machine-typestate-module-states}
+    \caption{\autoref{lst:vending-machine-typestate-module-automaton}; with all states declared.}
+    \label{lst:vending-machine-typestate-module-states}
 \end{listing}
 
 \begin{listing}
@@ -475,8 +486,8 @@ mod vending_machine_api {
     impl State for NeedMoney {}
 }
     \end{minted}
-\caption{Expansion of the \texttt{NeedMoney} state, declared in \autoref{lst:vending-machine-typestate-module-states}.}
-\label{lst:vending-machine-typestate-module-states-expansion}
+    \caption{Expansion of the \texttt{NeedMoney} state, declared in \autoref{lst:vending-machine-typestate-module-states}.}
+    \label{lst:vending-machine-typestate-module-states-expansion}
 \end{listing}
 
 While we have declared our states, we still have the same error (\autoref{lst:vending-machine-typestate-missing-states-error});
@@ -500,8 +511,8 @@ function with signature like `fn f(self) -> T` where `T` is not a declared state
     | ^^^^^^^^^^^^
     |
     \end{minted}
-\caption{The error issued by the code in \autoref{lst:vending-machine-typestate-module}.}
-\label{lst:vending-machine-typestate-missing-states-error}
+    \caption{The error issued by the code in \autoref{lst:vending-machine-typestate-module}.}
+    \label{lst:vending-machine-typestate-missing-states-error}
 \end{listing}
 
 
@@ -512,15 +523,27 @@ however to do so, we first need to establish rules, those are:
 \begin{compactitem}
     \item If a function takes \keyword{self} and returns a valid state,
     the function is considered to be a transition between the current state and the returned state.
+    \begin{minted}[linenos=false]{Rust}
+fn (self, ...) -> State;
+    \end{minted}
     \item If a function \emph{does not} take \keyword{self} as an argument and returns the current state,
     it describes the current state as an initial state.
+    \begin{minted}[linenos=false]{Rust}
+fn (...) -> State;
+    \end{minted}
     \item If a function takes \keyword{self} as an argument and \emph{does not} return a valid state,
     it describes the consumed state as a final state.
+    \begin{minted}[linenos=false]{Rust}
+fn (self, ...) -> ...;
+    \end{minted}
 \end{compactitem}
 
 To declare functions, we first need to declare a \keyword{trait} with the same name as the target state,
 by doing this, the macro is able to know which state we are currently referring to;
 inside the trait, we can declare all functions to be implemented by the current state.
+
+If the reader is familiarized with Rust, they might have realized that traits cannot share names with structures,
+enumerations or others; in our DSL that works because during expansion the trait is renamed as: \texttt{TraitName + State => TraitNameState}.
 
 In \autoref{lst:vending-machine-typestate-module-transitions},
 we use the \texttt{Waiting} state as it contains all the previously described types of transitions.
@@ -542,14 +565,76 @@ we use the \texttt{Waiting} state as it contains all the previously described ty
     }
 }
     \end{minted}
-\caption{Expansion of the \texttt{NeedMoney} state, declared in \autoref{lst:vending-machine-typestate-module-states}.}
-\label{lst:vending-machine-typestate-module-transitions}
+    \caption{Declaration of the \texttt{Waiting} state functions.}
+    \label{lst:vending-machine-typestate-module-transitions}
 \end{listing}
 
-\subsection{Advanced Features}
+\paragraph{Implementing} the states and transitions is similar to what we did in \autoref{sec:typestates-hard-way},
+while we have taken care of the sealed pattern, how the machine behaves is left to us.
+
+When using the DSL, instead of declaring an implementation for the target state, as follows:
+\begin{minted}[linenos=false]{rust}
+impl VendingMachine<Waiting> { /* ... */ }
+\end{minted}
+
+You implement a trait for the target state:
+\begin{minted}[linenos=false]{rust}
+impl WaitingState for VendingMachine<Waiting> { /* ... */ }
+\end{minted}
+
+This way, the compiler is able to point out which methods are missing
+(and in the future, tools like \texttt{rust-analyzer}\footnote{\url{https://rust-analyzer.github.io/}} might add all missing signatures for the developer).
+The rest of the implementation is made in the same way as the one in \autoref{sec:typestates-hard-way}.
 
 
+\subsubsection{Summary}
 
+In \autoref{sec:macro-dsl:syntax} I have introduced the basic features of the DSL;
+in \autoref{tab:dsl-summary-annotations} I provide a quick overview of the available annotations,
+\annotation{typestate}, \annotation{automaton} and \annotation{state};
+in \autoref{tab:dsl-summary-functions} I review the transition inference rules for function declarations.
+
+% TODO: complete the summary
+
+\begin{table}
+    \centering
+    \begin{tabular}{l|l|l}
+        Annotation             & Attaches to & Declares            \\
+        \hline
+        \annotation{typestate} & Module      & API                 \\
+        \hline
+        \annotation{automaton} & Structure   & Automaton/Typestate \\
+        \hline
+        \annotation{state}     & Structure   & State
+    \end{tabular}
+    \caption{Overview of the DSL's annotations.}
+    \label{tab:dsl-summary-annotations}
+\end{table}
+
+\begin{table}
+    \centering
+    \begin{tabular}{l|c|c|l}
+        Function signature                & Consumes a state & Returns a state & Inferred      \\
+        \hline
+        \texttt{fn (self, ...) -> State;} & \checkmark       & \checkmark      & Transition    \\
+        \hline
+        \texttt{fn (...) -> State;}       &                  & \checkmark      & Initial State \\
+        \hline
+        \texttt{fn (self, ...) -> ...;}   & \checkmark       &                 & Final State
+    \end{tabular}
+    \caption{Overview of the transition inference rules.}
+    \label{tab:dsl-summary-functions}
+\end{table}
+
+
+\subsection{Advanced Features}\label{sec:macro-dsl:advanced}
+
+In \autoref{sec:macro-dsl:syntax} we have learned about the basic features of the DSL,
+armed with them, the reader should be able to write typestates.
+However, some typestates will require more complex mechanisms, both to develop and use,
+that is the purpose of this section.
+
+Once more, we will expand on the vending machine example; illustrated in \autoref{fig:vending-machine}.
 
 \section{Validation}\label{sec:validation}
 
