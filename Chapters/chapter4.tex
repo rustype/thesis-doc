@@ -153,7 +153,7 @@ impl VendingMachine<Waiting> {
     fn pick_slot(self, picked_slot: usize) -> VendingMachine<HasPick> { /* ... */ }
 }
 \end{minted}
-    \caption[test]{The vending machine's \texttt{Waiting} implementation\footnotemark.}
+    \caption[test]{The vending machine's \texttt{Waiting} implementation\footnotemark.} % HACK
     \label{lst:vending-machine-state-impl}
 \end{listing}
 \footnotetext{
@@ -348,28 +348,71 @@ impl State for Finish {}
 \end{listing}
 
 
-\section{Macro DSL}\label{sec:macro-dsl}
+\section{Typestates: The DSL}\label{sec:macro-dsl}
 
 Now that we know how to build our own typestates,
 we want to automate part of the process.
-While automating said process, we will add some checks to ensure our typestate adheres to a set of properties.
-
-% The set of properties we are checking for are:
-% \begin{description}
-%     \item[]
-% \end{description}
+In this section I present the macro's DSL,
+I start by exploring its architecture followed by its syntax,
+going through the simpler constructs and how they relate to the typestate first,
+finishing on more advanced features.
 
 \subsection{Architecture}\label{sec:macro-dsl:architecture}
+
+Before discussing how the automaton extraction works, it is necessary to discuss the macro architecture and
+provide some insight into its inner workings.
+This section starts by providing an overview over the macro architecture,
+afterwards I will dive into the parsing and code generation details.
+
+% TODO: discuss the architecture
+
 \input{Chapters/Figures/C4/dsl-processing.tex}
-I now discuss our macro's architecture,
 
 \subsubsection{Parsing}
+
+The macro's parsing procedure leverages the \texttt{syn} crate\footnote{\texttt{syn} is a parsing library for Rust's \texttt{TokenStream},
+for more information please see \url{https://docs.rs/syn/1.0.72/syn/index.html}.} whenever possible,
+this allowed to focus on getting the most out of the user's code rather than worrying about how to parse Rust.
+
+As out macro can only be attached to modules,
+we instruct \texttt{syn} to expect and parse a module item\footnote{\url{https://doc.rust-lang.org/reference/items/modules.html}};
+this simple step already saves us from manually ensuring the macro is attached to the right type.
+The resulting item is the module's \gls{AST}, from which we will run a series of visitors,
+each analyzing a different part of the code. % TODO: AST should probably Concrete Syntax Tree
+
+\subsubsection{Visitors}
+
+The macro is split into three separate visitors, each performs a pass over different item kinds and if necessary,
+mutates the tree by generating new code and either adding or replacing existing nodes.
+The following visitors are described in their running other.
+
+\paragraph{The structure visitor} will visit all structures, as the name states;
+currently, a user can declare one of three possible structures ---
+a structure annotated with \annotation{automaton} (of which there can only be one),
+one annotated with \annotation{state} (of which there can be $N$)
+and one without annotations (of which there can be \emph{none}).
+From the visited structures we can extract the automaton's structure and its states,
+these are added to the graph and the sealed trait pattern is implemented for each structure.
+
+\paragraph{The enumeration visitor} solely visits enumerations;
+it checks that all enumeration variants exist as states and establishes edges between them and the enumeration node.
+This visitor is also known as the non-deterministic state visitor since each enumeration represents a decision to be made during runtime.
+
+\paragraph{The trait visitor,} or the transitions visitor,
+is responsible for the extraction of all the transitions out of the declared traits.
+This visitor entered in conflict with the first one since the first one generated traits which would then be visited;
+to avoid this problem \texttt{typestate} declares an additional, undocumented and inert\ie{a macro that returns its input}, macro;
+the \annotation{generated} macro.
+When the visitor sees an item attached with \annotation{generated} it ignores the item,
+which later gets processed by Rust's macro system and the annotation is naturally removed. % TODO: "naturally" has tones of "obviously", which is not the tone I am going for
+
+
 % TODO: discuss the usage of syn, the visitor pattern and the typestate::generated macro
 
 \subsection{Syntax \& Automaton Extraction}\label{sec:macro-dsl:syntax}
 
 \annotation{typestate}'s DSL syntax is interlinked with its automaton extraction process,
-hence I will discuss them in conjunction.
+as such, I will discuss them in conjunction.
 As we go, I will present parts of the syntax and explain how it relates with the automaton.
 We will reuse the vending machine example, illustrated in \autoref{fig:vending-machine} and model it using our DSL.
 
@@ -752,7 +795,10 @@ impl NeedMoney {
     }
 }
     \end{minted}
-    \caption{The generated constructor for the \texttt{NeedMoney} state.}
+    \caption{
+        The generated constructor for the \texttt{NeedMoney} state;
+        using the attribute shown in \autoref{lst:vending-machine-advanced-constructors}.
+    }
     \label{lst:vending-machine-advanced-constructors-expansion}
 \end{listing}
 
@@ -760,12 +806,195 @@ impl NeedMoney {
 
 \section{Validation}\label{sec:validation}
 
+\subsection{Guarantees}\label{sec:validation:guarantees}
+
 \subsection{Typestate}\label{sec:validation:typestate}
 
 \subsection{Automaton \& Graph}\label{sec:validation:automaton}
 
-\section{Extra Features}\label{sec:extra-features}
+\section{Visualizing Typestates}\label{sec:extra-features:automata-visualization}
 
-\subsection{Automata Visualization}\label{sec:extra-features:automata-visualization}
+Along with all the previously described features, I have implemented an embedded typestate visualization;
+the visualization supports exporting Graphviz DOT\footnote{\url{https://graphviz.org/doc/info/lang.html}},
+PlantUML state diagrams\footnote{\url{https://plantuml.com/state-diagram}} and
+embedded documentation using Mermaid.js\footnote{\url{https://mermaid-js.github.io/mermaid/\#/stateDiagram}}
+and the Aquamarine crate\footnote{\url{https://docs.rs/aquamarine/0.1.9/aquamarine}} (detailed in \autoref{sec:extra-features:documentation-generation}).
+All formats have their own feature flags (only \texttt{aquamarine} is part of the default set of features),
+and all formats leverage the graph used by the macro for analysis to export their visualizations.
 
-\subsection{Documentation Generation}\label{sec:extra-features:documentation-generation}
+\subsection{Debug Visualizations}
+
+The visualization feature was born out of necessity,
+having a tool to visualize the typestate graph extracted by the macro was invaluable,
+reducing the time spent debugging the macro and the generated typestates.
+However, while it was born to debug the macro, it can also be used to visually debug the typestate;
+in large systems it is hard to mentally \quotes{render} the typestate and having an actual picture of the system helps immensely.
+
+\paragraph{DOT} was the first format to be exported as it was the first one that came to mind,
+it is very simple and there are a lot of tools which leverage the format.
+To use this feature the user can simply run \texttt{cargo} with any command that expands the code along with \texttt{--features typestate/export-dot};
+this will export all typestates of the project into their own \texttt{\$TYPESTATE\_NAME.dot} file.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{Chapters/Figures/C4/VendingMachine.dot.pdf}
+    \caption{The vending machine's DOT typestate, rendered using the command --- \texttt{dot -Tsvg VendingMachine.dot}.}
+    \label{fig:vending-machine-typestate-dot}
+\end{figure}
+
+\paragraph{PlantUML} offers the \emph{state diagram} format, providing a more concise way of describing the typestate
+by allowing us to have dedicated initial and final states, as well as decision nodes.
+Just like the previous feature, exporting PlantUML is done using features;
+in this case the flag is \texttt{--features typestate/export-plantuml},
+which will export all typestates into separate \texttt{\$TYPESTATE\_NAME.uml} files.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{Chapters/Figures/C4/VendingMachine.uml.pdf}
+    \caption{The vending machine's PlantUML typestate, rendered using the command --- \texttt{plantuml -tsvg VendingMachine.uml}.}
+    \label{fig:vending-machine-typestate-uml}
+\end{figure}
+
+\paragraph{Customization} of the exported formats is possible through environment variables,
+these are listed in \autoref{tab:export-env-vars}.
+
+\begin{table}[]
+    \centering
+    \begin{tabular}{p{0.12\linewidth}|p{0.25\linewidth}|p{0.53\linewidth}}
+        Tool                      & Environment Variable       & Description                                                                                                           \\ \hline
+        \multirow{3}{*}{DOT}      & \texttt{DOT\_PAD}          & Specifies how much, in inches, to extend the drawing area around the minimal area needed to draw the graph.           \\ \cline{2-3}
+                                  & \texttt{DOT\_NODESEP}      & In \texttt{DOT}, \texttt{nodesep} specifies the minimum space between two adjacent nodes in the same rank, in inches. \\ \cline{2-3}
+                                  & \texttt{DOT\_RANKSEP}      & In \texttt{DOT}, sets the desired rank separation, in inches.                                                         \\ \hline
+        \multirow{2}{*}{PlantUML} & \texttt{PLANTUML\_NODESEP} & \texttt{nodesep} specifies the minimum space between two adjacent nodes in the same rank.                             \\ \cline{2-3}
+                                  & \texttt{PLANTUML\_RANKSEP} & Sets the desired rank separation.                                                                                     \\ \hline
+        Both                      & \texttt{EXPORT\_FOLDER}    & Declare the target folder for the exported files.
+    \end{tabular}
+    \caption{All configuration parameters for the DOT and PlantUML visualization features.}
+    \label{tab:export-env-vars}
+\end{table}
+
+\subsection{Embedding Visualizations in the Documentation}\label{sec:extra-features:documentation-generation}
+
+Exporting typestates in a way that enables the developer to visualize it is a valuable tool as it aids development, debugging and communication.
+However, when focusing on communication, the best way to ensure the \gls{API} client gets to see the typestate would be to embed it in the documentation;
+as documentation is the \emph{de facto} way to communicate between a library's author and its users.
+
+Unfortunately, embedding images in Rust documentation requires a link to that image, which in turn, requires some other place to host the image;
+this constraint makes it more complicated to embed the DOT or PlantUML render inside the documentation.
+Ideally, we want everything in one place, generated in one step!
+
+Fortunately, Aquamarine addresses that problem;
+it allows the declaration of Mermaid.js diagrams as documentation and then renders them as HTML inside the Rust documentation.
+Its syntax is \emph{very similar} to PlantUML's,
+thus this feature's implementation process was mostly copying the PlantUML generation code and fixing any bugs which appeared.
+
+\paragraph{Rendering} the state diagram starts by adding \emph{doc comments}\footnote{\url{https://doc.rust-lang.org/reference/comments.html\#doc-comments}}
+to the module during the macro processing, the \emph{doc comment} contains the diagram description in the Mermaid.js specification language;
+the expanded code for the vending machine example (\autoref{fig:vending-machine}) can be seen in \autoref{lst:vending-machine-mermaid-doc-comment}.
+When the user runs the documentation command --- \texttt{cargo doc}; the Aquamarine attribute is attached and
+the comment is processed by the \texttt{aquamarine} macro, the final diagram is then made available in the documentation;
+pictured in \autoref{fig:vending-machine-mermaid-docs}.
+
+\begin{listing}
+    \begin{minted}{Rust}
+///```mermaid
+///stateDiagram-v2
+///  [*] --> Waiting : on
+///  Waiting --> [*] : off
+///  Waiting --> HasPick : pick_slot
+///  Waiting --> HasMoney : insert_money
+///  Finish --> Waiting : finish
+///  NeedMoney --> NeedMoney : update_pick
+///  NeedMoney --> NeedMoney : get_message
+///  state C_NeedMoney <<choice>>
+///  NeedMoney --> C_NeedMoney: insert_money
+///  C_NeedMoney --> Finish
+///  C_NeedMoney --> NeedMoney
+///  state C_HasMoney <<choice>>
+///  HasMoney --> C_HasMoney: pick_slot
+///  C_HasMoney --> NeedMoney
+///  C_HasMoney --> Finish
+///  state C_HasPick <<choice>>
+///  HasPick --> C_HasPick: insert_money
+///  C_HasPick --> Finish
+///  C_HasPick --> NeedMoney
+///```
+mod vending_machine_api { /* ... */ }
+    \end{minted}
+    \caption{\emph{Doc comments} resulting for the expansion of the vending machine example (\autoref{fig:vending-machine}).}
+    \label{lst:vending-machine-mermaid-doc-comment}
+\end{listing}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Chapters/Figures/C4/vending-machine-rustdoc-mermaid.png}
+    \caption{
+        The vending machine \gls{API} documentation page.
+        Result of \autoref{lst:vending-machine-mermaid-doc-comment} when rendered using \texttt{cargo doc}.
+    }
+    \label{fig:vending-machine-mermaid-docs}
+\end{figure}
+
+\paragraph{Bundling} the macro in way that users can depend on this feature is not a trivial task;
+we want users to simply import the \texttt{typestate} library and be able to embed their typestates in the documentation.
+Rust applies some restrictions to procedural macro libraries, namely,
+such libraries cannot export anything else other than the defined macros;
+this is a deal-breaker since the \texttt{typestate} crate \emph{is} a procedural macro crate and
+forcing the user to explicitly import Aquamarine into their project is more overhead than necessary.
+
+The solution for this is to create a \emph{frontend} crate which imports both the \texttt{typestate} macro and Aquamarine,
+and then exports both, this sidesteps the previous issue since the crate exporting the items \emph{is not} the macro crate;
+this process is pictured in \autoref{fig:typestate-rs-deps}, \autoref{fig:typestate-rs-deps-naive} and \autoref{fig:typestate-rs-deps-export}.
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \node[draw, align=center] (typestate) at (0, 0) {\texttt{typestate}};
+        \node[draw, align=center, dashed] (typestate-deps) at (0, -1) {\texttt{typestate-deps}};
+        \draw[->] (typestate-deps) -> (typestate);
+    \end{tikzpicture}
+    \caption[test]{ % HACK
+        The original configuration,
+        the macro depends only on \texttt{typestate-deps}\footnotemark and does not export any dependency.
+    }
+    \label{fig:typestate-rs-deps}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \node[draw, align=center] (typestate) at (0, 0) {\texttt{typestate}};
+        \node[draw, align=center, dashed] (typestate-deps) at (-2, -1) {\texttt{typestate-deps}};
+        \node[draw, align=center] (aquamarine) at (1.5, -1) {\texttt{aquamarine}};
+        \draw[->] (typestate-deps) -> (typestate);
+        \draw[->] (aquamarine) -> (typestate);
+    \end{tikzpicture}
+    \caption[test]{ % HACK
+        The naive attempt, the macro depends on \texttt{typestate-deps}\footnotemark[\value{footnote}] and \texttt{aquamarine},
+        but it only tries to export \texttt{aquamarine}, this fails because \texttt{typestate} is a procedural macro crate.
+    }
+    \label{fig:typestate-rs-deps-naive}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \draw[] (-2.5, 1) rectangle (2.5, -1.5);
+        \node[align=center] (typestate) at (0, 0.5) {\texttt{typestate}};
+        \node[draw, align=center] (aquamarine) at (0, -.25) {\texttt{aquamarine}};
+        \node[draw, align=center] (typestate-proc-macro) at (0, -1) {\texttt{typestate-proc-macro}};
+        \node[draw, align=center, dashed] (typestate-deps) at (0, -2) {\texttt{typestate-deps}};
+        \draw[->] (typestate-deps) -> (typestate-proc-macro);
+    \end{tikzpicture}
+    \caption[test]{ % HACK
+        The macro was isolated in its own crate --- \texttt{typestate-proc-macro}, which depends on \texttt{typestate-deps}\footnotemark[\value{footnote}];
+        the \texttt{typestate} crate now depends and exports both \texttt{aquamarine} and \texttt{typestate-proc-macro}.
+    }
+    \label{fig:typestate-rs-deps-export}
+\end{figure}
+
+\footnotetext{
+    \texttt{typestate-deps} is the set of dependencies for the macro \eg{\texttt{syn}, \texttt{quote}, etc};
+    it is dashed as it is not exported.
+}
