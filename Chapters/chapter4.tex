@@ -364,7 +364,14 @@ provide some insight into its inner workings.
 This section starts by providing an overview over the macro architecture,
 afterwards I will dive into the parsing and code generation details.
 
-% TODO: discuss the architecture
+The macro's architecture is illustrated in \autoref{fig:dsl-processing},
+everything starts by attaching \annotation{typestate} to a module,
+our macro will be expanded during compilation and thus our code will be run.
+We are given the \gls{AST} of the module, from which we run a series of visitors
+(described \autoref{sec:macro-dsl:architecture:visitors}) which will extract the typestate's state machine,
+afterwards we perform some checks over the state machine (described in \autoref{sec:validation}),
+if the checks fail, an error is issued, pointing the user to the relevant code,
+if all checks pass the user is ready to start implementing the typestate's functionalities.
 
 \input{Chapters/Figures/C4/dsl-processing.tex}
 
@@ -372,15 +379,15 @@ afterwards I will dive into the parsing and code generation details.
 
 The macro's parsing procedure leverages the \texttt{syn} crate\footnote{\texttt{syn} is a parsing library for Rust's \texttt{TokenStream},
 for more information please see \url{https://docs.rs/syn/1.0.72/syn/index.html}.} whenever possible,
-this allowed to focus on getting the most out of the user's code rather than worrying about how to parse Rust.
+this allowed me to focus on getting the most information out of the user's code rather than worrying about how to parse Rust.
 
 As out macro can only be attached to modules,
 we instruct \texttt{syn} to expect and parse a module item\footnote{\url{https://doc.rust-lang.org/reference/items/modules.html}};
 this simple step already saves us from manually ensuring the macro is attached to the right type.
 The resulting item is the module's \gls{AST}, from which we will run a series of visitors,
-each analyzing a different part of the code. % TODO: AST should probably Concrete Syntax Tree
+each analyzing a different part of the code. % TODO: AST should probably be named Concrete Syntax Tree
 
-\subsubsection{Visitors}
+\subsubsection{Visitors}\label{sec:macro-dsl:architecture:visitors}
 
 The macro is split into three separate visitors, each performs a pass over different item kinds and if necessary,
 mutates the tree by generating new code and either adding or replacing existing nodes.
@@ -401,13 +408,10 @@ This visitor is also known as the non-deterministic state visitor since each enu
 \paragraph{The trait visitor,} or the transitions visitor,
 is responsible for the extraction of all the transitions out of the declared traits.
 This visitor entered in conflict with the first one since the first one generated traits which would then be visited;
-to avoid this problem \texttt{typestate} declares an additional, undocumented and inert\ie{a macro that returns its input}, macro;
+to avoid this problem \texttt{typestate} declares an additional, undocumented and inert macro \ie{a macro that returns its input};
 the \annotation{generated} macro.
 When the visitor sees an item attached with \annotation{generated} it ignores the item,
 which later gets processed by Rust's macro system and the annotation is naturally removed. % TODO: "naturally" has tones of "obviously", which is not the tone I am going for
-
-
-% TODO: discuss the usage of syn, the visitor pattern and the typestate::generated macro
 
 \subsection{Syntax \& Automaton Extraction}\label{sec:macro-dsl:syntax}
 
@@ -416,8 +420,7 @@ as such, I will discuss them in conjunction.
 As we go, I will present parts of the syntax and explain how it relates with the automaton.
 We will reuse the vending machine example, illustrated in \autoref{fig:vending-machine} and model it using our DSL.
 
-\paragraph{The \annotation{typestate} macro} is the DSL's entrypoint and
-it only supports being attached to modules.
+\paragraph{The \annotation{typestate} macro} is the DSL's entrypoint and it only supports being attached to modules.
 Given that we want to access several parts of Rust's syntax \eg{\keyword{struct}, \keyword{enum}, etc} we can take one of two approaches ---
 either analyze the whole file, or annotate and process the best next thing, the module.
 
@@ -806,11 +809,53 @@ impl NeedMoney {
 
 \section{Validation}\label{sec:validation}
 
-\subsection{Guarantees}\label{sec:validation:guarantees}
+In this section I will be discussing the validation strategies used in my work,
+I start by discussing the guarantees provided by the macro,
+followed by the typestate validation strategy, finally, I present the automaton validation strategy.
 
-\subsection{Typestate}\label{sec:validation:typestate}
+\paragraph{Guarantees.} My library aims to provide guarantees related with automata, not typestates;
+this is the case because Rust's compiler is able to reason over typestates already,
+as long as we put it to good use we can rely on the borrow checker and type system to catch typestate related errors
+\ie{calling a method in the wrong state}.
 
-\subsection{Automaton \& Graph}\label{sec:validation:automaton}
+Regarding automata, my macro provides the following:
+\begin{description}
+    \item[Non-empty language.] The language of the automaton should not be empty;
+    the macro ensures the presence of final states.
+    \item[Usefulness.] All states should be useful, that is,
+    all states should be reachable from the initial state and be able to reach the final state.
+\end{description}
+
+Minimality is not present in the list of provided guarantees because it is unclear how the macro could provide feedback to the user;
+while the macro can simply state --- \equotes{The presented automaton is not minimal}, such message does not help the user correcting the problem.
+
+\subsection{The Automaton and the Graph}\label{sec:validation:automaton}
+
+The automaton is modelled as a directed graph, this approach is more efficient than that of projects like OFlat which uses sets. % CITE: OFlat
+Originally I used the \texttt{petgraph} library\footnote{\url{https://docs.rs/petgraph/0.5.1/petgraph/index.html}},
+however the library turned out to be inadequate to the problem at hand,
+\texttt{petgraph}'s \texttt{GraphMap}\footnote{\url{https://docs.rs/petgraph/0.5.1/petgraph/graphmap/struct.GraphMap.html}}
+required node types to be \texttt{Copy}\footnote{\url{https://doc.rust-lang.org/std/marker/trait.Copy.html}} and
+the types I am storing are neither \texttt{Copy} nor defined by me.
+
+To fix the problem, I have implemented a directed graph using adjacency lists, that is, for each node,
+there is a list containing its neighboring nodes and the respective connecting edges.
+This approach takes from the FADo project which also uses adjacency lists; to simplify some algorithms, % CITE: FADo
+I have added extra structures such as the inverse $\delta$, or $\delta^{-1}$
+(in automata, the delta set $\delta$ represents an automaton's transitions,
+$\delta^{-1}$ is the delta set where each transition has had their direction inverted).
+
+\paragraph{The empty language} verification is easy to address, since the automaton is required to have end states,
+I simply store all end states in a set, then I am only required to check if the set is empty or not.
+
+\paragraph{Usefulness} can be checked by first performing a graph search (I have opted for \gls{DFS}).
+Useful states are those that reach the end state(s) \ie{productive states} and reachable from the initial state(s).
+The end state set comes in useful here, since we can simply iterate over all states in the set and start the graph exploration,
+visited nodes will be the productive ones, in the case that not all states are productive the verification stops here and issues an error,
+highlighting the culprits in the code.
+Checking for useful states is then as simple as repeating the exploration procedure starting on the initial states,
+the set of visited states can then be intersected with the set of productive states to compute the useful states,
+once more, in the case that not all existing states are useful, an error is issued, highlighting the state at fault.
 
 \section{Visualizing Typestates}\label{sec:extra-features:automata-visualization}
 
@@ -822,7 +867,7 @@ and the Aquamarine crate\footnote{\url{https://docs.rs/aquamarine/0.1.9/aquamari
 All formats have their own feature flags (only \texttt{aquamarine} is part of the default set of features),
 and all formats leverage the graph used by the macro for analysis to export their visualizations.
 
-\subsection{Debug Visualizations}
+\subsection{Debugging with Visualizations}
 
 The visualization feature was born out of necessity,
 having a tool to visualize the typestate graph extracted by the macro was invaluable,
@@ -954,9 +999,10 @@ this process is pictured in \autoref{fig:typestate-rs-deps}, \autoref{fig:typest
         \node[draw, align=center, dashed] (typestate-deps) at (0, -1) {\texttt{typestate-deps}};
         \draw[->] (typestate-deps) -> (typestate);
     \end{tikzpicture}
-    \caption[test]{ % HACK
-        The original configuration,
-        the macro depends only on \texttt{typestate-deps}\footnotemark and does not export any dependency.
+    \caption[
+        The original configuration, the macro depends only on \texttt{typestate-deps} and does not export any dependency.
+    ]{ % HACK
+        The original configuration, the macro depends only on \texttt{typestate-deps}\footnotemark and does not export any dependency.
     }
     \label{fig:typestate-rs-deps}
 \end{figure}
@@ -970,7 +1016,10 @@ this process is pictured in \autoref{fig:typestate-rs-deps}, \autoref{fig:typest
         \draw[->] (typestate-deps) -> (typestate);
         \draw[->] (aquamarine) -> (typestate);
     \end{tikzpicture}
-    \caption[test]{ % HACK
+    \caption[
+        The naive attempt, the macro depends on \texttt{typestate-deps} and \texttt{aquamarine},
+        but it only tries to export \texttt{aquamarine}, this fails because \texttt{typestate} is a procedural macro crate.
+    ]{ % HACK
         The naive attempt, the macro depends on \texttt{typestate-deps}\footnotemark[\value{footnote}] and \texttt{aquamarine},
         but it only tries to export \texttt{aquamarine}, this fails because \texttt{typestate} is a procedural macro crate.
     }
@@ -987,7 +1036,10 @@ this process is pictured in \autoref{fig:typestate-rs-deps}, \autoref{fig:typest
         \node[draw, align=center, dashed] (typestate-deps) at (0, -2) {\texttt{typestate-deps}};
         \draw[->] (typestate-deps) -> (typestate-proc-macro);
     \end{tikzpicture}
-    \caption[test]{ % HACK
+    \caption[
+        The macro was isolated in its own crate --- \texttt{typestate-proc-macro}, which depends on \texttt{typestate-deps};
+        the \texttt{typestate} crate now depends and exports both \texttt{aquamarine} and \texttt{typestate-proc-macro}.
+    ]{ % HACK
         The macro was isolated in its own crate --- \texttt{typestate-proc-macro}, which depends on \texttt{typestate-deps}\footnotemark[\value{footnote}];
         the \texttt{typestate} crate now depends and exports both \texttt{aquamarine} and \texttt{typestate-proc-macro}.
     }

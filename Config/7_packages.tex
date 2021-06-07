@@ -38,6 +38,7 @@
 \usepackage{csquotes}
 \usepackage{titlesec}
 \usepackage{amssymb}
+\usepackage{multirow}
 
 \usetikzlibrary{automata}
 \usetikzlibrary{positioning}
@@ -52,6 +53,9 @@
 \newcommand{\ie}[1]{(i.e.~#1)}
 \newcommand{\eg}[1]{(e.g.~#1)}
 
+% vertically center a table cell
+% https://tex.stackexchange.com/a/473626
+\newcommand{\centered}[1]{\begin{tabular}{l} #1 \end{tabular}}
 
 % LaTeX hackery
 \AtBeginDocument{%
