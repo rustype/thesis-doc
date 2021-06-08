@@ -1,0 +1,51 @@
+%!TEX root = ../template.tex
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% chapter6.tex
+%% NOVA thesis document file
+%%
+%% Chapter with lots of dummy text
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\typeout{NT FILE chapter6.tex}
+
+\chapter{Conclusions \& Future Work}\label{cha:conclusions}
+
+\section{Summary}
+
+In this thesis a new tool is presented for the development of typestates in Rust,
+a language without first-class support for such concept.
+While it is possible to model typestates in plain Rust, it is cumbersome and error-prone;
+my work takes advantage of Rust's advanced type and macro systems
+to provide an embedded DSL which simplifies the development of typestates in Rust.
+
+To the best of my knowledge, while similar works have been developed in other languages,
+the present work is the first one to leverage macros to automate
+and provide extra features over Rust's existing typestate capabilities.
+
+The capabilities provided by the macro are useful for large systems and provide extra assurance during development,
+certainly not all code would benefit of typestates,
+but any system which is required to \quotes{get it right} can take advantage of them,
+reducing runtime state checks and easing the development process of large stateful systems.
+
+\section{Future Work}
+
+The current version of the macro suffers from some limitations:
+it does not support generics and by consequence, state machine nesting.
+Furthermore, the present work lacks formalization, relying on the Rust compiler to provide part of the formal guarantees;
+formalizing the present work represents a great step towards providing more guarantees that can be used in the \quotes{real-world}.
+
+While the previous points aim to provide extra features, the macro would also benefit from some work in its internals.
+Everything works as expected, however the architecture and code organization could be made cleaner by further dividing each visitor.
+Currently, some visitors perform mutations to the tree at the same time they extract relevant information;
+this process can be split into mutation and information extraction, easing code readability.
+While I have no concrete proof of the performance impact of such change,
+I believe that allowing the macro to be more modular and simpler to understand, trumps other concerns.
+
+Along with the visitor changes, the underlying graph structures could also be modified,
+using a single graph structure as the result of the information extraction process,
+the graph could then be \quotes{reduced} into several specialized use cases, such as state machine verification and visualization.
+
+Finally, planning for the development of such work in the future ---
+I believe that starting with the re-architecture of the visitors followed by the graph would yield the best results,
+allowing changes in the future to be integrated in a simple manner;
+leaving the formal work and new features for a more stable and robust version of the macro.
