@@ -10,16 +10,16 @@
 
 \chapter{The \annotation{typestate} macro}\label{cha:macro}
 
-I now present the core contribution of this thesis, the \annotation{typestate} macro.
+This chapter presents the core contribution of this thesis, the \annotation{typestate} macro.
 In \autoref{sec:typestates-hard-way}, I start by demonstrating how to implement Rust typestates by hand.
 In \autoref{sec:macro-dsl:architecture} I discuss the macro high-level architecture,
 the DSL is discussed in \autoref{sec:macro-dsl},
 followed by the validation process in \autoref{sec:validation} and
-extra features offered by the macro in \autoref{sec:extra-features}.
+visualization options offered by the macro in \autoref{sec:automata-visualization}.
 
 \section{Typestates: The Hard Way}\label{sec:typestates-hard-way}
 
-In this section I demonstrate the development process from a state machine specification to a functional prototype,
+I will start be demonstrating the development process from a state machine specification to a functional prototype,
 developing all the required components by hand.
 The example will be a vending machine, its automaton is illustrated in \autoref{fig:vending-machine}.
 To simplify the example, consider the following:
@@ -40,8 +40,8 @@ to do so, we will use a \texttt{State} generic type parameter to model the curre
 struct VendingMachine<State>;
 \end{minted}
 
-However, since \texttt{State} is an unused type parameter the compiler issue an error;
-we can fix the error in one of two ways:
+The compiler will issue an error since the \texttt{State} type parameter is currently unused;
+fixing the error can be done in one of two ways:
 \begin{compactitem}
     % TODO PhantomData needs background
     \item Declaring a \texttt{PhantomData}\footnotemark~field using \texttt{State} as its type parameter.
@@ -63,10 +63,16 @@ struct VendingMachine<State> { state: State }
     or to its page on \emph{The Rustonomicon} --- \url{https://doc.rust-lang.org/nomicon/phantom-data.html}.
 }
 
-There are cases where all states are simply markers \ie{do not carry additional information},
+The former is useful where all states are simply markers \ie{do not carry additional information},
 however, consider that the vending machine is required to keep track of both the client's pick along with the inserted money so far.
-Given we are modelling our machine \quotes{by states},
-we should not be required to track neither of those in the initial or final states \ie{\texttt{Waiting} and \texttt{Finish}, respectively}.
+
+Looking back at \autoref{fig:vending-machine}, we can infer the following:
+\begin{compactitem}
+    \item The \texttt{Waiting} and \texttt{Finish} states do not require any fields.
+    \item The \texttt{HasMoney} and \texttt{HasPick} states require their own fields,
+    the money inserted so far and the slot picked by the client, respectively.
+    \item The \texttt{NeedMoney} state requires both the money and picked slot.
+\end{compactitem}
 With that in mind, we are required to take the second approach, enabling states to have inner values.
 
 While our vending machine is now able to deal with the concept of state,
@@ -89,19 +95,10 @@ struct VendingMachine<State> {
     \label{lst:vending-machine-struct}
 \end{listing}
 
-Currently, we have a machine supporting states, but no states.
+Another problem resides in the fact that the machine supports states, but does not have any.
 To address this we need to declare each state as a structure;
-each structure can then contain its own fields, only available for that state.
-
-Looking back at \autoref{fig:vending-machine}, we can infer the following:
-\begin{compactitem}
-    \item The \texttt{Waiting} and \texttt{Finish} states do not require any fields.
-    \item The \texttt{HasMoney} and \texttt{HasPick} states require their own fields,
-    the money inserted so far and the slot picked by the client, respectively.
-    \item The \texttt{NeedMoney} state requires both the money and picked slot.
-\end{compactitem}
-
-The states' structure declarations are listed and documented in \autoref{lst:vending-machine-states}.
+each structure can then contain its own fields, only available for that state;
+listed in \autoref{lst:vending-machine-states}.
 
 \begin{listing}
     \begin{minted}{rust}
@@ -163,8 +160,8 @@ impl VendingMachine<Waiting> {
     For more information on \keyword{Self}, refer to \url{https://doc.rust-lang.org/std/keyword.SelfTy.html}
 }
 
-To better understand what is going on, lets implement the \texttt{insert\_money} transition;
-all we need to do is simply transition from the \texttt{Waiting} state (declared as the generic parameter in line 1 of \autoref{lst:vending-machine-waiting-insert-money}),
+To better understand what is going on, lets implement the \texttt{insert\_money} function;
+the function will perform the transition from the \texttt{Waiting} state (declared as the generic parameter in line 1 of \autoref{lst:vending-machine-waiting-insert-money}),
 to the \texttt{HasMoney} state, declared as the generic parameter of the \texttt{VendingMachine} return type, line 3 of \autoref{lst:vending-machine-waiting-insert-money}.
 
 \begin{listing}
@@ -186,7 +183,7 @@ impl VendingMachine<Waiting> {
     \label{lst:vending-machine-waiting-insert-money}
 \end{listing}
 
-Before we go further, a quick recap over what has been done so far ---
+Before going further, a quick recap over what has been done so far ---
 we have declared the vending machine, its states and its \emph{some} of its transitions.
 
 I say \quotes{some} transitions, because we have not addressed how the diamonds in \autoref{fig:vending-machine} work.
@@ -195,9 +192,9 @@ this representation closely resembles \emph{Deterministic Object Automata} \cite
 To model our decision nodes, we can use Rust's enumerations,
 these allow us to declare possible outcomes and force the \gls{API} client to match them.
 
-We continue our path, following the \texttt{pick\_slot} transition from the \texttt{HasMoney} state,
-we have \emph{either} the \texttt{Finish} state or the \texttt{NeedsMoney} state,
-a decision node; its implementation is described in \autoref{lst:vending-machine-check-finish}.
+We continue our path, following the \texttt{pick\_slot} transition from the \texttt{HasMoney} state to a decision node,
+we have \emph{either} the \texttt{Finish} state or the \texttt{NeedsMoney} state;
+the implementation of the decision node is described in \autoref{lst:vending-machine-check-finish}.
 
 \begin{listing}
     \begin{minted}{rust}
@@ -275,7 +272,7 @@ the states I did not cover follow the same implementation pattern,
 as the automaton is \quotes{symmetric}, although the functions perform different actions.
 
 To test if our typestates work, we can try to call a function in a state where such function is unavailable (\autoref{lst:vending-machine-wrong-call});
-this will not compile the compiler will even be helpful enough as to tell us that
+this will not compile, but the compiler will be helpful enough to issue a very complete error, stating that ---
 \texttt{finish} was not found for the \texttt{Waiting} state (\autoref{lst:vending-machine-wrong-call-error}).
 
 \begin{listing}
@@ -306,12 +303,11 @@ methods cannot be called in state they do not belong to and the compiler will ev
 
 However, there is a problem, nothing stops a developer from extending the \gls{API} by implementing a \quotes{foreign} type
 (in this context, consider \quotes{foreign} to be a type which is not a state), such as the unit type --- \texttt{()}.
-Disregarding the fact that implementing the unit type as a type parameter of our vending machine makes no sense;
+Disregarding the fact that implementing the unit type as a vending machine state makes no sense;
 we need to avoid these situations and to do so \emph{The Rust API Guidelines}\footnote{\url{https://rust-lang.github.io/api-guidelines/future-proofing.html\#sealed-traits-protect-against-downstream-implementations-c-sealed}} offer an answer! % CITE
 
 We can implement the \quotes{sealed trait pattern},
 which is just a way of stopping downstream users from modifying our state hierarchy.
-
 % TODO explain the trait keyword
 Following the guidelines, we need to first create a public \keyword{trait} which every state will implement (\autoref{lst:vending-machine-sealed} --- lines 13-23);
 we need to further restrict the state set with a private \keyword{trait} (\autoref{lst:vending-machine-sealed} --- lines 1-11), also implemented by every state,
@@ -351,7 +347,7 @@ impl State for Finish {}
 \section{Typestates: The DSL}\label{sec:macro-dsl}
 
 Now that we know how to build our own typestates,
-we want to automate part of the process.
+we want to automate the error-prone parts of the process.
 In this section I present the macro's DSL,
 I start by exploring its architecture followed by its syntax,
 going through the simpler constructs and how they relate to the typestate first,
@@ -370,20 +366,21 @@ our macro will be expanded during compilation and thus our code will be run.
 We are given the \gls{AST} of the module, from which we run a series of visitors
 (described \autoref{sec:macro-dsl:architecture:visitors}) which will extract the typestate's state machine,
 afterwards we perform some checks over the state machine (described in \autoref{sec:validation}),
-if the checks fail, an error is issued, pointing the user to the relevant code,
-if all checks pass the user is ready to start implementing the typestate's functionalities.
+if the checks fail, an error is issued, pointing the user to the relevant code;
+if all checks pass, the user is ready to start implementing the typestate's functionalities;
+this process is illustrated in \autoref{fig:dsl-processing}.
 
 \input{Chapters/Figures/C4/dsl-processing.tex}
 
 \subsubsection{Parsing}
 
 The macro's parsing procedure leverages the \texttt{syn} crate\footnote{\texttt{syn} is a parsing library for Rust's \texttt{TokenStream},
-for more information please see \url{https://docs.rs/syn/1.0.72/syn/index.html}.} whenever possible,
+for more information please see \url{https://docs.rs/syn/1.0.72/syn/index.html}.} to simply the parsing process,
 this allowed me to focus on getting the most information out of the user's code rather than worrying about how to parse Rust.
 
-As out macro can only be attached to modules,
+As the \annotation{typestate} macro can only be attached to modules,
 we instruct \texttt{syn} to expect and parse a module item\footnote{\url{https://doc.rust-lang.org/reference/items/modules.html}};
-this simple step already saves us from manually ensuring the macro is attached to the right type.
+this simple step already saves us from manually ensuring the macro is attached to the right item.
 The resulting item is the module's \gls{AST}, from which we will run a series of visitors,
 each analyzing a different part of the code. % TODO: AST should probably be named Concrete Syntax Tree
 
@@ -391,27 +388,43 @@ each analyzing a different part of the code. % TODO: AST should probably be name
 
 The macro is split into three separate visitors, each performs a pass over different item kinds and if necessary,
 mutates the tree by generating new code and either adding or replacing existing nodes.
-The following visitors are described in their running other.
+The following visitors are described in their running other; shown in \autoref{fig:macro-visitors}.
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \tikzstyle{visitor}=[draw, align=center];
+        \node[visitor] (state-visitor) {State\\Visitor};
+        \node[visitor, right = of state-visitor] (decision-visitor) {Decision\\Visitor};
+        \node[visitor, right = of decision-visitor] (transition-visitor) {Transition\\Visitor};
+        \draw[->, thick] (state-visitor) -- (decision-visitor);
+        \draw[->, thick] (decision-visitor) -- (transition-visitor);
+    \end{tikzpicture}
+    \caption{The \annotation{typestate} macro visitors, by running order.}
+    \label{fig:macro-visitors}
+\end{figure}
 
 \paragraph{The structure visitor} will visit all structures, as the name states;
-currently, a user can declare one of three possible structures ---
-a structure annotated with \annotation{automaton} (of which there can only be one),
-one annotated with \annotation{state} (of which there can be $N$)
-and one without annotations (of which there can be \emph{none}).
+currently, a user can declare one of three possible structures;
+\begin{compactitem}
+    \item A structure annotated with \annotation{automaton} (of which there can only be one).
+    \item One annotated with \annotation{state} (of which there can be $N$).
+    \item One without annotations (of which there can be \emph{none}).
+\end{compactitem}
 From the visited structures we can extract the automaton's structure and its states,
 these are added to the graph and the sealed trait pattern is implemented for each structure.
 
 \paragraph{The enumeration visitor} solely visits enumerations;
-it checks that all enumeration variants exist as states and establishes edges between them and the enumeration node.
-This visitor is also known as the non-deterministic state visitor since each enumeration represents a decision to be made during runtime.
+it checks that all enumeration variants exist as states and establishes edges between them and the decision node.
+This visitor is also known as the decision state visitor since each enumeration represents a decision to be made during runtime.
 
 \paragraph{The trait visitor,} or the transitions visitor,
 is responsible for the extraction of all the transitions out of the declared traits.
-This visitor entered in conflict with the first one since the first one generated traits which would then be visited;
+This visitor conflicts with the first one since it generates traits which would then be visited;
 to avoid this problem \texttt{typestate} declares an additional, undocumented and inert macro \ie{a macro that returns its input};
 the \annotation{generated} macro.
 When the visitor sees an item attached with \annotation{generated} it ignores the item,
-which later gets processed by Rust's macro system and the annotation is naturally removed. % TODO: "naturally" has tones of "obviously", which is not the tone I am going for
+the \annotation{generated} macro is later processed as a regular macro by the macro system and the annotation is removed.
 
 \subsection{Syntax \& Automaton Extraction}\label{sec:macro-dsl:syntax}
 
@@ -422,7 +435,7 @@ We will reuse the vending machine example, illustrated in \autoref{fig:vending-m
 
 \paragraph{The \annotation{typestate} macro} is the DSL's entrypoint and it only supports being attached to modules.
 Given that we want to access several parts of Rust's syntax \eg{\keyword{struct}, \keyword{enum}, etc} we can take one of two approaches ---
-either analyze the whole file, or annotate and process the best next thing, the module.
+either analyze the whole file with an external tool, or annotate and process the best next thing, the module.
 
 The module provides most of the syntax elements available to \quotes{top-level} Rust,
 while being possible to analyze using the macro system;
@@ -456,7 +469,7 @@ and allows the macro to know which of the declared structures is the automaton.
 
 \autoref{lst:vending-machine-typestate-module-automaton} fixes the error of \autoref{lst:vending-machine-typestate-module},
 by adding the \texttt{VendingMachine} structure and annotating it with \annotation{automaton}
-the macro is now able to know which structure is the main state machine \ie{which structure will be \quotes{typestated}}.
+the macro is now able to know which structure is the main state machine \ie{which structure will be \emph{typestated}}.
 
 \begin{listing}
     \begin{minted}[linenos=false]{Rust}
@@ -469,8 +482,8 @@ the macro is now able to know which structure is the main state machine \ie{whic
 \end{listing}
 
 Notice how the code from \autoref{lst:vending-machine-typestate-module-automaton-expansion} does not contain any reference to the current state,
-this is added by macro through the \annotation{automaton} annotation,
-along with the sealed pattern skeleton, described in \autoref{sec:typestates-hard-way:future}.
+that is added by macro through the \annotation{automaton} annotation,
+along with the sealed pattern skeleton; described in \autoref{sec:typestates-hard-way:future}.
 
 \begin{listing}
     \begin{minted}[linenos=false]{Rust}
@@ -492,7 +505,7 @@ Once again, this still does not make the macro happy, while we now have an autom
 as shown in \autoref{lst:vending-machine-typestate-missing-states-error}.
 
 \paragraph{The \annotation{state} annotation,} like the \annotation{automaton} annotation, is only attachable to structures;
-it marks structures as states and also implements the necessary traits to include the state in the sealed trait state set (\autoref{sec:typestates-hard-way:future}).
+it marks them as states and also implements the necessary traits to include the state in the sealed trait state set (\autoref{sec:typestates-hard-way:future}).
 
 As we can observe in \autoref{lst:vending-machine-typestate-module-states},
 declaring states is as simple as attaching the annotation to an existing structure.
@@ -675,11 +688,11 @@ in \autoref{tab:dsl-summary-functions} I review the transition inference rules f
 
 \subsection{Advanced Features}\label{sec:macro-dsl:advanced}
 
-In \autoref{sec:macro-dsl:syntax} we have learned about the basic features of the DSL,
+\autoref{sec:macro-dsl:syntax} presents the basic features of the DSL,
 armed with them, the reader should be able to write typestates.
 However, some typestates will require more complex mechanisms, both to develop and use,
 that is the purpose of this section.
-Once more, we will expand on the vending machine example; illustrated in \autoref{fig:vending-machine}.
+Once more, we will expand over our recurring example, the vending machine; illustrated in \autoref{fig:vending-machine}.
 
 \subsubsection{Self-transitions}
 
@@ -689,9 +702,8 @@ Notice how the new method takes \keyword{\&self} instead of \keyword{self}, thus
 it takes the state as an \emph{immutable} reference, instead of consuming the state;
 disabling mutation of the current state.
 Mutable references are also supported,
-consider that the user should be able to update its selected snack;
 line 4 of \autoref{lst:vending-machine-advanced-trait} declares a method taking a mutable reference to the current state,
-which in turn updates the user's snack selection.
+which in turn allows the user to update its snack selection.
 
 \begin{listing}
     \begin{minted}{rust}
@@ -734,19 +746,19 @@ hence the name of \emph{self-transitions}.
 
 There are some cases in which an enumeration might come in handy,
 one of them is when you are required to loop forever,
-and you may \quotes{stop during processing} \ie{not complete a full \texttt{Waiting} to \texttt{Waiting} cycle};
-in this case you will need a variable that can contain one of the many possible states the machine might be in,
+and you may \quotes{stop during processing} \ie{not complete a full \texttt{Waiting} to \texttt{Waiting} cycle}.
+In this case you will need a variable that can contain one of the many possible states the machine might be in,
 given that you cannot replace a variable's type once it is assigned, you will need to use Rust's enumerations.
 
-For large state machines, writing an enumeration by hand not only it is not practical, it is also error-prone;
+For large state machines, writing the enumeration by hand is error-prone and not practical;
 to address these issues \annotation{typestate} offers the \texttt{enumerate} macro attribute.
 
 By changing the attached \annotation{typestate} annotation to \annotation{typestate(enumerate)},
 as demonstrated in \autoref{lst:vending-machine-advanced-enumerate},
 it will generate the enumeration described in \autoref{lst:vending-machine-advanced-enumerate-expansion}.
-Along with the enumeration, the macro will also implement the \texttt{Into} conversion trait between the enumeration and the respective states;
+Along with the enumeration, the macro will also implement the \texttt{From} conversion trait between the enumeration and the respective states;
 this way, if the API client wishes to convert a \texttt{VendingMachine<Waiting>} into \texttt{EVendingMachine},
-they will be able to perform the conversion using \texttt{.into()}.
+they will be able to perform the conversion using \texttt{.into()} or \texttt{.from()}.
 % TODO: maybe show the expansion for the Into trait too
 
 \begin{listing}
@@ -828,6 +840,8 @@ Regarding automata, my macro provides the following:
 
 Minimality is not present in the list of provided guarantees because it is unclear how the macro could provide feedback to the user;
 while the macro can simply state --- \equotes{The presented automaton is not minimal}, such message does not help the user correcting the problem.
+Furthermore, non-deterministic automata are required to first be determinized,
+producing new states which the user is unable to see and thus providing feedback on them is not the best solution.
 
 \subsection{The Automaton and the Graph}\label{sec:validation:automaton}
 
@@ -857,13 +871,13 @@ Checking for useful states is then as simple as repeating the exploration proced
 the set of visited states can then be intersected with the set of productive states to compute the useful states,
 once more, in the case that not all existing states are useful, an error is issued, highlighting the state at fault.
 
-\section{Visualizing Typestates}\label{sec:extra-features:automata-visualization}
+\section{Visualizing Typestates}\label{sec:automata-visualization}
 
 Along with all the previously described features, I have implemented an embedded typestate visualization;
-the visualization supports exporting Graphviz DOT\footnote{\url{https://graphviz.org/doc/info/lang.html}},
-PlantUML state diagrams\footnote{\url{https://plantuml.com/state-diagram}} and
-embedded documentation using Mermaid.js\footnote{\url{https://mermaid-js.github.io/mermaid/\#/stateDiagram}}
-and the Aquamarine crate\footnote{\url{https://docs.rs/aquamarine/0.1.9/aquamarine}} (detailed in \autoref{sec:extra-features:documentation-generation}).
+the visualization supports exporting to Graphviz DOT\footnote{\url{https://graphviz.org/doc/info/lang.html}},
+PlantUML state diagrams\footnote{\url{https://plantuml.com/state-diagram}},
+along with documentation embedding using Mermaid.js\footnote{\url{https://mermaid-js.github.io/mermaid/\#/stateDiagram}}
+and the Aquamarine crate\footnote{\url{https://docs.rs/aquamarine/0.1.9/aquamarine}} (detailed in \autoref{sec:automata-visualization:documentation-generation}).
 All formats have their own feature flags (only \texttt{aquamarine} is part of the default set of features),
 and all formats leverage the graph used by the macro for analysis to export their visualizations.
 
@@ -919,9 +933,9 @@ these are listed in \autoref{tab:export-env-vars}.
     \label{tab:export-env-vars}
 \end{table}
 
-\subsection{Embedding Visualizations in the Documentation}\label{sec:extra-features:documentation-generation}
+\subsection{Embedding Visualizations in the Documentation}\label{sec:automata-visualization:documentation-generation}
 
-Exporting typestates in a way that enables the developer to visualize it is a valuable tool as it aids development, debugging and communication.
+Exporting typestates in a way that enables the developer to visualize them is a valuable tool during development and debugging, also improving communication.
 However, when focusing on communication, the best way to ensure the \gls{API} client gets to see the typestate would be to embed it in the documentation;
 as documentation is the \emph{de facto} way to communicate between a library's author and its users.
 
@@ -932,9 +946,9 @@ Ideally, we want everything in one place, generated in one step!
 Fortunately, Aquamarine addresses that problem;
 it allows the declaration of Mermaid.js diagrams as documentation and then renders them as HTML inside the Rust documentation.
 Its syntax is \emph{very similar} to PlantUML's,
-thus this feature's implementation process was mostly copying the PlantUML generation code and fixing any bugs which appeared.
+thus this feature's implementation process was mostly porting the PlantUML generation code and fixing any bugs which appeared.
 
-\paragraph{Rendering} the state diagram starts by adding \emph{doc comments}\footnote{\url{https://doc.rust-lang.org/reference/comments.html\#doc-comments}}
+\paragraph{Rendering the state diagram} starts by adding \emph{doc comments}\footnote{\url{https://doc.rust-lang.org/reference/comments.html\#doc-comments}}
 to the module during the macro processing, the \emph{doc comment} contains the diagram description in the Mermaid.js specification language;
 the expanded code for the vending machine example (\autoref{fig:vending-machine}) can be seen in \autoref{lst:vending-machine-mermaid-doc-comment}.
 When the user runs the documentation command --- \texttt{cargo doc}; the Aquamarine attribute is attached and
@@ -981,7 +995,7 @@ mod vending_machine_api { /* ... */ }
     \label{fig:vending-machine-mermaid-docs}
 \end{figure}
 
-\paragraph{Bundling} the macro in way that users can depend on this feature is not a trivial task;
+\paragraph{Bundling the macro} in way that users can depend on this feature is not a trivial task;
 we want users to simply import the \texttt{typestate} library and be able to embed their typestates in the documentation.
 Rust applies some restrictions to procedural macro libraries, namely,
 such libraries cannot export anything else other than the defined macros;
