@@ -31,7 +31,7 @@ when the compiler would pass the source code as text to the preprocessor,
 which, in turn would generate valid OCaml source code.
 The library has been deprecated due to being confusing to users and tools alike.
 Users were required to learn the revised OCaml syntax which complicates the development process.
-These criticisms are found throughout documents which discuss Camlp4~\autocite{Whitequark2014}.
+These criticisms are found throughout documents which discuss Camlp4\citeurl{https://tinyurl.com/Whitequark2014}{08/06/2021}.
 
 \subsubsection*{PPX}\label{sec:lang-preprocessors:ocaml:ppx}
 
@@ -53,9 +53,25 @@ There are three kinds of attribute nodes (example in \autoref{lst:ocaml-attr-bin
 
 One of the main kinds of PPXs are \emph{derivers} (see \autoref{sec:rust-macros:proc:derive} for the Rust equivalent).
 Deriveres are mostly used to generate error-prone code where the implementation pattern is common to a series of sittuations.
-Examples include but are not limited to: comparison functions, pretty printers and serializers \autocite{Rebours2019}.
+Examples include but are not limited to: comparison functions, pretty printers and serializers\citeurl{https://tarides.com/blog/2019-05-09-an-introduction-to-ocaml-ppx-ecosystem}{08/06/2021}.
 
-\input{Chapters/Listings/C3/ocaml-attribute-bindings.tex}
+% \input{Chapters/Listings/C3/ocaml-attribute-bindings.tex}
+\begin{listing}
+	\begin{minted}{Rust}
+let a = 12 [@attr pl]
+let b = "some string" [@@attr pl]
+[@@@attr pl]
+    \end{minted}
+	\caption[Example of the three kinds of attributes.]{
+		Example of the three kinds of attributes\footnotemark.
+		The first line attaches to the \texttt{12} expression.
+		The second attaches to the whole \texttt{let} binding (i.e \texttt{let b = "some string"}).
+		Finally, the third line, does not attach to a particular member of the AST.
+	}
+	\label{lst:ocaml-attr-bindings}
+\end{listing}
+\footnotetext{\url{https://tarides.com/blog/2019-05-09-an-introduction-to-ocaml-ppx-ecosystem} (visited in 08/06/2021).}
+
 
 \paragraph{Extension Nodes} are similar in syntax to the attribute nodes (instead of \texttt{@} they use \texttt{\%}).
 Extension nodes are meant to be placeholders in the syntax tree.
@@ -86,12 +102,12 @@ such as static analysis tool development to Java features prototyping.
 
 \subsubsection*{Java Annotations}\label{sec:lang-preprocessors:java:annotation}
 
-Java annotations were first introduced in Java 5 \autocite{JSR269},
+Java annotations were first introduced in Java 5\citeurl{https://jcp.org/en/jsr/detail?id=269}{08/06/2021},
 they are a form of metadata which can be added to Java source code.
 Annotations can be used in conjunction with several components of the Java language,
 such as classes, interfaces, documentation and others.
 These are processed by build-time tools or by run-time libraries to achieve new semantic effects,
-a popular example of such library would be the compile-time dependency injection framework Dagger 2~\autocite{Dagger2}.
+a popular example of such library would be the compile-time dependency injection framework Dagger 2\citeurl{https://dagger.dev/}{08/06/2021}.
 Another popular library using annotations is the Checker Framework \autocite{CheckerFramework2018},
 besides the classic \texttt{@NonNull} example, the tool provides several other kinds of annotations.
 The annotations are then checked by Checker Framework annotation processor.
@@ -130,7 +146,7 @@ overriding some methods present in \autoref{fig:java-annotation-processor}.
 The processor will then be called for each annotation belonging to the package.
 
 Annotation processors are also able to generate code.
-This is usually done by means of a library such as JavaPoet \autocite{Square2021}.
+This is usually done by means of a library such as JavaPoet\citeurl{https://github.com/square/javapoet}.
 After generation, the output code is then compiled and subject to the same treatment as handwritten files.
 If the generated code, generates more code, this process repeats itself until no more code is generated.
 
@@ -149,7 +165,7 @@ with few quality resources available.
 
 ExtendJ is an extensible compiler aiming at facilitating the development of Java compiler tools.
 The compiler supports Java from version 5 up to 8.
-The extensions are written in JastAdd \autocite{JastAdd2021}, a meta-compilation system upon which ExtendJ is built.
+The extensions are written in JastAdd \citeurl{https://jastadd.cs.lth.se/web/}{08/06/2021}, a meta-compilation system upon which ExtendJ is built.
 It is possible to extend the compiler during any of the following phases: \emph{Scanning}, \emph{Parsing}, \emph{Analysis} and \emph{Code Generation}.
 Extending the language with new syntax requires the modification of the \emph{Scanner} and \emph{Parser}.
 The \emph{Analysis} phase occurs after parsing, when types are checked.
@@ -205,10 +221,38 @@ from the class level to the code generation.
 
 \paragraph{Ecosystem Presence.}
 Just like the previous languages, the Kotlin compiler plugins suffer from the same discoverability problem.
-While depending on it are widely used (e.g. Kotlin serialization \autocite{Kotlin2021}),
+While depending on it are widely used (e.g. Kotlin serialization\citeurl{https://github.com/Kotlin/kotlinx.serialization}{08/06/2021}),
 the resources to learn how to develop such tools are rare.
 
-\input{Chapters/Figures/C3/kotlin-compiler-plugin-architecture.tex}
+% \input{Chapters/Figures/C3/kotlin-compiler-plugin-architecture.tex}
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+		\tikzstyle{layer}=[thick, rectangle, rounded corners, minimum height=7.5mm, minimum width=5cm, draw, font=\ttfamily]
+		% \draw[draw=black!20] (-4,1) grid (4, -7);
+		\node[layer] (plugin) at (0, 0) {Plugin};
+		\node[layer] (subplugin) at (0, -1.5) {Subplugin};
+		\node[layer] (cli-processor) at (0, -3) {CommandLineProcessor};
+		\node[layer] (registar) at (0, -4.5) {ComponentRegistar};
+		\node[layer, minimum width=2cm] (ext-left) at (-1.5, -6) {Extension};
+		\node[layer, minimum width=2cm] (ext-right) at (1.5, -6) {Extension};
+
+		\draw[->, thick] (plugin) -- (subplugin);
+		\draw[->, thick] (subplugin) -- (cli-processor);
+		\draw[->, thick] (cli-processor) -- (registar);
+		\draw[->, thick] (registar) -- (ext-left);
+		\draw[->, thick] (registar) -- (ext-right);
+
+		\draw[thick] (2.9, 0.5) -- (3, 0.5) -- (3, -2) -- (2.9, -2);
+		\draw[thick] (2.9, -2.5) -- (3, -2.5) -- (3, -6.5) -- (2.9, -6.5);
+
+		\path (3, 0.5) -- node[below, rotate=90]{Gradle} (3, -2);
+		\path (3, -2.5) -- node[below, rotate=90]{Kotlin} (3, -6.5);
+	\end{tikzpicture}
+	\caption[Kotlin compiler plugin architecture stack.]{Kotlin compiler plugin architecture stack\footnotemark.}
+	\label{fig:kotlin-compiler-plugin-arch}
+\end{figure}
+\footnotetext{\url{https://tinyurl.com/MostK2018} (visited on 08/06/2021)}
 
 \section{Rust Macros}\label{sec:rust-macros}
 
@@ -305,11 +349,26 @@ as previously referred, the output will completely replace the macro call.
 \paragraph{Domain Specific Languages.}
 While the macros discussed next also provide their contribution for domain specific languages in Rust,
 function-like macros provide the necessary tools to write an embedded DSL.
-The Rust ecosystem developers have developed HTML DSLs \autocite{Wong2021, Stokke2021}
+The Rust ecosystem developers have developed HTML DSLs\citeurl{https://github.com/lambda-fairy/maud}{08/06/2021}$^,$\citeurl{https://github.com/bodil/typed-html}{08/06/2021}
 (see the example in \autoref{lst:rust-html-dsl}) and
-the possibility to run Python inside Rust\autocite{Fusion2021}.
+the possibility to run Python inside Rust\citeurl{https://github.com/fusion-engineering/inline-python}{08/06/2021}.
 
-\input{Chapters/Listings/C3/rust-html-dsl.tex}
+% \input{Chapters/Listings/C3/rust-html-dsl.tex}
+\begin{listing}
+    \begin{minted}{Rust}
+html! {
+    h1 { "Hello, world!" }
+    p.intro {
+        "This is an example of the "
+        a href="https://github.com/lambda-fairy/maud" { "Maud" }
+        " template language."
+    }
+}
+    \end{minted}
+    \caption[HTML DSL embedded in Rust.]{HTML DSL embedded in Rust.\footnotemark}
+    \label{lst:rust-html-dsl}
+\end{listing}
+\footnotetext{\url{https://github.com/lambda-fairy/maud} (visited in 08/06/2021)}
 
 \subsubsection*{Derive Macros}\label{sec:rust-macros:proc:derive}
 Derive macros likely are the most common kind of procedural macro in Rust,
@@ -412,16 +471,40 @@ The output is then checked by Mungo \autocite{Dardha2017, Kouzapas2018, Voinea20
 This process is based on a formal translation of session types into typestate specifications for channel objects, and
 extends the translation from binary to multiparty session types.
 
+\paragraph{A Session Type Provider.}
+% CITE: Neykova (not yet on Mendeley)
+The work by Neykova et al. \autocite{Neykova} leverages F\#'s type providers to provide developers with practical session types along with refinements.
+The refinements enable the placement of constraints regarding the protocol's messages,
+these are described using Scribble \autocite{Yoshida2014} along with the rest of the protocol;
+the protocol and its respective refinements are validated and the .NET platform generates the required code for the F\# \gls{API}s.
+
+Furthermore, this approach allows users to still use features like autocomplete
+(something that is still being worked in Rust's ecosystem) and documentation.
+As one can expect, this approach also reduces bugs and simplified several error-prone parts of development.
+
 \paragraph{Session Types for Rust.}
 As far as I am aware, the work on Rust session types was started by Jespersen et al. \autocite{Jespersen2015},
-such work was limited since it only supported binary session types for channels.
+such work was limited as it only supported binary session types.
 It builds on a Haskell-based approach \autocite{Pucella2008}, mirroring the implementation interface.
 
 The type constructs in the original session types formulation have correspondents in the Rust implementation,
 this is part of a DSL embedded in the Rust type system.
 The library makes use of \keyword{unsafe} to allow for transmutation (i.e. unsafe type casting)
 and sending untyped values over the channels.
-Finally, the library is able to provide compile-time safety, that is, the code will not compile if the channels protocols do not match.
+
+Finally, the library is able to provide compile-time safety, that is,
+the code will not compile if the channel's protocols do not match.
+
+\paragraph{Sesh}
+The \texttt{sesh} crate \cite{Kokke2019}, in contrast to \texttt{session-types} (\autocite{Jespersen2015}),
+builds on a different theory, provides much cleaner types and embraces Rust's affine type system,
+instead of actively trying to make it linear.
+While the crate requires no use of \texttt{unsafe}, it does require a \emph{nightly} compiler,
+unsuited for production environments.
+
+Like \texttt{session-types}, the \texttt{sesh} crate provides the required abstractions to use session types in Rust,
+however, the crate's documentation is limited, possibly being \quotes{inaccessible} to less experienced users
+w.r.t. Rust and session types.
 
 \paragraph{Multiparty Session Types for Rust.}
 Work on multiparty session types started with Lagaillardie et al. \autocite{Lagaillardie2020}.

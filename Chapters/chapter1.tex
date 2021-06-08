@@ -12,7 +12,6 @@
 \section{Context}\label{sec:context}
 
 % [11/01/2021]
-
 Bugs permeate our lives as users --- whether in an instant messaging application or a game they are present.
 Luckily, most are harmless as such applications are not critical,
 resulting in some unsent messages or texture glitches.
@@ -20,16 +19,16 @@ resulting in some unsent messages or texture glitches.
 In systems programming, one of the most demanding domains in computer science,
 bugs and their respective consequences come at a high cost to both service providers and consumers.
 There are reports from several industries where bugs lead to huge monetary losses and in extreme cases, death.
-In 2014, the Heartbleed~\autocite{Heartbleed} bug, caused due to a missing bound check,
+In 2014, the Heartbleed\citeurl{https://heartbleed.com/}{14/01/2021} bug, caused due to a missing bound check,
 compromised the security of any OpenSSL user, enabling the theft of critical information (e.g. cryptographic keys).
 In 2018, a bug in Coinbase (a popular cryptocurrency exchange)
-allowed for account balance manipulation~\autocite{Vicompany2018}.
-In 2019 and 2020, after several crashes~\autocite{Campbell2019},
+allowed for account balance manipulation\citeurl{https://hackerone.com/reports/300748}{08/06/2021}.
+In 2019 and 2020, after several crashes\citeurl{https://tinyurl.com/DCampbell2020}{08/06/2021},
 the Boeing 737 Max was grounded to fix existing problems.
-While grounded, more software-related issues were found~\autocite{Okane2019,Okane2020}, delaying re-certification.
+While grounded, more software-related issues were found\citeurl{https://tinyurl.com/Okane2019}{06/08/2021}$^,$\citeurl{https://tinyurl.com/Okane2020}{08/06/2021}, delaying re-certification.
 In 2020, as the number of COVID-19 cases grew,
 contact tracing apps were deployed as a mitigation strategy ---
-due to a bug the UK's National Health Service app failed to ask users to self-isolate ~\autocite{Mageit2020}.
+due to a bug the UK's National Health Service app failed to ask users to self-isolate\citeurl{https://tinyurl.com/Mageit2020}{08/06/2021}.
 
 The previous examples are not isolated incidents.
 The language and nature of the bugs are different for each case, but to put it simply,
@@ -41,8 +40,8 @@ building tools and abstractions which allow developers to increase their code's 
 Languages like C/C++ have dominated the systems programming landscape for years and
 one of the main problems with both is the lack of memory management.
 Leaving such responsibility to the developer has proven to be \emph{a less than ideal} solution.
-Memory management is responsible for $70\%$ of the bugs found in projects like Chromium~\autocite{chromium}
-and Microsoft products~\autocite{Miller2019}.
+Memory management is responsible for $70\%$ of the bugs found in projects like Chromium\citeurl{https://www.chromium.org/Home/chromium-security/memory-safety}{08/06/2021}
+and Microsoft products\citeurl{https://git.io/JLdDc}{08/06/2021}.
 
 To address such problem, several tools and languages have been and continue to be developed ---
 so far, Rust has been the only one to achieve \emph{mainstream} status.
@@ -63,7 +62,7 @@ with information of the expected computation state at runtime.
 
 \subsection{The Billion Dollar Mistake}
 
-\begin{displayquote}[{\autocite{Hoare2009}}]
+\begin{displayquote}[Tony Hoare] % CITE
     This led me to suggest that the null value is a member of every type,
     and a null check is required on every use of that reference variable,
     and it may be perhaps a billion dollar mistake.
@@ -175,7 +174,7 @@ through the addition of linear types and typestate mechanisms to the language.
 In \autocite{Coblenz2020} the effectiveness of the approach is put to test,
 achieving positive results when compared with the Solidity programming language.
 
-The \texttt{state\_machine\_future} crate \autocite{Fitzgerald2019}, provides typestated futures in Rust as well as some state machine related guarantees,
+The \texttt{state\_machine\_future} crate\citeurl{https://github.com/fitzgen/state\_machine\_future}{08/06/2021}, provides typestated futures in Rust as well as some state machine related guarantees,
 such as every state being reachable from the start,
 there are no states unable to reach the final state and that all state transitions are valid.
 Furthermore, these guarantees are provided at compile-time --- for example, invalid state transitions will fail to compile.
@@ -184,7 +183,7 @@ Other crates exist, they focus on finite state machines but are unable to provid
 
 Like other mainstream programming languages, Rust does not have first class support for session types.
 Implementations are rare and rooted in the meta-programming system.
-The work done by \autocite{Jespersen2015, Munksgaard2015} introduces bi-directional session types to Rust,
+The work done by \autocite{Jespersen2015} introduces bi-directional session types to Rust,
 since then, this line of work has been expanded by \autocite{Lagaillardie2020}, extending it to multiparty session types.
 While Rust dropped typestate support during early development (Rust 0.4), that does not mean Rust is not able to provide them.
 The type system is able to emulate typestates with efficiency, the approach however comes at the cost of verbosity.

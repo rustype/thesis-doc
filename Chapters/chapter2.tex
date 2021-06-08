@@ -78,17 +78,17 @@ as they introduce overhead in the most demanding applications.
 \subsection{Ada}
 
 Ada was developed in 1980, during a standardization effort in the USA's Department of Defense,
-with the goal of unifying projects spanning over 450 programming languages \autocite{Ada2021}.
+with the goal of unifying projects spanning over 450 programming languages\citeurl{https://tinyurl.com/AdaPL2016}{08/06/2021}.
 Ada's main focus was the development of embedded applications,
 currently the Ada language is mostly used in the critical domain due to the strong emphasis on safety,
-some Ada success stories are the London Metro Victoria Line and the Paris Metro Line \autocite{SIGAda2021}.
-The language is also used in several other domains, such as aviation, space vehicles, financial systems and more \autocite{Feldman2014}.
+some Ada success stories are the London Metro Victoria Line and the Paris Metro Line\citeurl{https://www.sigada.org/}{08/06/2021}.
+The language is also used in several other domains, such as aviation, space vehicles, financial systems and more\citeurl{https://www2.seas.gwu.edu/\~mfeldman/ada-project-summary.html}{08/06/2021}.
 
-In comparison with the other languages in this section, Ada is eclipsed, barely showing in the GitHub rankings \autocite{Palmer2021}.
+In comparison with the other languages in this section, Ada is eclipsed, barely showing in the GitHub rankings\citeurl{https://tjpalmer.github.io/languish/}{25/01/2021}.
 However, given that Ada's compiler is mostly a product, it makes sense that most Ada code is not open-source.
-Regardless, when one views the list of features Ada has, the first arising question is “\emph{why is Ada not popular?}”.
+Regardless, when one views the list of features Ada has, the first arising question is \equotes{why is Ada not popular?}.
 
-An old article in AdaPower \autocite{Heaney1998} provides some possible insight over the question,
+An old article in AdaPower\citeurl{https://tinyurl.com/AdaPower1998}{08/06/2021} provides some possible insight over the question,
 referring to the compiler's price and the Hoare's harsh critics.
 From my point of view, the critics to the compiler and ecosystem pricing still make sense,
 as access to the full tooling is limited.
@@ -102,12 +102,12 @@ according the language folklore, it was designed by the authors while they waite
 Go tried to address several of the criticisms to C, namely memory management,
 which it solved by using a garbage collector.
 While it has made a name for itself in the network and distributed systems sector,
-being the main language behind projects like Docker \autocite{Docker2021} and Kubernetes \autocite{Kubernetes2021},
+being the main language behind projects like Docker and Kubernetes,
 Go's categorization as a systems programming language can be discussed.
 
 Sometimes, however, the performance might not be enough,
 as was the case for Discord, the popular internet voice server company, as demand increased,
-Go was not able to meet the expected performance requirements and the company replaced it with Rust \autocite{Howarth2020}.
+Go was not able to meet the expected performance requirements and the company replaced it with Rust\citeurl{https://blog.discord.com/why-discord-is-switching-from-go-to-rust-a190bbca2b1f}{08/06/2021}.
 In \autocite{Torre2014}, one of Go's authors, Rob Pike, says that he regrets categorizing Go as a systems programming language,
 being rather a server programming language that evolved into a cloud infrastructure language.
 Regardless of discussion, Go has proven to be a viable alternative to existing counterparts,
@@ -121,12 +121,12 @@ and support for embedded devices.
 Go on the other hand, could be considered a new generation systems programming language, a language for cloud infrastructure.
 Among the four, only Ada places strong emphasis on safety, with several features allowing for more guarantees at compile time,
 such as contract based programming and non-nullable types by default,
-being the only one which does not suffer from the “\emph{billion dollar mistake}” \autocite{Hoare2009}.
+being the only one which does not suffer from the \equotes{billion dollar mistake}\citeurl{https://tinyurl.com/Hoare2009}{2021-01-25}.
 
 \section{The Rust Language}\label{sec:rust-lang}
 
 Rust is a fairly recent systems programming language,
-it started as a side project of the author Graydon Hoare and the language public history dates back to 2010 \autocite{Hoare2010}.
+it started as a side project of the author Graydon Hoare and the language public history dates back to 2010\citeurl{https://git.io/JZ3X7}{08/06/2021}.
 In 2012 Mozilla picked up Rust to help develop the Servo browser engine, the successor to the previous Gecko engine;
 as a way to test Rust's capabilities \autocite{Klabnik2016}.
 
@@ -161,7 +161,7 @@ Behind ownership, there are three rules:
 \end{displayquote}
 
 To illustrate the rules, consider \autoref{lst:rust-move}, where we have two variables \texttt{x} and \texttt{y}.
-First, \texttt{"Hello"}\footnotemark~is assigned to \texttt{x}, thus \texttt{x} now owns \texttt{"Hello"}.
+First, \texttt{"Hello"} is assigned to \texttt{x}, thus \texttt{x} now owns \texttt{"Hello"}.
 After, \texttt{x} is assigned to \texttt{y}, consider the second rule of ownership, since we can only have one owner,
 \texttt{x}'s value ownership is transferred to \texttt{y}.
 Since we transferred \texttt{x}'s value to \texttt{y}, \texttt{x} is no longer valid, consequently,
@@ -238,7 +238,7 @@ traits to enable developers to extend upon the existing abstractions.
 Rust's message-passing library is inspired on Go's approach to concurrency,
 prioritizing message passing over other kinds of concurrent approaches, such as locking.
 
-\begin{displayquote}[{\autocite[Concurrency]{Go2021}}]
+\begin{displayquote}[Effective Go\citeurl{https://golang.org/doc/effective\_go.html}{08/06/2021}]
     Do not communicate by sharing memory; instead, share memory by communicating.
 \end{displayquote}
 
@@ -327,7 +327,7 @@ where \texttt{SenderT} and \texttt{ReceiverT} are the types sent and received by
 Channels are well-typed, meaning that if \mintinline{Rust}{SenderT = String},
 sending another type over the channel will result in a type error.
 
-% \input{Chapters/Listings/C2/rust-login-chan.tex}
+\input{Chapters/Listings/C2/rust-login-chan.tex}
 
 Session types extend on this notion, not only allowing for a single type to be sent or received,
 but also model the protocol.
@@ -411,21 +411,19 @@ requiring several developers to know the ins and outs of the language.
 \paragraph{Static typed languages.}
 The current trend is to move from dynamically typed languages,
 to statically typed ones, or at the very least, add typing support to existing dynamic languages.
-Typescript~\autocite{typescript},
-Reason~\autocite{reason} and
-PureScript~\autocite{purescript}
+Typescript\citeurl{https://www.typescriptlang.org/}{08/06/2021},
+Reason\citeurl{https://reasonml.github.io/}{08/06/2021} and
+PureScript\citeurl{https://www.purescript.org/}{08/06/2021}
 are all examples of languages built to bridge the gap between static type systems and JavaScript.
 Python and Ruby, two popular dynamic languages, have also pushed for type adoption
 with the addition of type hint support in recent
-releases~\autocite{PythonTyping, RubyRBS}.
+releases\citeurl{https://docs.python.org/3/library/typing.html}{08/06/2021}$^,$\citeurl{https://github.com/ruby/rbs}{08/06/2021}.
 
 \paragraph{Where do typestates fit?}
 Typestates are a complex subject, able to be adopted at several levels,
 just like type hints, they can be partially used in some languages,
-through tools such as Mungo~\autocite{Voinea2020},
-by contract-style assertions as in Ada2012, Eiffel or pre-0.4 Rust,
-or finally by leveraging the existing type system to write typestate enabled code as it is possible in
-Rust~\autocite{Duarte2020}.
+through tools such as Mungo~\autocite{Voinea2020}, by contract-style assertions as in Ada2012, Eiffel or pre-0.4 Rust,
+or finally by leveraging the existing type system to write typestate enabled code as it is possible in Rust\citeurl{https://git.io/JZ3i7}{08/06/2021}.
 Typestate-related concepts were also used in Singularity OS \autocite[Section 6]{Ancona2016},
 a reliable operating system prototype where programs were written using Sing\# --- a language derived from C\# which supports behavioral typing,
 specifically contracts in a similar capacity to typestates.
@@ -473,7 +471,7 @@ such as certain methods will never be called in a given state since it is not po
 
 \input{Chapters/Listings/C2/plaid-file-use.tex}
 
-\paragraph{Obsidian} is a language targeting Hyperledger Fabric \autocite{Fabric2021},
+\paragraph{Obsidian} is a language targeting Hyperledger Fabric\citeurl{https://www.hyperledger.org/use/fabric}{08/06/2021},
 among other features it makes use of typestates to reduce the amount of bugs when dealing with assets.
 
 In \autocite{Coblenz2020} an empirical study tested and proved Obsidian claims,
@@ -500,10 +498,8 @@ The Obsidian compiler is able to notice such invalid transitions and provide an 
 
 \paragraph{Rust.}
 As discussed in \autoref{sec:rust-lang}, Rust takes the commitment with safety with seriousness,
-providing the necessary tools to users.
-While Rust does not support first-class typestates,
-it is possible to emulate them using the type system (as demonstrated in \autocite{Duarte2020}),
-this is discussed in further sections of this document.
+providing the necessary tools to users. While Rust does not support first-class typestates,
+it is possible to emulate them using the type system, this is discussed in further sections of this document.
 
 While the file example does not apply in Rust, since files and other objects are closed as they leave the scopes,
 enforcing protocols is important and an aspect not covered by the language.
@@ -519,11 +515,11 @@ Since it is not “\emph{part}” of the language, most users will neither use i
 \paragraph{Embedded Rust.} As any systems programming language, Rust penetrated the embedded development space.
 Providing features in line with the area's requirements, along with community efforts to make Rust viable in embedded systems.
 
-\emph{The Embedded Rust Book}'s~\autocite{Rust2021} Chapter 4 is dedicated to static guarantees,
+\emph{The Embedded Rust Book}'s\citeurl{https://rust-embedded.github.io/book/}{08/06/2021} Chapter 4 is dedicated to static guarantees,
 introducing programmers to the concepts of typestate in Section 4.1, and their usage in embedded systems.
 
 As for real-world usage, typestates are abundantly used in the area (not just discussed in the book),
-under \autocite{Stm32} one finds several repositories (suffixed with \texttt{-hal})
+under the \texttt{stm32-rs} GitHub organization\citeurl{https://github.com/stm32-rs/}{08/06/2021} one finds several repositories (suffixed with \texttt{-hal})
 which implement typestates
 (e.g. \href{https://github.com/stm32-rs/stm32h7xx-hal/blob/master/src/gpio.rs#L51-L128}{\texttt{gpio.rs}}
 from \texttt{stm32h7xx-hal}).
