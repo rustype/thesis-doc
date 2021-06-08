@@ -191,45 +191,45 @@ The type system is able to emulate typestates with efficiency, the approach howe
 Regardless of the verbosity typestates are used by the embedded systems development sphere of the Rust community.
 
 
-\section{Objectives \& Contributions}\label{sec:objectives}
+\section{Contributions}\label{sec:objectives}
 
-In this thesis I try to bridge the gap between typestates and Rust,
-aiming for an elegant and usable solution, allowing for effective usage of typestates in Rust.
-To achieve such solution I expect to develop an embedded Rust DSL,
-enabling the flexibility of a dedicated language inside the Rust ecosystem.
-To this effect I expect the contributions of this thesis to be a typestate specification DSL to be embedded in Rust,
-this topic is further developed in \autoref{cha:planning}.
+In this thesis I present a \gls{DSL} which enables developers to easily declare typestates in their Rust code.
+Its major features are:
 
 \begin{description}
-    \item[Typestate DSL.] One of the main goals of the DSL is to be non-intrusive and easy to pick up --- both the syntax and tooling.
-          Such requires the syntax to extend over Rust's current syntax, introducing minimal changes where necessary.
-          However, it should also be powerful enough to specify useful protocols in it.
-    \item[Static Guarantees.] As any language, it is useless if no information is extracted from it,
-          besides the obvious parsing step,
-          the DSL should be able to extract a typestate model from the original specification and generate adequate output code.
-          The extracted model should also be checked for a series of properties such as state reachability and termination.
-    \item[Tooling \& Usability.] The DSL should not require more than the import of the library,
-          building any project using the DSL should not require extra steps as it would degrade possible adoption.
-          A survey should accompany the final product to confirm usability claims.
-    \item[Artifacts.] Finally, the DSL should be shipped as a crate (i.e. library) and available in \url{crates.io}, Rust's package registry,
-          this implies that the documentation should be available in \url{docs.rs}.
-          In addition to the DSL library, I am planning writing an article on the DSL, including the results from usability testing,
-          and developing a library to facilitate DSL development for Rust.
+    \item[Static guarantees.] Alongside the guarantees provided by the type system,
+    our macro leverages the \gls{DSL} to build an automata model which is then checked for state usefulness.
+    \item[Ease of use.] The \gls{DSL} leverages Rust existing syntax rather than expand it.
+    The usage of macros allows the \gls{DSL} to tweak the semantics of some language constructs,
+    making them more flexible for our purposes.
+    \item[Ease of use (Part II).] The \gls{DSL} does not require any extra tools,
+    declaring the macro as a dependency is the only required step for the user to start using the \gls{DSL}.
+    \item[Enhanced documentation.] The \gls{DSL} is able to render visualizations of the typestates' automata,
+    these can either be exported or embedded into the final client's \gls{API} documentation.
 \end{description}
 
-\section{Report Organization}\label{sec:organization}
+The line required to start using the DSL is as follows:
+\begin{minted}[linenos=false]{toml}
+typestate = "0.7"
+\end{minted}
+
+\section{Outline}\label{sec:organization}
 
 This document is organized as follows:
 
 \begin{description}
     \item[\autoref{cha:background}] provides a review over
-          existing systems programming languages (\autoref{sec:systems-programming}),
-          the Rust programming language (\autoref{sec:rust-lang}) and
-          behavioral types (\autoref{sec:behavioral-types}).
+        existing systems programming languages (\autoref{sec:systems-programming}),
+        the Rust programming language (\autoref{sec:rust-lang}) and
+        behavioral types (\autoref{sec:behavioral-types}).
     \item[\autoref{cha:related-work}] describes existing work regarding
-          language preprocessing (\autoref{sec:lang-preprocessors}),
-          Rust macros (\autoref{sec:rust-macros}) and
-          existing approaches to behavioral types (\autoref{sec:behavioral-approaches}).
-    \item[\autoref{cha:planning}] illustrates the development roadmap of this project,
-          detailing the required work to achieve the goals proposed in \autoref{sec:objectives}.
+        language preprocessing (\autoref{sec:lang-preprocessors}),
+        Rust macros (\autoref{sec:rust-macros}) and
+        existing approaches to behavioral types (\autoref{sec:behavioral-approaches}).
+    \item[\autoref{cha:macro}] presents the core of the developed work: the \annotation{typestate} macro.
+        It provides an introduction to typestates in Rust (\autoref{sec:typestates-hard-way}),
+        a discussion over its \gls{DSL} (\autoref{sec:macro-dsl}) along with insights into the validation (\autoref{sec:validation})
+        and visualization processes (\autoref{sec:automata-visualization}).
+    \item[\autoref{cha:case-study}] presents a case study, developed using my macro.
+    \item[\autoref{cha:conclusions}] presents a summary and discusses future work.
 \end{description}
