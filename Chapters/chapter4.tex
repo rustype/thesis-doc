@@ -1064,3 +1064,30 @@ this process is pictured in \autoref{fig:typestate-rs-deps}, \autoref{fig:typest
     \texttt{typestate-deps} is the set of dependencies for the macro \eg{\texttt{syn}, \texttt{quote}, etc};
     it is dashed as it is not exported.
 }
+
+\section{Summary}
+
+In this chapter I have presented:
+\begin{compactitem}
+    \item How the user can write typestates by hand (\autoref{sec:typestates-hard-way}).
+    \item How the DSL is architected, its syntax and more advanced features (\autoref{sec:macro-dsl}).
+    \item How the built typestate is validated (\autoref{sec:validation}).
+    \item How the user can visualize and document their typestates (\autoref{sec:automata-visualization}).
+\end{compactitem}
+
+The present work is by no means final, there is a lot to improve upon (this is detailed in \autoref{cha:conclusions}),
+but the nonetheless it achieves interesting insights regarding the implementation of typestates and embedded DSLs.
+The use of procedural macros is nothing new to the ecosystem, however, DSLs are usually built with function-like procedural macros.
+While such approach has advantages \eg{the usage of new syntax and more expressive constructs} it comes at the cost of not only being harder to develop,
+but also requiring the developer to pay the upfront cost of learning it before they can use the DSL.
+
+My DSL tries to minimize these costs by using only existing Rust syntax, only tweaking some semantics.
+This approach has the advantage that learning cost is reduced,
+but the disadvantage that some users may find the semantic tweaking non-natural.
+
+Another point of innovation (to the best of my knowledge) resides on the embedding of diagrams into the documentation;
+by itself, the idea of embedding images and diagrams in the documentation is not new,
+however, leveraging an existing DSL to also generate a moderately complex form of documentation is new.
+As a visual-leaning learner, I believe the diagram can help,
+especially in more complex settings where state relationships may be difficult to visualize mentally.
+

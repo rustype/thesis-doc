@@ -472,8 +472,7 @@ This process is based on a formal translation of session types into typestate sp
 extends the translation from binary to multiparty session types.
 
 \paragraph{A Session Type Provider.}
-% CITE: Neykova (not yet on Mendeley)
-The work by Neykova et al. \autocite{Neykova} leverages F\#'s type providers to provide developers with practical session types along with refinements.
+The work by Neykova et al. \autocite{Neykova2018} leverages F\#'s type providers to provide developers with practical session types along with refinements.
 The refinements enable the placement of constraints regarding the protocol's messages,
 these are described using Scribble \autocite{Yoshida2014} along with the rest of the protocol;
 the protocol and its respective refinements are validated and the .NET platform generates the required code for the F\# \gls{API}s.
@@ -495,8 +494,7 @@ and sending untyped values over the channels.
 Finally, the library is able to provide compile-time safety, that is,
 the code will not compile if the channel's protocols do not match.
 
-\paragraph{Sesh}
-The \texttt{sesh} crate \cite{Kokke2019}, in contrast to \texttt{session-types} (\autocite{Jespersen2015}),
+\paragraph{The \texttt{sesh}} crate \cite{Kokke2019}, in contrast to \texttt{session-types} \autocite{Jespersen2015},
 builds on a different theory, provides much cleaner types and embraces Rust's affine type system,
 instead of actively trying to make it linear.
 While the crate requires no use of \texttt{unsafe}, it does require a \emph{nightly} compiler,
@@ -514,6 +512,19 @@ Similarly to the previously presented work \autocite{Jespersen2015},
 this work also takes advantage Rust's type system to provide compile-time safety.
 While using Scribble allows the library to make use of a tried and tested toolchain,
 it also implies the usage of an external tool, which in previous works was not necessary \autocite{Jespersen2015, Kokke2019}.
+
+\paragraph{Rumpsteak} \autocite{Cutner2021} is a Rust library targeting asynchronous applications using \texttt{async}/\texttt{await},
+it offers clean session types and its approach relies heavily on macros.
+The crate works by defining a global type which is projected into roles,
+this is done by Scribble which in turn requires an external toolchain\citeurl{https://github.com/nuscr/nuscr}{08/06/2021};
+from each role an endpoint finite state machine is extracted and optimized,
+in the end an \gls{API} is generated which can then be used to build each process.
+
+To enforce linear resource usage when build the processes
+the library makes use of the type system to enforce the consumption of each \quotes{state};
+enforcing protocol completion is done through a closure,
+which takes the initial session type and returns a terminal \texttt{End} type,
+a session is then required to be run until completion otherwise the return type will not be respected and the type checker will complain.
 
 \subsection{Typestate}
 In the work of Ancona et al. \autocite[Section 2.3]{Ancona2016} several approaches to typestates are enumerated.

@@ -26,14 +26,22 @@ Este conceito permite assim aliviar o programador da responsabilidade que é con
 Apesar de Rust não suportar \emph{typestates} de uma forma natural,
 o sistema de tipos permite expressar e validar \emph{typestates}.
 
-O objetivo desta tese é aproximar os \emph{typestates} do Rust em produção,
-desenvolvendo uma ferramenta que permite aos programadores tirar partido dos \emph{typestates}.
-A ferramenta toma a forma de uma DSL embebida em Rust, apoiada por macros,
-permitindo que a abordagem não se desvie da sintaxe de Rust e seja fácil de usar.
-O programador especifica \emph{typestates} pelo uso de anotações no código.
-Apartir da especificação, extrai-se uma máquina de estados que é depois verificada por erros comuns de \emph{typestates},
-garantindo propriedades extra em comparação com \emph{typestates} comuns.
-A ferramenta tira partido do sistema de tipos de Rust para garantir que o código está em acordo com os \emph{typestates}.
+Eu proponho uma nova abordagem de modo a lidar com \emph{typestates} em Rust,
+tal abordagem é baseada numa DSL embebida na linguagem,
+permitindo assim a descrição de \emph{typestates} usando apenas a sintaxe existente.
+A DSL vai mais além e providencia ainda verificações estáticas sobre a especificação,
+tirando proveito do sistema de macros, extrai uma máquina de estados que é depois verificada,
+por fim, a verificação de conformidade é feita pelo compilador, tirando proveito do sistema de tipos.
+A DSL evita poluição do ambiente trabalho, requerendo apenas um compilador de Rust e a sua própria biblioteca.
+
+% O objetivo desta tese é aproximar os \emph{typestates} do Rust em produção,
+% desenvolvendo uma ferramenta que permite aos programadores tirar partido dos \emph{typestates}.
+% A ferramenta toma a forma de uma DSL embebida em Rust, apoiada por macros,
+% permitindo que a abordagem não se desvie da sintaxe de Rust e seja fácil de usar.
+% O programador especifica \emph{typestates} pelo uso de anotações no código.
+% Apartir da especificação, extrai-se uma máquina de estados que é depois verificada por erros comuns de \emph{typestates},
+% garantindo propriedades extra em comparação com \emph{typestates} comuns.
+% A ferramenta tira partido do sistema de tipos de Rust para garantir que o código está em acordo com os \emph{typestates}.
 
 % Palavras-chave do resumo em Português
 \begin{keywords}

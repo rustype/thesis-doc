@@ -90,7 +90,8 @@
             "args": [
                 "--synctex",
                 "--keep-logs",
-                "%DOC%.tex"
+                "-Zshell-escape",
+                "%DOC%.tex",
             ],
             "env": {}
         }

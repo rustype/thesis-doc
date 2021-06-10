@@ -46,12 +46,13 @@ While the previous points aim to provide extra features, the macro would also be
 Everything works as expected, however the architecture and code organization could be made cleaner by further dividing each visitor.
 Currently, some visitors perform mutations to the tree at the same time they extract relevant information;
 this process can be split into mutation and information extraction, easing code readability.
-While I have no concrete proof of the performance impact of such change,
-I believe that allowing the macro to be more modular and simpler to understand, trumps other concerns.
 
 Along with the visitor changes, the underlying graph structures could also be modified,
 using a single graph structure as the result of the information extraction process,
 the graph could then be \quotes{reduced} into several specialized use cases, such as state machine verification and visualization.
+
+The two previous items, visitors and graph,
+can be leveraged to take the macro from a simple tool to an experimentation platform for typestates and automata verification in Rust.
 
 Finally, planning for the development of such work in the future ---
 I believe that starting with the re-architecture of the visitors followed by the graph would yield the best results,
