@@ -375,7 +375,7 @@ this process is illustrated in \autoref{fig:dsl-processing}.
 \subsubsection{Parsing}
 
 The macro's parsing procedure leverages the \texttt{syn} crate\footnote{\texttt{syn} is a parsing library for Rust's \texttt{TokenStream},
-for more information please see \url{https://docs.rs/syn/1.0.72/syn/index.html}.} to simply the parsing process,
+    for more information please see \url{https://docs.rs/syn/1.0.72/syn/index.html}.} to simply the parsing process,
 this allowed me to focus on getting the most information out of the user's code rather than worrying about how to parse Rust.
 
 As the \annotation{typestate} macro can only be attached to modules,
@@ -833,9 +833,9 @@ as long as we put it to good use we can rely on the borrow checker and type syst
 Regarding automata, my macro provides the following:
 \begin{description}
     \item[Non-empty language.] The language of the automaton should not be empty;
-    the macro ensures the presence of final states.
+        the macro ensures the presence of final states.
     \item[Usefulness.] All states should be useful, that is,
-    all states should be reachable from the initial state and be able to reach the final state.
+        all states should be reachable from the initial state and be able to reach the final state.
 \end{description}
 
 Minimality is not present in the list of provided guarantees because it is unclear how the macro could provide feedback to the user;
@@ -1075,19 +1075,33 @@ In this chapter I have presented:
     \item How the user can visualize and document their typestates (\autoref{sec:automata-visualization}).
 \end{compactitem}
 
-The present work is by no means final, there is a lot to improve upon (this is detailed in \autoref{cha:conclusions}),
-but the nonetheless it achieves interesting insights regarding the implementation of typestates and embedded DSLs.
 The use of procedural macros is nothing new to the ecosystem, however, DSLs are usually built with function-like procedural macros.
 While such approach has advantages \eg{the usage of new syntax and more expressive constructs} it comes at the cost of not only being harder to develop,
 but also requiring the developer to pay the upfront cost of learning it before they can use the DSL.
 
-My DSL tries to minimize these costs by using only existing Rust syntax, only tweaking some semantics.
-This approach has the advantage that learning cost is reduced,
-but the disadvantage that some users may find the semantic tweaking non-natural.
+The present work is by no means final, there is a lot to improve upon (this is detailed in \autoref{cha:conclusions}),
+but nonetheless, it achieves interesting insights:
 
-Another point of innovation (to the best of my knowledge) resides on the embedding of diagrams into the documentation;
-by itself, the idea of embedding images and diagrams in the documentation is not new,
-however, leveraging an existing DSL to also generate a moderately complex form of documentation is new.
-As a visual-leaning learner, I believe the diagram can help,
+
+\paragraph{DSLs} do not need to be a complete new language or even extend their host language;
+attaching a macro to a module provides a near complete language by itself,
+upon which we can simply tweak its semantics to our purposes.
+
+My DSL minimizes the cost of getting up and running by lightly tweaking Rust's semantics and building new constructs on top of it,
+such as the automata and state structures.
+While learning cost is reduced, a disadvantage is that some users may find the tweaks to be \quotes{non-natural}.
+
+% My DSL tries to minimize these costs by using only existing Rust syntax, only tweaking some semantics.
+% This approach has the advantage that learning cost is reduced,
+% but the disadvantage that some users may find the semantic tweaking non-natural.
+
+\paragraph{Diagrams} are powerful communication tools, as the popular saying goes --- \equotes{A picture is worth a thousand words}.
+Leveraging the graph-like nature of typestates to produce diagrams
+provides an extraordinary tool to aid in any development related to the typestate.
+Taking advantage of Rust's powerful macro system, one can eventually adapt these to other areas such as session types,
+or other areas where the line between code and information is blurred.
+
+To the best of my knowledge, my work is the first to leverage an existing embedded DSL and generate a moderately complex form of documentation.
+As a visual-leaning learner, I believe this feature can help users of the final APIs to understand how their typestates work,
 especially in more complex settings where state relationships may be difficult to visualize mentally.
-
+Moreover, these diagrams, being specifications, also facilitate debugging, maintenance and extension of the applications.

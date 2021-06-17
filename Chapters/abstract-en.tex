@@ -21,17 +21,17 @@ While preventing memory-related bugs goes a long way in software security, other
 One of which would be \gls{API} misusage, where the developer does not respect constraints put in place by an \gls{API},
 thus resulting in the program crashing.
 
-Typestates elevate state to the type level, allowing for the enforcement of \gls{API} constraints at compile-time.
-Relieving the developer from the burden that is keeping track of the possible computation states at runtime,
-preventing possible \gls{API} misusage during development.
+Typestates elevate state to the type level, allowing for the enforcement of \gls{API} constraints at compile-time,
+relieving the developer from the burden that is keeping track of the possible computation states at runtime,
+and preventing possible \gls{API} misusage during development.
 While Rust does not support typestates by design,
 the type system is powerful enough to express and validate typestates.
 
-I propose a new macro-based approach to deal with typestates in Rust,
-this approach provides an embedded DSL which allows developers to express typestates using only existing Rust syntax;
-furthermore, Rust's macro system is leveraged extract a state machine out of the typestate specification and
-then perform compile-time checks over the typestate specification,
-afterwards we leverage Rust's type system to check protocol-compliance for us.
+I propose a new macro-based approach to deal with typestates in Rust;
+this approach provides an embedded DSL which allows developers to express typestates using only existing Rust syntax.
+Furthermore, Rust's macro system is leveraged to extract a state machine out of the typestate specification and
+then perform compile-time checks over the specification.
+Afterwards we leverage Rust's type system to check protocol-compliance.
 The DSL avoids workflow-bloat by requiring nothing but a Rust compiler and the library itself.
 
 % This thesis' goal is to bridge the gap between typestates and production Rust,

@@ -502,7 +502,8 @@ unsuited for production environments.
 
 Like \texttt{session-types}, the \texttt{sesh} crate provides the required abstractions to use session types in Rust,
 however, the crate's documentation is limited, possibly being \quotes{inaccessible} to less experienced users
-w.r.t. Rust and session types.
+w.r.t. Rust and session types, along with these factors,
+the crate is not adequate for production due to the requirement of a nightly compiler.
 
 \paragraph{Multiparty Session Types for Rust.}
 Work on multiparty session types started with Lagaillardie et al. \autocite{Lagaillardie2020}.
@@ -525,6 +526,11 @@ the library makes use of the type system to enforce the consumption of each \quo
 enforcing protocol completion is done through a closure,
 which takes the initial session type and returns a terminal \texttt{End} type,
 a session is then required to be run until completion otherwise the return type will not be respected and the type checker will complain.
+
+Like \texttt{sesh} this crate is still in \quotes{research mode},
+however its documentation is not incomplete, but rather non-existent.
+This raises several difficulties when trying to evaluate the library as the only existing documentation is the paper \autocite{Cutner2021},
+which does not cover all the library's details.
 
 \subsection{Typestate}
 In the work of Ancona et al. \autocite[Section 2.3]{Ancona2016} several approaches to typestates are enumerated.

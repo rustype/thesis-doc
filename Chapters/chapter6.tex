@@ -33,23 +33,36 @@ While the DSL is a single contribution, its parts constitute several points of i
 
 The capabilities provided by the macro are useful for large systems and provide extra assurance during development,
 any system required to \quotes{get it right} can take advantage of them,
-reducing runtime state checks and easing the development process of large stateful systems.
+such as embedded devices, which, with the rise of the Internet-of-Things are becoming ever more present in our lives.
+Typestates further allow reducing runtime state checks and easing the development process of large stateful systems,
+another possible use case are smart contracts, this idea is supported by the work on the Obsidian language \autocite{Coblenz2020a, Coblenz2020}.
+
+% TODO: lessons learned
+
+This work is open-source and made available on GitHub under the dual license APACHE/MIT,
+users can use the crate made available on \texttt{crates.io}.
+Following, are the relevant links to the project:
+\begin{compactitem}
+    \item \textbf{Repository} --- \url{https://github.com/rustype/typestate-rs}
+    \item \textbf{Documentation} --- \url{https://docs.rs/typestate/0.7.2/typestate/}
+    \item \textbf{Library} --- \url{https://crates.io/crates/typestate}
+\end{compactitem}
 
 \section{Future Work}
 
 The current version of the macro suffers from some limitations:
 it does not support generics and by consequence, state machine nesting.
 Furthermore, the present work lacks formalization, relying on the Rust compiler to provide part of the formal guarantees;
-formalizing the present work represents a great step towards providing more guarantees that can be used in the \quotes{real-world}.
+formalizing the present work represents an important step towards ensuring more guarantees that can be used in the \quotes{real-world}.
 
 While the previous points aim to provide extra features, the macro would also benefit from some work in its internals.
-Everything works as expected, however the architecture and code organization could be made cleaner by further dividing each visitor.
+Everything works as expected, but the architecture and code organization could be made cleaner by further dividing each visitor.
 Currently, some visitors perform mutations to the tree at the same time they extract relevant information;
-this process can be split into mutation and information extraction, easing code readability.
+this process can be split into mutation and information extraction, easing code readability and maintenance.
 
 Along with the visitor changes, the underlying graph structures could also be modified,
-using a single graph structure as the result of the information extraction process,
-the graph could then be \quotes{reduced} into several specialized use cases, such as state machine verification and visualization.
+using a single graph structure as the result of the information extraction process.
+The graph could then be \quotes{reduced} into several specialized use cases, such as state machine verification and visualization.
 
 The two previous items, visitors and graph,
 can be leveraged to take the macro from a simple tool to an experimentation platform for typestates and automata verification in Rust.
