@@ -8,4 +8,394 @@
 
 \typeout{NT FILE chapter5.tex}
 
-\chapter{Case Study: Travel Agency}\label{cha:case-study}
+\chapter{Case Studies}\label{cha:case-study}
+
+In this chapter I present some case studies where my library was used and discuss some of its strengths and weaknesses.
+The examples from this chapter are available at \url{https://github.com/rustype/typestate-examples}.
+
+\section{Ring}
+
+The ring example is taken out of the Rumpsteak \autocite{Cutner2021} repository.
+The general example is composed of $N$ participants, in a \emph{ring},
+where the first one sends the value to the participant one the right,
+the other participant receives the value from the left and each participant repeats the same process.
+
+% TODO: illustrate the ring example
+
+Before comparing both APIs, it is important to notice that Rumpsteak is aimed at \gls{MPST}
+for Rust's \texttt{async}/\texttt{await} syntax,
+while \annotation{typestate} was designed with typestates and API constraints in mind.
+
+\subsection{Comparison}
+
+Given the session type nature of Rumpsteak, the library is able to enforce communication patterns at the type level,
+In lines 19-21 of \autoref{lst:rumpsteak-ring} we can see that \texttt{RingA} forcibly sends values to \texttt{B} and receives values from \texttt{C};
+this is not enforceable using \annotation{typestate}.
+
+\annotation{typestate} is able to reuse the participants more effectively,
+given that \texttt{B} and \texttt{C} perform the same operations, we can simply declare one,
+like in \autoref{lst:typestate-ring-follower}.
+This comes at the cost of not being able to enforce communication patterns.
+
+The API declared in \autoref{lst:typestate-ring-starter} and \autoref{lst:typestate-ring-follower}
+can be further simplified by returning the current value in the state transitions
+(using a function signature like \texttt{fn(self) -> (Value, NextState)});
+however, this feature is not yet implemented.
+
+
+\begin{listing}
+    \centering
+    \begin{minted}{Rust}
+#[derive(Roles)]
+struct Roles(A, B, C);
+
+#[derive(Role)]
+#[message(Value)]
+struct A(#[route(B)] Sender, #[route(C)] Receiver);
+
+#[derive(Role)]
+#[message(Value)]
+struct B(#[route(A)] Receiver, #[route(C)] Sender);
+
+#[derive(Role)]
+#[message(Value)]
+struct C(#[route(A)] Sender, #[route(B)] Receiver);
+
+#[derive(Message)]
+struct Value(i32);
+
+#[session] type RingA = Send<B, Value, Receive<C, Value, End>>;
+#[session] type RingB = Receive<A, Value, Send<C, Value, End>>;
+#[session] type RingC = Receive<B, Value, Send<A, Value, End>>;
+
+async fn ring_a(role: &mut A, input: i32) -> Result<i32> {
+    let x = input;
+    try_session(role, |s: RingA<'_, _>| async {
+        let s = s.send(Value(x)).await?;
+        let (Value(y), s) = s.receive().await?;
+        Ok((x + y, s))
+    }).await
+}
+
+async fn ring_b(role: &mut B, input: i32) -> Result<i32> {
+    let x = input;
+    try_session(role, |s: RingB<'_, _>| async {
+        let (Value(y), s) = s.receive().await?;
+        let s = s.send(Value(x)).await?;
+        Ok((x + y, s))
+    }).await
+}
+
+async fn ring_c(role: &mut C, input: i32) -> Result<i32> {
+    let x = input;
+    try_session(role, |s: RingC<'_, _>| async {
+        let (Value(y), s) = s.receive().await?;
+        let s = s.send(Value(x)).await?;
+        Ok((x + y, s))
+    }).await
+}
+    \end{minted}
+    \caption{Rumpsteak's Ring implementation.}
+    \label{lst:rumpsteak-ring}
+\end{listing}
+
+\begin{listing}
+    \begin{minted}{Rust}
+#[typestate::typestate]
+mod ring_a {
+    #[automaton] pub struct RingA;
+
+    #[state] pub struct SendA(pub i32);
+    pub trait SendA {
+        fn new(value: i32) -> SendA;
+        fn get_value(&self) -> i32;
+        fn send(self) -> RecvA;
+        fn end(self);
+    }
+
+    #[state] pub struct RecvA;
+    pub trait RecvA {
+        fn recv(self, value: i32) -> SendA;
+    }
+}
+
+impl SendAState for RingA<SendA> {
+    fn new(value: i32) -> Self {
+        Self { state: SendA(value) }
+    }
+
+    fn get_value(&self) -> i32 { self.state.0 }
+
+    fn send(self) -> RingA<RecvA> {
+        RingA::<RecvA> { state: RecvA }
+    }
+
+    fn end(self) {}
+}
+
+impl RecvAState for RingA<RecvA> {
+    fn recv(self, value: i32) -> RingA<SendA> {
+        RingA::<SendA> { state: SendA(value) }
+    }
+}
+    \end{minted}
+    \caption{\annotation{typestate}'s implementation of participant A.}
+    \label{lst:typestate-ring-starter}
+\end{listing}
+
+\begin{listing}
+    \begin{minted}{Rust}
+#[typestate::typestate]
+mod ring_b {
+    #[automaton] pub struct RingB;
+
+    #[state] pub struct SendB(pub i32);
+    pub trait SendB {
+        fn get_value(&self) -> i32;
+        fn send(self) -> RecvB;
+    }
+
+    #[state] pub struct RecvB;
+    pub trait RecvB {
+        fn new() -> RecvB;
+        fn recv(self, value: i32) -> SendB;
+        fn end(self);
+    }
+}
+
+impl SendBState for RingB<SendB> {
+    fn get_value(&self) -> i32 { self.state.0 }
+
+    fn send(self) -> RingB<RecvB> {
+        RingB::<RecvB> { state: RecvB }
+    }
+}
+
+impl RecvBState for RingB<RecvB> {
+    fn new() -> Self { Self { state: RecvB } }
+
+    fn recv(self, value: i32) -> RingB<SendB> {
+        RingB::<SendB> { state: SendB(value) }
+    }
+
+    fn end(self) {}
+}
+    \end{minted}
+    \caption{\annotation{typestate}'s implementation of participant B.}
+    \label{lst:typestate-ring-follower}
+\end{listing}
+
+
+\section{PIN}
+
+The PIN example has three principals, a card, read by the card reader, which is used by the final client.
+To use the card, the client is first required to authenticate, which is done through the reader;
+it is possible to see in lines 14 and 22 that the card state is enforced, ensuring that both the reader and card states are in sync.
+
+\begin{listing}
+    \begin{minted}{rust}
+#[typestate::typestate]
+pub mod reader_api {
+    use crate::card::card_api;
+
+    #[automaton] pub struct Reader;
+
+    #[state] pub struct Start;
+    pub trait Start {
+        fn start() -> Start;
+        fn check_for_card(self) -> CheckCardResult;
+    }
+
+    #[state] pub struct CardPresent {
+        pub card: card_api::Card<card_api::Start>,
+    }
+
+    pub trait CardPresent {
+        fn authenticate(self, pin: [u8; 4]) -> AuthResult;
+    }
+
+    #[state] pub struct Authenticated {
+        pub card: card_api::Card<card_api::Authenticated>,
+    }
+
+    pub trait Authenticated {
+        fn browse(&self);
+        fn end(self);
+    }
+
+    #[state] pub struct Error {
+        pub message: String,
+    }
+
+    pub trait Error {
+        fn end(self);
+    }
+
+    pub enum CheckCardResult { CardPresent, Error }
+
+    pub enum AuthResult { Authenticated, Error }
+}
+    \end{minted}
+    \caption{The \texttt{Reader} typestate specification.}
+    \label{lst:typestate-reader}
+\end{listing}
+
+\begin{listing}
+    \begin{minted}{rust}
+#[typestate::typestate]
+pub mod card_api {
+    #[automaton] pub struct Card {
+        pub valid_pin: [u8; 4],
+        pub attempts_left: u8,
+    }
+
+    #[state] pub struct Start;
+    pub trait Start {
+        fn new() -> Start;
+        fn perform_authentication(self, pin: [u8; 4]) -> AuthResult;
+        fn disconnect(self);
+    }
+
+    #[state] pub struct Authenticated;
+    pub trait Authenticated {
+        fn browse(&self);
+        fn disconnect(self);
+    }
+
+    #[state] pub struct Error;
+    pub trait Error {
+        fn retry(self) -> Start;
+        fn disconnect(self);
+    }
+
+    #[state] pub struct Blocked;
+    pub trait Blocked {
+        fn disconnect(self);
+    }
+
+    pub enum AuthResult { Authenticated, Blocked, Error }
+}
+    \end{minted}
+    \caption{The \texttt{Card} typestate specification.}
+    \label{lst:typestate-card}
+\end{listing}
+
+
+\section{Auction Client}
+
+The auction client was designed on top of a non-typestated API,
+its goal is to ensure that the user does not perform bids that are not the highest one,
+in the case the user is outbid by another, the client is then required to withdraw its bid before submitting another.
+
+The auction API is listed in \autoref{lst:typestate-auction},
+it allows bidding to be done and to emulate the closure of the auction with each bid a random boolean is generated,
+if the auction closes, bidding is closed; all checks are performed at runtime.
+
+\begin{listing}
+    \begin{minted}{rust}
+pub struct Auction {
+    owner: String,
+    bids: HashMap<String, u64>,
+    highest_bid: u64,
+    ended: bool,
+}
+
+impl Auction {
+    pub fn new(owner: String) -> Self {
+        Self {
+            owner,
+            bids: HashMap::new(),
+            highest_bid: 0,
+            ended: false,
+        }
+    }
+
+    pub fn bid(&mut self, client: String, bid: u64) -> Option<()> {
+        if self.owner == client {
+            return None;
+        }
+        if !self.has_ended() {
+            self.ended = rand::random();
+            self.bids.insert(client, bid);
+            if self.highest_bid < bid {
+                self.highest_bid = bid;
+            }
+            Some(())
+        } else {
+            None
+        }
+    }
+
+    pub fn is_highest_bid(&self, client: &String) -> bool {
+        match self.bids.get(client).map(|bid| self.highest_bid == *bid) {
+            Some(is_highest) => is_highest,
+            None => false,
+        }
+    }
+
+    pub fn get_bid(&self, client: String) -> Option<&u64> {
+        self.bids.get(&client)
+    }
+
+    pub fn has_ended(&self) -> bool { self.ended }
+}
+    \end{minted}
+    \caption{The auction API.}
+    \label{lst:typestate-auction}
+\end{listing}
+
+\begin{listing}
+    \begin{minted}{rust}
+#[typestate::typestate]
+mod auction_client_api {
+    use crate::auction::Auction;
+
+    #[automaton] pub struct Client {
+        pub(crate) name: String,
+        pub(crate) auction: Auction,
+    }
+
+    #[state] pub struct AuctionRunning;
+    pub trait AuctionRunning {
+        fn start(name: String, auction: Auction) -> AuctionRunning;
+        fn has_ended(self) -> AuctionState;
+    }
+
+    #[state] pub struct NoBids;
+    pub trait NoBids {
+        fn bid(self, bid: u64) -> BidStatus;
+    }
+
+    #[state] pub struct HasBidded;
+    pub trait HasBidded {
+        fn check_bid(self) -> BidStatus;
+        fn has_ended(self) -> AuctionEnded;
+    }
+
+    #[state] pub struct CheckWinner;
+    pub trait CheckWinner { fn is_highest_bid(self) -> WinnerStatus; }
+
+    #[state] pub struct Withdraw;
+    pub trait Withdraw { fn withdraw(self) -> AuctionRunning; }
+
+    #[state] pub struct Lost;
+    pub trait Lost { fn withdraw(self) -> End; }
+
+    #[state] pub struct Winner;
+    pub trait Winner { fn win(self) -> End; }
+
+    #[state] pub struct End;
+    pub trait End { fn end(self); }
+
+    pub enum WinnerStatus { Lost, Winner }
+
+    pub enum AuctionEnded { HasBidded, CheckWinner }
+
+    pub enum AuctionState { NoBids, End }
+
+    pub enum BidStatus { HasBidded, Withdraw }
+}
+    \end{minted}
+    \caption{The auction client's typestate declaration.}
+    \label{lst:typestate-auction-client}
+\end{listing}
