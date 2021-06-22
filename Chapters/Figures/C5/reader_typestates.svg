@@ -1,0 +1,799 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="261.43765mm"
+   height="205.47292mm"
+   viewBox="0 0 261.43765 205.47292"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
+   sodipodi:docname="reader_typestates.svg">
+  <defs
+     id="defs2">
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lstart"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lstart"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(0.8,0,0,0.8,10,0)"
+         style="fill:#24a024;fill-opacity:1;fill-rule:evenodd;stroke:#24a024;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path1570" />
+    </marker>
+    <filter
+       height="3"
+       id="f1b25f8dxq4972"
+       width="3"
+       x="-1"
+       y="-1">
+      <feGaussianBlur
+         result="blurOut"
+         stdDeviation="2.0"
+         id="feGaussianBlur1300" />
+      <feColorMatrix
+         in="blurOut"
+         result="blurOut2"
+         type="matrix"
+         values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"
+         id="feColorMatrix1302" />
+      <feOffset
+         dx="4.0"
+         dy="4.0"
+         in="blurOut2"
+         result="blurOut3"
+         id="feOffset1304" />
+      <feBlend
+         in="SourceGraphic"
+         in2="blurOut3"
+         mode="normal"
+         id="feBlend1306" />
+    </filter>
+    <filter
+       height="3"
+       id="f1q82vu0gise5v"
+       width="3"
+       x="-1"
+       y="-1">
+      <feGaussianBlur
+         result="blurOut"
+         stdDeviation="2.0"
+         id="feGaussianBlur1438" />
+      <feColorMatrix
+         in="blurOut"
+         result="blurOut2"
+         type="matrix"
+         values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"
+         id="feColorMatrix1440" />
+      <feOffset
+         dx="4.0"
+         dy="4.0"
+         in="blurOut2"
+         result="blurOut3"
+         id="feOffset1442" />
+      <feBlend
+         in="SourceGraphic"
+         in2="blurOut3"
+         mode="normal"
+         id="feBlend1444" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="391.65131"
+     inkscape:cy="465.01746"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     lock-margins="true"
+     fit-margin-top="10"
+     fit-margin-left="10"
+     fit-margin-right="10"
+     fit-margin-bottom="10"
+     inkscape:window-width="2560"
+     inkscape:window-height="1378"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(20.323787,-37.052087)">
+    <g
+       id="g1383"
+       transform="matrix(0.26458333,0,0,0.26458333,11.081005,84.608222)">
+      <circle
+         cx="138.60001"
+         cy="18"
+         fill="#000000"
+         filter="url(#f1b25f8dxq4972)"
+         style="stroke:none;stroke-width:1"
+         id="ellipse1311"
+         r="10" />
+      <rect
+         fill="#fefece"
+         filter="url(#f1b25f8dxq4972)"
+         height="40"
+         rx="12.5"
+         ry="12.5"
+         style="stroke:#a80036;stroke-width:1.5"
+         width="50"
+         x="113.6"
+         y="107"
+         id="rect1313" />
+      <text
+         fill="#000000"
+         font-family="sans-serif"
+         font-size="14px"
+         lengthAdjust="spacingAndGlyphs"
+         textLength="32"
+         x="122.6"
+         y="132.43201"
+         id="text1315">Start</text>
+      <circle
+         cx="144.60001"
+         cy="473"
+         fill="none"
+         filter="url(#f1b25f8dxq4972)"
+         style="stroke:#000000;stroke-width:1"
+         id="ellipse1317"
+         r="10" />
+      <circle
+         cx="145.10001"
+         cy="473.5"
+         fill="#000000"
+         style="stroke:none;stroke-width:1"
+         id="ellipse1319"
+         r="6" />
+      <rect
+         fill="#fefece"
+         filter="url(#f1b25f8dxq4972)"
+         height="40"
+         rx="12.5"
+         ry="12.5"
+         style="stroke:#a80036;stroke-width:1.5"
+         width="62"
+         x="184.60001"
+         y="336.5"
+         id="rect1321" />
+      <text
+         fill="#000000"
+         font-family="sans-serif"
+         font-size="14px"
+         lengthAdjust="spacingAndGlyphs"
+         textLength="52"
+         x="189.60001"
+         y="361.93201"
+         id="text1323">Blocked</text>
+      <rect
+         fill="#fefece"
+         filter="url(#f1b25f8dxq4972)"
+         height="40"
+         rx="12.5"
+         ry="12.5"
+         style="stroke:#a80036;stroke-width:1.5"
+         width="50"
+         x="281.60001"
+         y="336.5"
+         id="rect1325" />
+      <text
+         fill="#000000"
+         font-family="sans-serif"
+         font-size="14px"
+         lengthAdjust="spacingAndGlyphs"
+         textLength="34"
+         x="289.60001"
+         y="361.93201"
+         id="text1327">Error</text>
+      <rect
+         fill="#fefece"
+         filter="url(#f1b25f8dxq4972)"
+         height="55.411999"
+         rx="12.5"
+         ry="12.5"
+         style="stroke:#a80036;stroke-width:1.5"
+         width="115"
+         x="34.099998"
+         y="329"
+         id="rect1329" />
+      <line
+         style="stroke:#a80036;stroke-width:1.5"
+         x1="34.099998"
+         x2="149.10001"
+         y1="358.0679"
+         y2="358.0679"
+         id="line1331" />
+      <text
+         fill="#000000"
+         font-family="sans-serif"
+         font-size="14px"
+         lengthAdjust="spacingAndGlyphs"
+         textLength="95"
+         x="44.099998"
+         y="348.96591"
+         id="text1333">Authenticated</text>
+      <text
+         fill="#000000"
+         font-family="sans-serif"
+         font-size="12px"
+         lengthAdjust="spacingAndGlyphs"
+         textLength="41"
+         x="39.099998"
+         y="375.896"
+         id="text1335">browse</text>
+      <polygon
+         fill="#fefece"
+         filter="url(#f1b25f8dxq4972)"
+         points="176.6,226 188.6,238 176.6,250 164.6,238 "
+         style="stroke:#a80036;stroke-width:1.5"
+         id="polygon1337" />
+      <!--MD5=[a0be3251f15ef50a7257de6fc99fd504]
+link *start to Start-->
+      <path
+         d="m 138.6,28.12 c 0,16.17 0,50.33 0,73.69"
+         fill="none"
+         id="*start-&gt;Start"
+         style="stroke:#a80036;stroke-width:1" />
+      <polygon
+         fill="#a80036"
+         points="138.6,106.92 142.6,97.92 138.6,101.92 134.6,97.92 "
+         style="stroke:#a80036;stroke-width:1"
+         id="polygon1340" />
+      <text
+         fill="#000000"
+         font-family="sans-serif"
+         font-size="13px"
+         lengthAdjust="spacingAndGlyphs"
+         textLength="25"
+         x="139.60001"
+         y="72.897003"
+         id="text1342">new</text>
+      <!--MD5=[59b8b02ef644a3950ef6c5b24c2f2a03]
+link Start to *end-->
+      <path
+         d="M 117.01,147.21 C 71.95,189.74 -24.66,295.14 16.6,384 c 22.23,47.9 85.34,74.01 113.79,83.64"
+         fill="none"
+         id="Start-&gt;*end"
+         style="stroke:#a80036;stroke-width:1" />
+      <polygon
+         fill="#a80036"
+         points="135.28,469.24 127.9709,462.6387 130.5281,467.6846 125.4822,470.2418 "
+         style="stroke:#a80036;stroke-width:1"
+         id="polygon1345" />
+      <text
+         fill="#000000"
+         font-family="sans-serif"
+         font-size="13px"
+         lengthAdjust="spacingAndGlyphs"
+         textLength="65"
+         x="19.6"
+         y="294.897"
+         id="text1347">disconnect</text>
+      <!--MD5=[930fa164367b7726035ba79389f8d48f]
+link Blocked to *end-->
+      <path
+         d="m 203.71,376.66 c -14.69,23.7 -39.26,63.32 -51.58,83.19"
+         fill="none"
+         id="Blocked-&gt;*end"
+         style="stroke:#a80036;stroke-width:1" />
+      <polygon
+         fill="#a80036"
+         points="149.41,464.23 157.5553,458.6934 152.0472,459.982 150.7585,454.4739 "
+         style="stroke:#a80036;stroke-width:1"
+         id="polygon1350" />
+      <text
+         fill="#000000"
+         font-family="sans-serif"
+         font-size="13px"
+         lengthAdjust="spacingAndGlyphs"
+         textLength="65"
+         x="180.60001"
+         y="428.897"
+         id="text1352">disconnect</text>
+      <!--MD5=[7748d72ab64101d2b173fcc1f57892c5]
+link Error to *end-->
+      <path
+         d="m 297.67,376.8 c -8.76,16.99 -23.62,41.29 -43.07,56.2 -29.33,22.49 -72.7,32.73 -95.22,36.76"
+         fill="none"
+         id="Error-&gt;*end"
+         style="stroke:#a80036;stroke-width:1" />
+      <polygon
+         fill="#a80036"
+         points="154.39,470.61 163.9355,473.0357 159.3185,469.7672 162.5869,465.1501 "
+         style="stroke:#a80036;stroke-width:1"
+         id="polygon1355" />
+      <text
+         fill="#000000"
+         font-family="sans-serif"
+         font-size="13px"
+         lengthAdjust="spacingAndGlyphs"
+         textLength="65"
+         x="272.60001"
+         y="428.897"
+         id="text1357">disconnect</text>
+      <!--MD5=[5b3f495082bfa9e08b91fc93f0e4ed16]
+link Authenticated to *end-->
+      <path
+         d="m 84.27,384.09 c -2.69,15.15 -3.44,34.03 4.33,48.91 8.79,16.84 28.53,27.88 42.06,33.78"
+         fill="none"
+         id="Authenticated-&gt;*end"
+         style="stroke:#a80036;stroke-width:1" />
+      <polygon
+         fill="#a80036"
+         points="135.33,468.73 128.5686,461.5687 130.7167,466.8019 125.4836,468.95 "
+         style="stroke:#a80036;stroke-width:1"
+         id="polygon1360" />
+      <text
+         fill="#000000"
+         font-family="sans-serif"
+         font-size="13px"
+         lengthAdjust="spacingAndGlyphs"
+         textLength="65"
+         x="89.599998"
+         y="428.897"
+         id="text1362">disconnect</text>
+      <!--MD5=[8fd761bdf58c71255010d00fd4c3cf53]
+link Error to Start-->
+      <path
+         d="M 310.27,336.32 C 315.93,300.62 322.52,223.43 284.6,177 256.34,142.4 202.79,132.09 168.99,129.11"
+         fill="none"
+         id="Error-&gt;Start"
+         style="stroke:#a80036;stroke-width:1" />
+      <polygon
+         fill="#a80036"
+         points="163.74,128.69 172.3913,133.3969 168.724,129.0899 173.0311,125.4226 "
+         style="stroke:#a80036;stroke-width:1"
+         id="polygon1365" />
+      <text
+         fill="#000000"
+         font-family="sans-serif"
+         font-size="13px"
+         lengthAdjust="spacingAndGlyphs"
+         textLength="29"
+         x="312.60001"
+         y="243.397"
+         id="text1367">retry</text>
+      <!--MD5=[b9eb313ed18d1e15da43ab433e367168]
+link Start to C_Start-->
+      <path
+         d="m 133.52,147.22 c -2.72,14.05 -4.34,33.28 2.08,48.78 6.01,14.52 19.93,26.57 29.89,33.77"
+         fill="none"
+         id="Start-&gt;C_Start"
+         style="stroke:#a80036;stroke-width:1" />
+      <polygon
+         fill="#a80036"
+         points="169.74,232.73 164.643,224.3026 165.6378,229.8713 160.0691,230.8661 "
+         style="stroke:#a80036;stroke-width:1"
+         id="polygon1370" />
+      <text
+         fill="#000000"
+         font-family="sans-serif"
+         font-size="13px"
+         lengthAdjust="spacingAndGlyphs"
+         textLength="143"
+         x="136.60001"
+         y="191.897"
+         id="text1372">perform_authentication</text>
+      <!--MD5=[8d3d8b8b7cbed5f46fff7594ed08da8b]
+link C_Start to Blocked-->
+      <path
+         d="m 179.4,247.38 c 5.8,17.31 19.29,57.61 28.06,83.82"
+         fill="none"
+         id="C_Start-&gt;Blocked"
+         style="stroke:#a80036;stroke-width:1" />
+      <polygon
+         fill="#a80036"
+         points="209.15,336.24 210.0898,326.4361 207.5646,331.498 202.5026,328.9728 "
+         style="stroke:#a80036;stroke-width:1"
+         id="polygon1375" />
+      <!--MD5=[f36852400bb5d10aaa59c85a825e54b9]
+link C_Start to Error-->
+      <path
+         d="m 182.52,244.31 c 17.16,15.38 67.66,60.63 98.69,88.44"
+         fill="none"
+         id="C_Start-&gt;Error"
+         style="stroke:#a80036;stroke-width:1" />
+      <polygon
+         fill="#a80036"
+         points="285.27,336.38 281.2391,327.3938 281.5472,333.0423 275.8987,333.3504 "
+         style="stroke:#a80036;stroke-width:1"
+         id="polygon1378" />
+      <!--MD5=[3cc56fe00c2e5bf2e3a8e2c35b990a7e]
+link C_Start to Authenticated-->
+      <path
+         d="m 171.78,245.6 c -10.9,14.94 -38.05,52.16 -57.75,79.15"
+         fill="none"
+         id="C_Start-&gt;Authenticated"
+         style="stroke:#a80036;stroke-width:1" />
+      <polygon
+         fill="#a80036"
+         points="110.94,328.99 119.4706,324.0676 113.8826,324.9476 113.0026,319.3596 "
+         style="stroke:#a80036;stroke-width:1"
+         id="polygon1381" />
+      <!--MD5=[cbe89bcd570f9dfaaac4c75b5103a992]
+@startuml
+hide empty description
+[*] - -> Start : new
+Start - -> [*] : disconnect
+Blocked - -> [*] : disconnect
+Error - -> [*] : disconnect
+Authenticated - -> [*] : disconnect
+Error - -> Start : retry
+Authenticated : browse
+state C_Start <<choice>>
+Start - -> C_Start: perform_authentication
+C_Start - -> Blocked
+C_Start - -> Error
+C_Start - -> Authenticated
+
+@enduml
+
+PlantUML version 1.2020.02(Sun Mar 01 10:22:07 WET 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 16.0.1+9-Ubuntu-1
+Operating System: Linux
+Default Encoding: UTF-8
+Language: en
+Country: US
+-->
+    </g>
+    <g
+       id="g1516"
+       transform="matrix(0.26458333,0,0,0.26458333,146.05033,50.227087)">
+      <circle
+         cx="51"
+         cy="18"
+         fill="#000000"
+         filter="url(#f1q82vu0gise5v)"
+         style="stroke:none;stroke-width:1"
+         id="ellipse1449"
+         r="10" />
+      <rect
+         fill="#fefece"
+         filter="url(#f1q82vu0gise5v)"
+         height="40"
+         rx="12.5"
+         ry="12.5"
+         style="stroke:#a80036;stroke-width:1.5"
+         width="50"
+         x="26"
+         y="107"
+         id="rect1451" />
+      <text
+         fill="#000000"
+         font-family="sans-serif"
+         font-size="14px"
+         lengthAdjust="spacingAndGlyphs"
+         textLength="32"
+         x="35"
+         y="132.43201"
+         id="text1453">Start</text>
+      <rect
+         fill="#fefece"
+         filter="url(#f1q82vu0gise5v)"
+         height="40"
+         rx="12.5"
+         ry="12.5"
+         style="stroke:#a80036;stroke-width:1.5"
+         width="50"
+         x="6"
+         y="522.5"
+         id="rect1455" />
+      <text
+         fill="#000000"
+         font-family="sans-serif"
+         font-size="14px"
+         lengthAdjust="spacingAndGlyphs"
+         textLength="34"
+         x="14"
+         y="547.93201"
+         id="text1457">Error</text>
+      <circle
+         cx="89"
+         cy="659"
+         fill="none"
+         filter="url(#f1q82vu0gise5v)"
+         style="stroke:#000000;stroke-width:1"
+         id="ellipse1459"
+         r="10" />
+      <circle
+         cx="89.5"
+         cy="659.5"
+         fill="#000000"
+         style="stroke:none;stroke-width:1"
+         id="ellipse1461"
+         r="6" />
+      <rect
+         fill="#fefece"
+         filter="url(#f1q82vu0gise5v)"
+         height="55.411999"
+         rx="12.5"
+         ry="12.5"
+         style="stroke:#a80036;stroke-width:1.5"
+         width="115"
+         x="91.5"
+         y="515"
+         id="rect1463" />
+      <line
+         style="stroke:#a80036;stroke-width:1.5"
+         x1="91.5"
+         x2="206.5"
+         y1="544.06787"
+         y2="544.06787"
+         id="line1465" />
+      <text
+         fill="#000000"
+         font-family="sans-serif"
+         font-size="14px"
+         lengthAdjust="spacingAndGlyphs"
+         textLength="95"
+         x="101.5"
+         y="534.96588"
+         id="text1467">Authenticated</text>
+      <text
+         fill="#000000"
+         font-family="sans-serif"
+         font-size="12px"
+         lengthAdjust="spacingAndGlyphs"
+         textLength="41"
+         x="96.5"
+         y="561.896"
+         id="text1469">browse</text>
+      <polygon
+         fill="#fefece"
+         filter="url(#f1q82vu0gise5v)"
+         points="131,454 119,442 131,430 143,442 "
+         style="stroke:#a80036;stroke-width:1.5"
+         id="polygon1471" />
+      <rect
+         fill="#fefece"
+         filter="url(#f1q82vu0gise5v)"
+         height="40"
+         rx="12.5"
+         ry="12.5"
+         style="stroke:#a80036;stroke-width:1.5"
+         width="93"
+         x="84.5"
+         y="311"
+         id="rect1473" />
+      <text
+         fill="#000000"
+         font-family="sans-serif"
+         font-size="14px"
+         lengthAdjust="spacingAndGlyphs"
+         textLength="83"
+         x="89.5"
+         y="336.43201"
+         id="text1475">CardPresent</text>
+      <polygon
+         fill="#fefece"
+         filter="url(#f1q82vu0gise5v)"
+         points="51,250 39,238 51,226 63,238 "
+         style="stroke:#a80036;stroke-width:1.5"
+         id="polygon1477" />
+      <!--MD5=[a0be3251f15ef50a7257de6fc99fd504]
+link *start to Start-->
+      <path
+         d="m 51,28.12 c 0,16.17 0,50.33 0,73.69"
+         fill="none"
+         id="*start-&gt;Start-3"
+         style="stroke:#a80036;stroke-width:1" />
+      <polygon
+         fill="#a80036"
+         points="51,101.92 47,97.92 51,106.92 55,97.92 "
+         style="stroke:#a80036;stroke-width:1"
+         id="polygon1480" />
+      <text
+         fill="#000000"
+         font-family="sans-serif"
+         font-size="13px"
+         lengthAdjust="spacingAndGlyphs"
+         textLength="28"
+         x="52"
+         y="72.897003"
+         id="text1482">start</text>
+      <!--MD5=[7748d72ab64101d2b173fcc1f57892c5]
+link Error to *end-->
+      <path
+         d="m 39.67,562.6 c 7.08,15.38 17.49,37.46 27.33,56.4 4.69,9.03 10.33,19.01 14.73,26.62"
+         fill="none"
+         id="Error-&gt;*end-6"
+         style="stroke:#a80036;stroke-width:1" />
+      <polygon
+         fill="#a80036"
+         points="81.7786,645.6965 76.3107,644.2467 84.29,650.02 83.2284,640.2285 "
+         style="stroke:#a80036;stroke-width:1"
+         id="polygon1485" />
+      <text
+         fill="#000000"
+         font-family="sans-serif"
+         font-size="13px"
+         lengthAdjust="spacingAndGlyphs"
+         textLength="23"
+         x="68"
+         y="614.89697"
+         id="text1487">end</text>
+      <!--MD5=[5b3f495082bfa9e08b91fc93f0e4ed16]
+link Authenticated to *end-->
+      <path
+         d="M 135.08,570.06 C 122.74,593.61 105.25,627 95.76,645.11"
+         fill="none"
+         id="Authenticated-&gt;*end-7"
+         style="stroke:#a80036;stroke-width:1" />
+      <polygon
+         fill="#a80036"
+         points="95.6158,645.3586 93.9233,639.9609 93.3,649.79 101.0135,643.6661 "
+         style="stroke:#a80036;stroke-width:1"
+         id="polygon1490" />
+      <text
+         fill="#000000"
+         font-family="sans-serif"
+         font-size="13px"
+         lengthAdjust="spacingAndGlyphs"
+         textLength="23"
+         x="120"
+         y="614.89697"
+         id="text1492">end</text>
+      <!--MD5=[298e9aaf13b2ce69be4f2d6ded4a1a87]
+link CardPresent to C_CardPresent-->
+      <path
+         d="m 131,351.24 c 0,20.89 0,53.9 0,73.53"
+         fill="none"
+         id="CardPresent-&gt;C_CardPresent"
+         style="stroke:#a80036;stroke-width:1" />
+      <polygon
+         fill="#a80036"
+         points="131,424.93 127,420.93 131,429.93 135,420.93 "
+         style="stroke:#a80036;stroke-width:1"
+         id="polygon1495" />
+      <text
+         fill="#000000"
+         font-family="sans-serif"
+         font-size="13px"
+         lengthAdjust="spacingAndGlyphs"
+         textLength="76"
+         x="132"
+         y="395.897"
+         id="text1497">authenticate</text>
+      <!--MD5=[e513bc0dc17de3c21c68562a89c4261a]
+link C_CardPresent to Error-->
+      <path
+         d="m 125.34,448.58 c -13.42,13.21 -47.75,47.02 -71.07,70"
+         fill="none"
+         id="C_CardPresent-&gt;Error"
+         style="stroke:#a80036;stroke-width:1" />
+      <polygon
+         fill="#a80036"
+         points="54.1769,518.656 54.2112,512.9992 50.62,522.17 59.8336,518.6902 "
+         style="stroke:#a80036;stroke-width:1"
+         id="polygon1500" />
+      <!--MD5=[214bda750b1b110259d833a2bba9ce74]
+link C_CardPresent to Authenticated-->
+      <path
+         d="m 132.73,452.44 c 2.4,13.14 6.86,37.57 10.51,57.53"
+         fill="none"
+         id="C_CardPresent-&gt;Authenticated"
+         style="stroke:#a80036;stroke-width:1" />
+      <polygon
+         fill="#a80036"
+         points="143.2518,510.0113 138.5983,506.795 144.15,514.93 146.4682,505.3579 "
+         style="stroke:#a80036;stroke-width:1"
+         id="polygon1503" />
+      <!--MD5=[b9eb313ed18d1e15da43ab433e367168]
+link Start to C_Start-->
+      <path
+         d="m 51,147.24 c 0,20.89 0,53.9 0,73.53"
+         fill="none"
+         id="Start-&gt;C_Start-5"
+         style="stroke:#a80036;stroke-width:1" />
+      <polygon
+         fill="#a80036"
+         points="51,220.93 47,216.93 51,225.93 55,216.93 "
+         style="stroke:#a80036;stroke-width:1"
+         id="polygon1506" />
+      <text
+         fill="#000000"
+         font-family="sans-serif"
+         font-size="13px"
+         lengthAdjust="spacingAndGlyphs"
+         textLength="89"
+         x="52"
+         y="191.897"
+         id="text1508">check_for_card</text>
+      <!--MD5=[f36852400bb5d10aaa59c85a825e54b9]
+link C_Start to Error-->
+      <path
+         d="M 50.31,249.41 C 47.48,292.17 36.72,454.93 32.61,517.13"
+         fill="none"
+         id="C_Start-&gt;Error-3"
+         style="stroke:#a80036;stroke-width:1" />
+      <polygon
+         fill="#a80036"
+         points="32.5888,517.4908 28.8605,513.2364 32.26,522.48 36.8432,513.7625 "
+         style="stroke:#a80036;stroke-width:1"
+         id="polygon1511" />
+      <!--MD5=[f38ee31250f1c308aa4e0d9880c164b2]
+link C_Start to CardPresent-->
+      <path
+         d="m 56.25,244.97 c 10.86,12.36 36.32,41.31 54.5,62"
+         fill="none"
+         id="C_Start-&gt;CardPresent"
+         style="stroke:#a80036;stroke-width:1" />
+      <polygon
+         fill="#a80036"
+         points="110.7604,306.9733 105.1154,306.6076 114.06,310.73 111.1261,301.3283 "
+         style="stroke:#a80036;stroke-width:1"
+         id="polygon1514" />
+      <!--MD5=[f2d1ed4d51da0b6837fa338ea1e737f8]
+@startuml
+hide empty description
+[*] - -> Start : start
+Error - -> [*] : end
+Authenticated - -> [*] : end
+Authenticated : browse
+state C_CardPresent <<choice>>
+CardPresent - -> C_CardPresent: authenticate
+C_CardPresent - -> Error
+C_CardPresent - -> Authenticated
+
+state C_Start <<choice>>
+Start - -> C_Start: check_for_card
+C_Start - -> Error
+C_Start - -> CardPresent
+
+@enduml
+
+PlantUML version 1.2020.02(Sun Mar 01 10:22:07 WET 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 16.0.1+9-Ubuntu-1
+Operating System: Linux
+Default Encoding: UTF-8
+Language: en
+Country: US
+-->
+    </g>
+    <path
+       style="fill:none;stroke:#24a024;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:4, 2;stroke-dashoffset:0;stroke-opacity:1;marker-start:url(#Arrow1Lstart)"
+       d="m 54.366839,112.91864 c 40.064138,-7.84355 78.433781,-3.80827 114.040781,19.59386"
+       id="path1568"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#24a024;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:4, 2;stroke-dashoffset:0;stroke-opacity:1;marker-start:url(#Arrow1Lstart)"
+       d="m 25.467823,186.79962 c 2.181493,78.98746 127.638987,30.7841 144.791877,14.34897"
+       id="path2686"
+       sodipodi:nodetypes="cc" />
+  </g>
+</svg>
