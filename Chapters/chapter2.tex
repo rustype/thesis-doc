@@ -441,9 +441,9 @@ completely eliminate the need for illegal state exceptions since illegal transit
 
 As a simple example, consider the Java application in \autoref{lst:java-read} which simply which reads two lines from \texttt{stdin}.
 The application will throw an exception on line 6,
-since the programmer closed the \texttt{Scanner} in line 5.
+since the programmer closed the \keyword{Scanner} in line 5.
 In this example, the error is simple to catch,
-the program is short and the \texttt{Scanner} can either be open or closed,
+the program is short and the \keyword{Scanner} can either be open or closed,
 however, real-world applications are not that simple.
 
 \input{Chapters/Listings/C2/java-read.tex}
@@ -453,9 +453,9 @@ the type system will provide the programmer with better tools to express state,
 furthermore, the compiler will then catch errors regarding state,
 such as the previous \emph{use-after-close}.
 
-\autoref{lst:java-read-typestate} shows the \texttt{Read} program written in a \emph{typestated} fashion,
-notice that the \texttt{Scanner} type is now augmented with state and
-the compiler is able to catch the misuse of the \texttt{Scanner[Closed]} interface.
+\autoref{lst:java-read-typestate} shows the \keyword{Read} program written in a \emph{typestated} fashion,
+notice that the \keyword{Scanner} type is now augmented with state and
+the compiler is able to catch the misuse of the \texttt{\textcolor{violet}{Scanner}[Closed]} interface.
 
 \input{Chapters/Listings/C2/java-read-typestate.tex}
 
@@ -472,7 +472,7 @@ such as certain methods will never be called in a given state since it is not po
 
 \input{Chapters/Listings/C2/plaid-file-use.tex}
 
-\paragraph{Obsidian} is a language targeting Hyperledger Fabric\citeurl{https://www.hyperledger.org/use/fabric}{08/06/2021},
+\paragraph{Obsidian} is a smart-contract language targeting Hyperledger Fabric blockchain\citeurl{https://www.hyperledger.org/use/fabric}{08/06/2021},
 among other features it makes use of typestates to reduce the amount of bugs when dealing with assets.
 
 In \autocite{Coblenz2020} an empirical study tested and proved Obsidian claims,
@@ -505,19 +505,20 @@ it is possible to emulate them using the type system, this is discussed in furth
 While the file example does not apply in Rust, since files and other objects are closed as they leave the scopes,
 enforcing protocols is important and an aspect not covered by the language.
 Consider \autoref{lst:rust-protocol}, the example is expected to call first \texttt{F1}, followed by \texttt{F2} and finally \texttt{F3},
-however such does not happen and the error may only be caught during runtime.
+however such does not happen and the error is only caught at runtime.
 
 \input{Chapters/Listings/C2/rust-protocol.tex}
 
 As the next paragraph discusses, this behavior can be prevented using the language's type system.
-However, such utilization requires complex (and possibly hard to read) types.
+However, such utilization requires complex types.
 Since it is not “\emph{part}” of the language, most users will neither use it nor be aware of it.
 
 \paragraph{Embedded Rust.} As any systems programming language, Rust penetrated the embedded development space.
 Providing features in line with the area's requirements, along with community efforts to make Rust viable in embedded systems.
 
 \emph{The Embedded Rust Book}'s\citeurl{https://rust-embedded.github.io/book/}{08/06/2021} Chapter 4 is dedicated to static guarantees,
-introducing programmers to the concepts of typestate in Section 4.1, and their usage in embedded systems.
+introducing programmers to the concepts of typestate in its Section 4.1\citeurl{https://docs.rust-embedded.org/book/static-guarantees/typestate-programming.html}{01/07/2021},
+and their usage in embedded systems.
 
 As for real-world usage, typestates are abundantly used in the area (not just discussed in the book),
 under the \texttt{stm32-rs} GitHub organization\citeurl{https://github.com/stm32-rs/}{08/06/2021} one finds several repositories (suffixed with \texttt{-hal})
