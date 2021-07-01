@@ -1,0 +1,676 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   contentScriptType="application/ecmascript"
+   contentStyleType="text/css"
+   height="1233"
+   preserveAspectRatio="none"
+   version="1.1"
+   viewBox="0 0 517.5 1233"
+   width="517.5"
+   zoomAndPan="magnify"
+   id="svg1153"
+   sodipodi:docname="auction_client.svg"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15)">
+  <metadata
+     id="metadata1157">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="2560"
+     inkscape:window-height="1378"
+     id="namedview1155"
+     showgrid="false"
+     lock-margins="true"
+     fit-margin-top="10"
+     fit-margin-left="10"
+     fit-margin-right="10"
+     fit-margin-bottom="10"
+     inkscape:zoom="1"
+     inkscape:cx="-10.067153"
+     inkscape:cy="654.36554"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g1151" />
+  <defs
+     id="defs1023">
+    <filter
+       height="3"
+       id="fx1530fpwlw33"
+       width="3"
+       x="-1"
+       y="-1">
+      <feGaussianBlur
+         result="blurOut"
+         stdDeviation="2.0"
+         id="feGaussianBlur1014" />
+      <feColorMatrix
+         in="blurOut"
+         result="blurOut2"
+         type="matrix"
+         values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"
+         id="feColorMatrix1016" />
+      <feOffset
+         dx="4.0"
+         dy="4.0"
+         in="blurOut2"
+         result="blurOut3"
+         id="feOffset1018" />
+      <feBlend
+         in="SourceGraphic"
+         in2="blurOut3"
+         mode="normal"
+         id="feBlend1020" />
+    </filter>
+  </defs>
+  <g
+     id="g1151"
+     transform="translate(9,22)">
+    <circle
+       cx="320"
+       cy="18"
+       fill="#000000"
+       filter="url(#fx1530fpwlw33)"
+       style="stroke:none;stroke-width:1"
+       id="ellipse1025"
+       r="10" />
+    <rect
+       fill="#fefece"
+       filter="url(#fx1530fpwlw33)"
+       height="40"
+       rx="12.5"
+       ry="12.5"
+       style="stroke:#a80036;stroke-width:1.5"
+       width="119"
+       x="260.5"
+       y="107"
+       id="rect1027" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="14px"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="109"
+       x="265.5"
+       y="132.43201"
+       id="text1029">AuctionRunning</text>
+    <rect
+       fill="#fefece"
+       filter="url(#fx1530fpwlw33)"
+       height="40"
+       rx="12.5"
+       ry="12.5"
+       style="stroke:#a80036;stroke-width:1.5"
+       width="50"
+       x="51"
+       y="1042"
+       id="rect1031" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="14px"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="26"
+       x="63"
+       y="1067.432"
+       id="text1033">End</text>
+    <circle
+       cx="76"
+       cy="1171"
+       fill="none"
+       filter="url(#fx1530fpwlw33)"
+       style="stroke:#000000;stroke-width:1"
+       id="ellipse1035"
+       r="10" />
+    <circle
+       cx="76.5"
+       cy="1171.5"
+       fill="#000000"
+       style="stroke:none;stroke-width:1"
+       id="ellipse1037"
+       r="6" />
+    <rect
+       fill="#fefece"
+       filter="url(#fx1530fpwlw33)"
+       height="40"
+       rx="12.5"
+       ry="12.5"
+       style="stroke:#a80036;stroke-width:1.5"
+       width="75"
+       x="292.5"
+       y="719"
+       id="rect1039" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="14px"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="65"
+       x="297.5"
+       y="744.43201"
+       id="text1041">Withdraw</text>
+    <rect
+       fill="#fefece"
+       filter="url(#fx1530fpwlw33)"
+       height="40"
+       rx="12.5"
+       ry="12.5"
+       style="stroke:#a80036;stroke-width:1.5"
+       width="50"
+       x="59"
+       y="923"
+       id="rect1043" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="14px"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="27"
+       x="70.5"
+       y="948.43201"
+       id="text1045">Lost</text>
+    <rect
+       fill="#fefece"
+       filter="url(#fx1530fpwlw33)"
+       height="40"
+       rx="12.5"
+       ry="12.5"
+       style="stroke:#a80036;stroke-width:1.5"
+       width="59"
+       x="144.5"
+       y="923"
+       id="rect1047" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="14px"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="49"
+       x="149.5"
+       y="948.43201"
+       id="text1049">Winner</text>
+    <polygon
+       fill="#fefece"
+       filter="url(#fx1530fpwlw33)"
+       points="214,442 202,454 190,442 202,430 "
+       style="stroke:#a80036;stroke-width:1.5"
+       id="polygon1051" />
+    <rect
+       fill="#fefece"
+       filter="url(#fx1530fpwlw33)"
+       height="40"
+       rx="12.5"
+       ry="12.5"
+       style="stroke:#a80036;stroke-width:1.5"
+       width="58"
+       x="173"
+       y="311"
+       id="rect1053" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="14px"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="48"
+       x="178"
+       y="336.43201"
+       id="text1055">NoBids</text>
+    <rect
+       fill="#fefece"
+       filter="url(#fx1530fpwlw33)"
+       height="40"
+       rx="12.5"
+       ry="12.5"
+       style="stroke:#a80036;stroke-width:1.5"
+       width="83"
+       x="123.5"
+       y="515"
+       id="rect1057" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="14px"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="73"
+       x="128.5"
+       y="540.43201"
+       id="text1059">HasBidded</text>
+    <polygon
+       fill="#fefece"
+       filter="url(#fx1530fpwlw33)"
+       points="177,646 165,658 153,646 165,634 "
+       style="stroke:#a80036;stroke-width:1.5"
+       id="polygon1061" />
+    <rect
+       fill="#fefece"
+       filter="url(#fx1530fpwlw33)"
+       height="40"
+       rx="12.5"
+       ry="12.5"
+       style="stroke:#a80036;stroke-width:1.5"
+       width="99"
+       x="115.5"
+       y="719"
+       id="rect1063" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="14px"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="89"
+       x="120.5"
+       y="744.43201"
+       id="text1065">CheckWinner</text>
+    <polygon
+       fill="#fefece"
+       filter="url(#fx1530fpwlw33)"
+       points="177,850 165,862 153,850 165,838 "
+       style="stroke:#a80036;stroke-width:1.5"
+       id="polygon1067" />
+    <polygon
+       fill="#fefece"
+       filter="url(#fx1530fpwlw33)"
+       points="214,238 202,250 190,238 202,226 "
+       style="stroke:#a80036;stroke-width:1.5"
+       id="polygon1069" />
+    <!--MD5=[084479511bae0a38bbbb5d1881e56af3]
+link *start to AuctionRunning-->
+    <path
+       d="m 320,28.12 c 0,16.17 0,50.33 0,73.69"
+       fill="none"
+       id="*start-&gt;AuctionRunning"
+       style="stroke:#a80036;stroke-width:1" />
+    <polygon
+       fill="#a80036"
+       points="324,97.92 320,101.92 316,97.92 320,106.92 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon1072" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="13px"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="28"
+       x="321"
+       y="72.897003"
+       id="text1074">start</text>
+    <!--MD5=[e940aefad32cde5d874e646c70da8b5c]
+link End to *end-->
+    <path
+       d="m 76,1082.13 c 0,21.03 0,54.34 0,73.33"
+       fill="none"
+       id="End-&gt;*end"
+       style="stroke:#a80036;stroke-width:1" />
+    <polygon
+       fill="#a80036"
+       points="80,1151.87 76,1155.87 72,1151.87 76,1160.87 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon1077" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="13px"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="23"
+       x="77"
+       y="1126.897"
+       id="text1079">end</text>
+    <!--MD5=[bcaa64e12c00d54f849d9b1308a0ae62]
+link Withdraw to AuctionRunning-->
+    <path
+       d="M 357.25,718.91 C 377.27,702.44 401,676.66 401,647 c 0,-410 0,-410 0,-410 0,-35.21 -27.57,-66.44 -50.54,-86.35"
+       fill="none"
+       id="Withdraw-&gt;AuctionRunning"
+       style="stroke:#a80036;stroke-width:1" />
+    <polygon
+       fill="#a80036"
+       points="350.7694,156.1949 350.3233,150.5557 355.9626,150.1096 346.52,147.31 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon1082" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="13px"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="56"
+       x="402"
+       y="447.397"
+       id="text1084">withdraw</text>
+    <!--MD5=[3ac6e9a741e9d66cef7b71bd47794679]
+link Lost to End-->
+    <path
+       d="M 78.61,963.39 C 76.4,972.32 74.1,983.12 73,993 c -1.61,14.52 -0.97,30.87 0.13,43.89"
+       fill="none"
+       id="Lost-&gt;End"
+       style="stroke:#a80036;stroke-width:1" />
+    <polygon
+       fill="#a80036"
+       points="76.7515,1032.5724 73.1335,1036.9209 68.7849,1033.3028 73.59,1041.9 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon1087" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="13px"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="56"
+       x="74"
+       y="1007.897"
+       id="text1089">withdraw</text>
+    <!--MD5=[db6e53c58c147f79a4674d4664b0f0cf]
+link Winner to End-->
+    <path
+       d="m 165.38,963.05 c -7,14.31 -17.77,33.95 -30.38,48.95 -8.7,10.35 -19.78,20.19 -29.98,28.31"
+       fill="none"
+       id="Winner-&gt;End"
+       style="stroke:#a80036;stroke-width:1" />
+    <polygon
+       fill="#a80036"
+       points="110.5585,1041.0364 104.9421,1040.3615 105.617,1034.7451 101.01,1043.45 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon1092" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="13px"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="21"
+       x="149"
+       y="1007.897"
+       id="text1094">win</text>
+    <!--MD5=[38a2d6c827cf0981846b91eb7b09f704]
+link NoBids to C_NoBids-->
+    <path
+       d="m 202,351.24 c 0,20.89 0,53.9 0,73.53"
+       fill="none"
+       id="NoBids-&gt;C_NoBids"
+       style="stroke:#a80036;stroke-width:1" />
+    <polygon
+       fill="#a80036"
+       points="206,420.93 202,424.93 198,420.93 202,429.93 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon1097" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="13px"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="19"
+       x="203"
+       y="395.897"
+       id="text1099">bid</text>
+    <!--MD5=[14f3bd99f7176ddff19228449ca7cd92]
+link C_NoBids to HasBidded-->
+    <path
+       d="m 198.72,451.08 c -5.32,13.07 -16.01,39.36 -23.94,58.86"
+       fill="none"
+       id="C_NoBids-&gt;HasBidded"
+       style="stroke:#a80036;stroke-width:1" />
+    <polygon
+       fill="#a80036"
+       points="179.93,507.9044 174.7165,510.0995 172.5213,504.886 172.83,514.73 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon1102" />
+    <!--MD5=[eaf9f25ff05a2a1587281053418fdbff]
+link C_NoBids to Withdraw-->
+    <path
+       d="m 206.29,449.87 c 12.47,20.16 49.27,81.1 72.71,135.13 19.17,44.19 35.61,98.09 44.33,128.69"
+       fill="none"
+       id="C_NoBids-&gt;Withdraw"
+       style="stroke:#a80036;stroke-width:1" />
+    <polygon
+       fill="#a80036"
+       points="326.168,709.0123 323.4034,713.9476 318.4681,711.1829 324.76,718.76 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon1105" />
+    <!--MD5=[b93e0ae61bc722b741d4e926f760786c]
+link HasBidded to C_HasBidded-->
+    <path
+       d="m 183.62,555.33 c 6.87,8.42 13.83,18.84 17.38,29.67 2.63,8.02 2.98,11.1 0,19 -5.11,13.56 -16.97,25.55 -25.68,33.01"
+       fill="none"
+       id="HasBidded-&gt;C_HasBidded"
+       style="stroke:#a80036;stroke-width:1" />
+    <polygon
+       fill="#a80036"
+       points="180.8212,637.67 175.1909,637.123 175.738,631.4926 171.33,640.3 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon1108" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="13px"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="65"
+       x="205"
+       y="599.89697"
+       id="text1110">has_ended</text>
+    <!--MD5=[e429c2c83911b1e6390492d7de971172]
+link C_HasBidded to HasBidded-->
+    <path
+       d="m 158.96,639.4 c -6.88,-14.41 -8.47,-53.43 -4.77,-79.2"
+       fill="none"
+       id="C_HasBidded-&gt;HasBidded"
+       style="stroke:#a80036;stroke-width:1" />
+    <polygon
+       fill="#a80036"
+       points="149.6234,563.4853 154.2111,560.1758 157.5207,564.7635 155.01,555.24 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon1113" />
+    <!--MD5=[b93e0ae61bc722b741d4e926f760786c]
+link HasBidded to C_HasBidded-->
+    <path
+       d="M 123.92,555.11 C 103.43,567.49 85.1,584.85 96,604 c 11.64,20.46 37.96,31.77 54.52,37.1"
+       fill="none"
+       id="HasBidded-&gt;C_HasBidded-1"
+       style="stroke:#a80036;stroke-width:1" />
+    <polygon
+       fill="#a80036"
+       points="148.2753,636.232 150.9368,641.2236 145.9451,643.8851 155.72,642.68 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon1116" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="13px"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="59"
+       x="97"
+       y="599.89697"
+       id="text1118"
+       transform="translate(-65.612793,-1.4820251)">check_bid</text>
+    <!--MD5=[e429c2c83911b1e6390492d7de971172]
+link C_HasBidded to HasBidded-->
+    <path
+       d="m 171.17,639.83 c 7.47,-14.03 9.23,-53.54 5.28,-79.58"
+       fill="none"
+       id="C_HasBidded-&gt;HasBidded-1"
+       style="stroke:#a80036;stroke-width:1" />
+    <polygon
+       fill="#a80036"
+       points="173.1543,564.7855 176.4228,560.1685 181.0399,563.4369 175.58,555.24 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon1121" />
+    <!--MD5=[f93bc2bc035491e93a9a25d61e65c7c1]
+link C_HasBidded to CheckWinner-->
+    <path
+       d="m 165,658.16 c 0,13.68 0,37.25 0,55.25"
+       fill="none"
+       id="C_HasBidded-&gt;CheckWinner"
+       style="stroke:#a80036;stroke-width:1" />
+    <polygon
+       fill="#a80036"
+       points="169,709.8 165,713.8 161,709.8 165,718.8 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon1124" />
+    <!--MD5=[38cbd415128b391d082a94edee45af69]
+link C_HasBidded to Withdraw-->
+    <path
+       d="m 172.09,650.91 c 20.09,11.08 78.54,43.32 118.4,65.3"
+       fill="none"
+       id="C_HasBidded-&gt;Withdraw"
+       style="stroke:#a80036;stroke-width:1" />
+    <polygon
+       fill="#a80036"
+       points="289.3047,710.9956 290.8798,716.4288 285.4467,718.0039 295.26,718.84 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon1127" />
+    <!--MD5=[5818b13c306916c17bea3a63fdb050bb]
+link CheckWinner to C_CheckWinner-->
+    <path
+       d="m 165,759.24 c 0,20.89 0,53.9 0,73.53"
+       fill="none"
+       id="CheckWinner-&gt;C_CheckWinner"
+       style="stroke:#a80036;stroke-width:1" />
+    <polygon
+       fill="#a80036"
+       points="169,828.93 165,832.93 161,828.93 165,837.93 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon1130" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="13px"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="85"
+       x="166"
+       y="803.89697"
+       id="text1132">is_highest_bid</text>
+    <!--MD5=[9d581f2d3f506c85a6f6a5b2857db7a1]
+link C_CheckWinner to Winner-->
+    <path
+       d="m 166,861.09 c 1.34,13.62 3.79,38.32 5.62,56.86"
+       fill="none"
+       id="C_CheckWinner-&gt;Winner"
+       style="stroke:#a80036;stroke-width:1" />
+    <polygon
+       fill="#a80036"
+       points="175.2259,913.6537 171.6338,918.0237 167.2638,914.4316 172.12,923 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon1135" />
+    <!--MD5=[07fc9aae7587bcae082cde24da97b574]
+link C_CheckWinner to Lost-->
+    <path
+       d="m 159.69,856.97 c -11.01,12.36 -36.78,41.31 -55.19,62"
+       fill="none"
+       id="C_CheckWinner-&gt;Lost"
+       style="stroke:#a80036;stroke-width:1" />
+    <polygon
+       fill="#a80036"
+       points="110.1276,918.6799 104.4798,919.0001 104.1597,913.3523 101.15,922.73 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon1138" />
+    <!--MD5=[83163b8890ef4b8816ae796f7ef2f70b]
+link AuctionRunning to C_AuctionRunning-->
+    <path
+       d="m 299.18,147.24 c -25.59,23.63 -67.97,62.78 -87.17,80.52"
+       fill="none"
+       id="AuctionRunning-&gt;C_AuctionRunning"
+       style="stroke:#a80036;stroke-width:1" />
+    <polygon
+       fill="#a80036"
+       points="217.3812,228.2196 211.7285,228.0027 211.9455,222.35 208.06,231.4 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon1141" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="13px"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="65"
+       x="265"
+       y="191.897"
+       id="text1143">has_ended</text>
+    <!--MD5=[fb88882fdbebb062bbee833c3d74de43]
+link C_AuctionRunning to NoBids-->
+    <path
+       d="m 202,250.16 c 0,13.68 0,37.25 0,55.25"
+       fill="none"
+       id="C_AuctionRunning-&gt;NoBids"
+       style="stroke:#a80036;stroke-width:1" />
+    <polygon
+       fill="#a80036"
+       points="206,301.8 202,305.8 198,301.8 202,310.8 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon1146" />
+    <!--MD5=[23a4fa6f089da88d35e7dbe61763b89f]
+link C_AuctionRunning to End-->
+    <path
+       d="M 190.9,239 C 149.44,239.65 6,247.84 6,330 c 0,0 0,0 0,614 0,36.92 25.99,72.28 46.29,94.28"
+       fill="none"
+       id="C_AuctionRunning-&gt;End"
+       style="stroke:#a80036;stroke-width:1" />
+    <polygon
+       fill="#a80036"
+       points="52.4945,1032.6647 52.3232,1038.319 46.6689,1038.1477 55.75,1041.96 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon1149" />
+    <!--MD5=[78b42506635bee6ef7128a812fc5393a]
+@startuml
+hide empty description
+[*] - -> AuctionRunning : start
+End - -> [*] : end
+Withdraw - -> AuctionRunning : withdraw
+Lost - -> End : withdraw
+Winner - -> End : win
+state C_NoBids <<choice>>
+NoBids - -> C_NoBids: bid
+C_NoBids - -> HasBidded
+C_NoBids - -> Withdraw
+
+state C_HasBidded <<choice>>
+HasBidded - -> C_HasBidded: has_ended
+C_HasBidded - -> HasBidded
+C_HasBidded - -> CheckWinner
+
+state C_HasBidded <<choice>>
+HasBidded - -> C_HasBidded: check_bid
+C_HasBidded - -> Withdraw
+C_HasBidded - -> HasBidded
+
+state C_CheckWinner <<choice>>
+CheckWinner - -> C_CheckWinner: is_highest_bid
+C_CheckWinner - -> Winner
+C_CheckWinner - -> Lost
+
+state C_AuctionRunning <<choice>>
+AuctionRunning - -> C_AuctionRunning: has_ended
+C_AuctionRunning - -> NoBids
+C_AuctionRunning - -> End
+
+@enduml
+
+PlantUML version 1.2020.02(Sun Mar 01 10:22:07 WET 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 16.0.1+9-Ubuntu-1
+Operating System: Linux
+Default Encoding: UTF-8
+Language: en
+Country: US
+-->
+  </g>
+</svg>

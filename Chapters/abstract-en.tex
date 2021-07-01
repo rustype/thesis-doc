@@ -28,11 +28,11 @@ While Rust does not support typestates by design,
 the type system is powerful enough to express and validate typestates.
 
 I propose a new macro-based approach to deal with typestates in Rust;
-this approach provides an embedded DSL which allows developers to express typestates using only existing Rust syntax.
+this approach provides an embedded \gls{DSL} which allows developers to express typestates using only existing Rust syntax.
 Furthermore, Rust's macro system is leveraged to extract a state machine out of the typestate specification and
 then perform compile-time checks over the specification.
 Afterwards we leverage Rust's type system to check protocol-compliance.
-The DSL avoids workflow-bloat by requiring nothing but a Rust compiler and the library itself.
+The \gls{DSL} avoids workflow-bloat by requiring nothing but a Rust compiler and the library itself.
 
 % This thesis' goal is to bridge the gap between typestates and production Rust,
 % developing a practical tool enabling programmers to take advantage of typestates in their Rust code.

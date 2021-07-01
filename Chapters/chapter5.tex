@@ -11,13 +11,13 @@
 \chapter{Case Studies}\label{cha:case-study}
 
 In this chapter I present some case studies where my library was used and discuss some of its strengths and weaknesses.
-The examples from this chapter are available at \url{https://github.com/rustype/typestate-examples}.
+This chapter's example's full code is available at \url{https://github.com/rustype/typestate-examples}.
 
-\section{Ring}
+\section{Ring}\label{sec:case-study:ring}
 
 The ring example is taken out of the Rumpsteak \autocite{Cutner2021} repository.
 The general example is composed of $N$ participants, in a \emph{ring},
-where the first one sends the value to the participant one the right,
+where the first participant sends the value to the participant on the right,
 the other participant receives the value from the left and each participant repeats the same process;
 visualized in \autoref{fig:ring}.
 
@@ -33,9 +33,9 @@ visualized in \autoref{fig:ring}.
 
         \foreach[count=\s] \v in {A,B,C}
         {
-            \node[draw, circle] at ({360/\n * (\s - 1)}:\radius) {$\v$};
-            \draw[->, >=latex] ({360/\n * (\s - 1)+\margin}:\radius)
-                arc ({360/\n * (\s - 1)+\margin}:{360/\n * (\s)-\margin}:\radius) node[midway, fill=white]{$v$} ;
+        \node[draw, circle] at ({360/\n * (\s - 1)}:\radius) {$\v$};
+        \draw[->, >=latex] ({360/\n * (\s - 1)+\margin}:\radius)
+        arc ({360/\n * (\s - 1)+\margin}:{360/\n * (\s)-\margin}:\radius) node[midway, fill=white]{$v$} ;
         }
     \end{tikzpicture}
     \caption{The ring example visualization.}
@@ -44,9 +44,16 @@ visualized in \autoref{fig:ring}.
 
 Before comparing both APIs, it is important to notice that Rumpsteak is aimed at \gls{MPST}
 for Rust's \texttt{async}/\texttt{await} syntax,
-while \annotation{typestate} was designed with typestates and API constraints in mind.
+enabling the description and enforcement of communication patterns using the type system.
+\annotation{typestate} was designed with typestates and API constraints in mind,
+while it is unable to describe and enforce communication patterns,
+it is able to enforce function call ordering at compile-time, avoiding API misuses.
 
-
+Taking it a step further, consider \autoref{fig:ring},
+Rumpsteak is enforces constraints on the edges of that graph \ie{\quotes{external} protocol},
+such as where they come from and where they go to,
+while \annotation{typestate} enforces constraints on the nodes \ie{\quotes{internal} protocol},
+such as the possible steps the node will follow.
 
 \subsection{Comparison}
 
@@ -55,7 +62,8 @@ each participant endpoint --- \ttt{struct}s \ttt{A}, \ttt{B} and \ttt{C};
 the message being passed around --- \ttt{Value};
 finally, each session type --- \ttt{struct}s \ttt{RingA}, \ttt{RingB} and \ttt{RingC}.
 The functionality of each participant is then declared as an \ttt{async} function,
-notice that \ttt{ring\_b} and \ttt{ring\_c} are identical, except for the types used.
+notice that \ttt{ring\_b} (lines 32-39 from \autoref{lst:rumpsteak-ring})
+and \ttt{ring\_c} (lines 41-48 from \autoref{lst:rumpsteak-ring}) are identical, except for the types used.
 
 Given the session type nature of Rumpsteak, the library is able to enforce communication patterns at the type level,
 In lines 19-21 of \autoref{lst:rumpsteak-ring} we can see through \ttt{RingA}'s type that
@@ -149,20 +157,62 @@ fn main() {
 \paragraph{\annotation{typestate}} type usage requires less background knowledge than Rumpsteak,
 a user that understands the \gls{DSL} should be able to understand what goes on \quotes{behind the scenes}.
 
-In our example we enforce the protocol by declaring the state machine of each participant;
+In my example (\autoref{lst:typestate-ring-starter}, \autoref{lst:typestate-ring-follower},  \autoref{lst:typestate-ring-main})
+the protocol is enforced by declaring the state machine of each participant;
+in this case, while the ring can scale up to $N$ participants, only two protocols are required ---
+one for the participant starting the value propagation,
+and one for the all other participants, which need to receive the value first.
+The participants typestates are visualized in \autoref{fig:ring-typestate}.
+
+Both \ttt{RingA} and \ttt{RingB} receive two channels
+(respectively, lines 12 \& 23-25 in \autoref{lst:typestate-ring-starter}, and lines 18 \& 38-40 in \autoref{lst:typestate-ring-follower}),
+one from which they will receive the value, and one to which they will send the value,
+these channels, respectively, connect to the previous and next participants in the ring;
+the channels are received upon instantiation of the respective \ttt{Ring} object.
+
 \ttt{RingA} (\autoref{lst:typestate-ring-starter}) starts the process,
-hence it is the only participant starting in a \emph{sending} state;
-\ttt{RingB} (and other possible participants) will start in a \emph{receiving} state.
+thus, it is the only participant starting in a \emph{sending} state
+(lines 10-16, emphasizing line 12, which declares the initial state);
+in this state the \gls{API} allows the client to inspect the value with \ttt{get\_value} (lines 13 \& 27);
+transition to the next state with \ttt{send} (lines 14 \& 29-36);
+or end the protocol with \ttt{end} (lines 15 \& 38).
+
+Inversly to \ttt{RingA}, \ttt{RingB} will first receive the value,
+as it would be the participant next to the first sender and thus all other participants;
+conversely, the protocol (\autoref{lst:typestate-ring-follower}) will start in a \emph{receiving} state
+(lines 16-21, emphasizing line 18, which declares the initial state).
+The main difference from \ttt{RingA} to \ttt{RingB} is the initial state, the inner logic is the same
+and besides \ttt{new} (lines 18 \& 38-40) and \ttt{end} (lines 20 \& 51), other functions belong to the same states.
 
 While \annotation{typestate} is unable to enforce communication patterns,
 it is able to reuse the participants more effectively \ie{who sends to whom};
 given that \ttt{B} and \ttt{C} perform the same operations, we can simply reuse \ttt{RingB} (\autoref{lst:typestate-ring-follower})
-for both \ttt{B} and \ttt{C}.
+for both \ttt{B} and \ttt{C} (lines 7-8 of \autoref{lst:typestate-ring-main}).
 
+\subsection{Summary}
+
+As previously stated, Rumpsteak allows the developer to enforce communication patterns at compile-time,
+while \annotation{typestate} does not, however, the latter is able to enforce behavior patterns at the participant level;
+\annotation{typestate} is thus more flexible, being usable in synchronous or parallel programming,
+while Rumpsteak was designed with \ttt{async}/\ttt{await} in mind.
+
+It is important to note that in both cases (\autoref{lst:rumpsteak-ring} and \autoref{lst:typestate-ring-main})
+there is opportunity to improve modularity,
+one can use macros to abstract over the mostly repeated bits of code.
+For \annotation{typestate}, for example, one can define a macro like \autoref{lst:typestate-ring-macro} and
+shorten the lines 17-28 in \autoref{lst:typestate-ring-main} into lines 17 \& 18 in \autoref{lst:typestate-ring-main-macro}.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\linewidth]{Chapters/Figures/C5/rings.pdf}
+    \caption{The ring participants' typestates.}
+    \label{fig:ring-typestate}
+\end{figure}
 
 \begin{listing}
     \begin{minted}{Rust}
-#[typestate::typestate]
+#[typestate]
 mod ring_a {
     use std::sync::mpsc::{Receiver, Sender};
 
@@ -219,7 +269,7 @@ impl RecvAState for RingA<RecvA> {
 
 \begin{listing}
     \begin{minted}{Rust}
-#[typestate::typestate]
+#[typestate]
 mod ring_b {
     use std::sync::mpsc::{Receiver, Sender};
     #[automaton]
@@ -276,12 +326,99 @@ impl RecvBState for RingB<RecvB> {
     \label{lst:typestate-ring-follower}
 \end{listing}
 
+\begin{listing}
+    \begin{minted}{rust}
+fn main() {
+    let (a_sender, b_receiver) = channel::<i32>();
+    let (b_sender, c_receiver) = channel::<i32>();
+    let (c_sender, a_receiver) = channel::<i32>();
 
-\section{PIN}
+    let a = RingA::<SendA>::new(0, a_sender, a_receiver);
+    let b = RingB::<RecvB>::new(b_sender, b_receiver);
+    let c = RingB::<RecvB>::new(c_sender, c_receiver);
+
+    vec![
+        thread::spawn(move || {
+            println!("a: {}", a.get_value());
+            let a = a.send();
+            let a = a.recv();
+            a.end();
+        }),
+        thread::spawn(move || {
+            let b = b.recv();
+            println!("b: {}", b.get_value());
+            let b = b.send();
+            b.end();
+        }),
+        thread::spawn(move || {
+            let c = c.recv();
+            println!("c: {}", c.get_value());
+            let c = c.send();
+            c.end();
+        }),
+    ]
+    .into_iter()
+    .map(|handle| handle.join())
+    .collect::<Result<_, _>>()
+    .unwrap()
+}
+    \end{minted}
+    \caption{The \ttt{main} implementing for \annotation{typestate}'s ring.}
+    \label{lst:typestate-ring-main}
+\end{listing}
+
+\begin{listing}
+    \begin{minted}{rust}
+macro_rules! spawn_ring_b {
+    ($ring:ident) => {
+        thread::spawn(move || {
+            let $ring = $ring.recv();
+            println!("{}: {}", stringify!($ring), $ring.get_value());
+            let $ring = $ring.send();
+            $ring.end();
+        })
+    };
+}
+    \end{minted}
+    \caption{\ttt{macro\_rules!} to abstract over the thread launching routing for \ttt{RingB}.}
+    \label{lst:typestate-ring-macro}
+\end{listing}
+
+\begin{listing}
+    \begin{minted}{rust}
+fn main() {
+    let (a_sender, b_receiver) = channel::<i32>();
+    let (b_sender, c_receiver) = channel::<i32>();
+    let (c_sender, a_receiver) = channel::<i32>();
+
+    let a = RingA::<SendA>::new(0, a_sender, a_receiver);
+    let b = RingB::<RecvB>::new(b_sender, b_receiver);
+    let c = RingB::<RecvB>::new(c_sender, c_receiver);
+
+    vec![
+        thread::spawn(move || {
+            println!("a: {}", a.get_value());
+            let a = a.send();
+            let a = a.recv();
+            a.end();
+        }),
+        spawn_ring_b!(b),
+        spawn_ring_b!(c),
+    ]
+    .into_iter()
+    .map(|handle| handle.join())
+    .collect::<Result<_, _>>()
+    .unwrap()
+}
+    \end{minted}
+    \caption{The \ttt{main} implementing for \annotation{typestate}'s ring using \autoref{lst:typestate-ring-macro}.}
+    \label{lst:typestate-ring-main-macro}
+\end{listing}
+
+\section{PIN}\label{sec:case-study:pin}
 
 The PIN example has three principals, a card (\autoref{lst:typestate-card}),
-read by the card reader (\autoref{lst:typestate-reader}),
-which is used by the final client.
+read by the card reader (\autoref{lst:typestate-reader}), which is used by the final client.
 
 To use the card, the reader ensures that the card is present by calling \ttt{check\_for\_card}
 (line 10 of \autoref{lst:typestate-reader});
@@ -297,8 +434,8 @@ enforcing that the card is also in the \ttt{Authenticated} state
 (line 21 of \autoref{lst:typestate-reader} and lines 15-19 of \autoref{lst:typestate-card});
 this relationship is visualized in \autoref{fig:reader-card-typestates}.
 
-Any client of the reader API is thus required to check all steps before proceeding with the card,
-the state embedding also provides some guarantees that the \ttt{Reader} is a well-behaved client of the \ttt{Card},
+Any client of the reader API is thus required to check all steps before proceeding with the card.
+The state embedding also guarantees that the \ttt{Reader} is a well-behaved client of the \ttt{Card},
 similar to Fugue \autocite{DeLine2004}.
 
 \begin{figure}
@@ -310,7 +447,7 @@ similar to Fugue \autocite{DeLine2004}.
 
 \begin{listing}
     \begin{minted}{rust}
-#[typestate::typestate]
+#[typestate]
 pub mod reader_api {
     use crate::card::card_api;
 
@@ -354,7 +491,7 @@ pub mod reader_api {
 
 \begin{listing}
     \begin{minted}{rust}
-#[typestate::typestate]
+#[typestate]
 pub mod card_api {
     #[automaton] pub struct Card {
         pub valid_pin: [u8; 4],
@@ -393,8 +530,7 @@ pub mod card_api {
 \end{listing}
 
 
-\section{Auction Client}
-
+\section{Auction Client}\label{sec:case-study:auction}
 
 This example showcases how one can build a typestated API on top of an existing \emph{non-typestated} API,
 enhancing the guarantees provided by latter.
@@ -405,16 +541,16 @@ The auction API is listed in \autoref{lst:typestate-auction},
 it allows bidding to be done and to emulate the closure of the auction with each bid a random boolean is generated,
 if the auction closes, bidding is closed; all checks are performed at runtime.
 
-The client is required to check if the auction is running before any action can be performed,
-this is done through the \ttt{has\_ended} function (line 13 of \autoref{lst:typestate-auction-client})
-which returns the \ttt{AuctionState} state (line 46 of \autoref{lst:typestate-auction-client})
+The client is required to check if the auction is running before any action can be performed.
+This is done through the \ttt{has\_ended} function (line 13 of \autoref{lst:typestate-auction-client}),
+which returns the \ttt{AuctionState} state (line 46 of \autoref{lst:typestate-auction-client}),
 an enumeration representing the two possible outcomes of the transition;
-in case the auction has ended, the only thing the user can do is end its \quotes{session},
+in case the auction has ended, the only thing the user can do is end its \quotes{session};
 otherwise the user will be placed in the \ttt{NoBids} state, as they have not submitted any bids.
-From the \ttt{NoBids} state, the user can perform a bid,
-in the case that the bid is not the highest, the user is forced to withdraw its bid,
-if the bid is the highest the user can then check if their bid is still the highest or if the auction has ended;
-in the case that the user's bid is no longer the highest, the user transitions into the \ttt{Withdraw} state again;
+From the \ttt{NoBids} state, the user can perform a bid;
+in the case that the bid is not the highest, the user is forced to withdraw its bid;
+if the bid is the highest the user can then check if their bid is still the highest or if the auction has ended.
+In the case that the user's bid is no longer the highest, the user transitions into the \ttt{Withdraw} state again;
 in the case that the auction has ended, the user will then check if they have won the auction or not,
 and take the according action before ending the \quotes{session}.
 
@@ -471,7 +607,7 @@ impl Auction {
 
 \begin{listing}
     \begin{minted}{rust}
-#[typestate::typestate]
+#[typestate]
 mod auction_client_api {
     use crate::auction::Auction;
 
@@ -524,3 +660,24 @@ mod auction_client_api {
     \caption{The auction client's typestate declaration.}
     \label{lst:typestate-auction-client}
 \end{listing}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\linewidth]{Chapters/Figures/C5/auction_client.pdf}
+    \caption{The auction client's typestate.}
+    \label{fig:auction-typestate}
+\end{figure}
+
+\section{Summary}
+
+In this chapter I have presented three examples which highlight different capabilities of the \annotation{typestate} macro.
+The first example (\autoref{sec:case-study:ring}) shows how \annotation{typestate} is able to constrain the behavior of objects in multi threaded environments;
+the second example (\autoref{sec:case-study:pin}) highlights how using multiple typestates in conjunction allows the developer to provide extra guarantees,
+especially when compared with non-typestated APIs;
+finally, the final example (\autoref{sec:case-study:auction}) illustrates how one can wrap an existing API using \annotation{typestate}
+to provide a safe-to-use API.
+
+While in some cases one can further abstract over the code written using \annotation{typestate},
+such cases are often trivial to address using Rust's \ttt{macro\_rules!}.
+Overall, \annotation{typestate} is able to address the problem at hand and
+allow the developer to write an elegant solution while providing the desired API constraints.
