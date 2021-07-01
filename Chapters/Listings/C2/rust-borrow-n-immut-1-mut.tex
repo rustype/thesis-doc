@@ -1,10 +1,12 @@
 \begin{listing}
     \begin{minted}{Rust}
-let mut s = String::from("hello");
-let r1 = &s;     // ok: first immutable borrow
-let r2 = &s;     // ok: second immutable borrow
-let r3 = &mut s; // error: `s` was immutably borrowed in the previous lines
+fn main() {
+    let mut s = String::from("hello");
+    let r1 = &s;     // ok: first immutable borrow
+    let r2 = &s;     // ok: second immutable borrow
+    let r3 = &mut s; // error: `s` was immutably borrowed in the previous lines
+}
     \end{minted}
-    \caption{Example error while using a mutable borrow in conjunction with immutable ones.}
+    \caption{Example error while using a mutable borrow in conjunction with immutable ones. Interactive example (01/07/2021): \url{https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=ea8ff872605239f5916753d32d7145b7}}
     \label{lst:rust-borrow-n-immut-1-mut}
 \end{listing}

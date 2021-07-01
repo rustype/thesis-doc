@@ -1,9 +1,11 @@
 \begin{listing}
     \begin{minted}{Rust}
-let x = String::from("Hello");  // ok: `x` is assigned "Hello"
-let y = x;                      // ok: `x` is moved into `y`
-println!("{}", x);              // error: `x` was moved in the previous line
+fn main() {
+    let x = String::from("Hello"); // ok: `x` is assigned "Hello"
+    let y = x;                     // ok: `x` is moved into `y`
+    println!("{}", x);             // error: `x` was moved in the previous line
+}
     \end{minted}
-    \caption{Example of the move-by-default mechanism to enforce ownership.}
+    \caption{Example of the move-by-default mechanism to enforce ownership. Interactive example (01/07/2021): \url{https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=44beb8b69a296943e9a1c72de4d50ac3}}
     \label{lst:rust-move}
 \end{listing}

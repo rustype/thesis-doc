@@ -18,13 +18,12 @@ being somewhat flexible and ever-changing due to constant shift in requirements 
 Before the cloud, in the age of C, a systems programming language would
 most likely be a language able to provide an adequate interface between the programmer and the machine.
 Nowadays, the definition is more vague, as machines and software grow in complexity,
-and the definition of system grows from single computer to a distributed system,
+and the definition of system grows from a single computer to a distributed system,
 interfacing with the hardware in a more direct fashion is mostly not required.
-Systems programming languages become about being able to produce a standalone
+Systems programming languages emphasized being able to produce a standalone
 binary able to run on a variety of machines without requiring extra software.
 
 \subsection{C}
-
 C is a general-purpose programming language, while it can be considered a high-level programming language
 when put besides assembly, it also fits the description of a low-level level programming language when besides languages like Python.
 It was originally designed by Dennis Ritchie for the PDP-11 and has been around since 1972 \autocite{Kernighan1988},
@@ -44,17 +43,17 @@ Languages such as Java take from C their syntax as well as one problem to solve,
 other languages like Julia \autocite{Bezanson2017} aim to achieve similar performance.
 
 While not as popular as other languages, C was able to stay relevant in the modern development landscape,
-some of the most used software in the world is either written or powered by C.
-The Linux kernel, which powers servers, the world's most powerful computers
+some of the most used software in the world is either written with or powered by C.
+The \emph{Linux} kernel, which powers servers, the world's most powerful computers
 and serves as a base for Android and other mobile devices,
-git, Redis and nginx are also software examples which reached the top of their respective fields.
+\emph{git}, \emph{Redis} and \emph{nginx} are also software examples which reached the top of their respective fields.
 
 \subsection{C++}
 
 Introduced in 1985 as an extension to C; the author, Bjarne Stroustrup writes:
 
 \begin{displayquote}[{\autocite[Section 1.2]{Stroustrup1986}}]
-    C++  is  based  on  the idea of providing both:
+    C++ is based on the idea of providing both:
     \begin{compactitem}
         \item direct mappings of built-in operations and types to hardware to provide efficient memory use and efficient low-level operations, and
         \item affordable and flexible abstraction mechanisms to provide user-defined types with the same notational support, range of uses, and performance as built-in types.
@@ -67,12 +66,12 @@ Industries requiring the best performance as possible of the host, such as scien
 financial software, AAA games and visual effects will most likely be running C++.
 
 Just like C, C++ is far from perfect.
-The language is enormous, with very complicated parts (e.g. templates) and compilation for big projects is very slow,
+The language is enormous, with very complicated parts \eg{templates} and compilation for big projects is very slow,
 the author acknowledges this in \autocite{Torre2014}.
 Furthermore, as the language provides a high level of control over the system, it has manual memory management,
 suffering from the same problems as C.
-Even with smart pointers (e.g. \texttt{unique\_ptr}) the problem is not considered solved,
-as they introduce overhead in the most demanding applications.
+Even with smart pointers \eg{\texttt{unique\_ptr}} the problem is not considered to be solved,
+as they still introduce overhead in the most demanding applications\citeurl{https://www.youtube.com/watch?v=rHIkrotSwcc}{01/07/2021}.
 
 
 \subsection{Ada}
@@ -85,28 +84,29 @@ some Ada success stories are the London Metro Victoria Line and the Paris Metro 
 The language is also used in several other domains, such as aviation, space vehicles, financial systems and more\citeurl{https://www2.seas.gwu.edu/\~mfeldman/ada-project-summary.html}{08/06/2021}.
 
 In comparison with the other languages in this section, Ada is eclipsed, barely showing in the GitHub rankings\citeurl{https://tjpalmer.github.io/languish/}{25/01/2021}.
-However, given that Ada's compiler is mostly a product, it makes sense that most Ada code is not open-source.
-Regardless, when one views the list of features Ada has, the first arising question is \equotes{why is Ada not popular?}.
+However, given that Ada's compiler requires a paid license to take full advantage of and their main application market are critical applications,
+it makes sense that most Ada code is not open-source.
+Regardless, when one views the list of features Ada has, the first arising question is --- \emph{why is Ada not popular?}.
 
 An old article in AdaPower\citeurl{https://tinyurl.com/AdaPower1998}{08/06/2021} provides some possible insight over the question,
 referring to the compiler's price and the Hoare's harsh critics.
 From my point of view, the critics to the compiler and ecosystem pricing still make sense,
 as access to the full tooling is limited.
-The lack of programmers goes on to deepen the lack of adoption in the industry
+The lack of programmers goes on to perpetuate the lack of adoption in the industry
 and this cycle ends up limiting Ada's reach in the market.
 
 \subsection{Go}
 
 The Go programming language (or \texttt{golang}) is a Google project,
-according the language folklore, it was designed by the authors while they waited for their C++ code to compile.
-Go tried to address several of the criticisms to C, namely memory management,
-which it solved by using a garbage collector.
+according to the language folklore, it was designed by the authors while they waited for their C++ code to compile.
+Go tried to address several of the criticisms to C, namely memory management, which it solved through the usage of a garbage collector.
 While it has made a name for itself in the network and distributed systems sector,
 being the main language behind projects like Docker and Kubernetes,
 Go's categorization as a systems programming language can be discussed.
 
-Sometimes, however, the performance might not be enough,
-as was the case for Discord, the popular internet voice server company, as demand increased,
+When put against its peers in the systems programming language ecosystem,
+Go's performance may be considered \emph{lacking}, not being enough for certain use cases.
+This was Discord's case, the popular internet voice server company, as demand increased,
 Go was not able to meet the expected performance requirements and the company replaced it with Rust\citeurl{https://blog.discord.com/why-discord-is-switching-from-go-to-rust-a190bbca2b1f}{08/06/2021}.
 In \autocite{Torre2014}, one of Go's authors, Rob Pike, says that he regrets categorizing Go as a systems programming language,
 being rather a server programming language that evolved into a cloud infrastructure language.
@@ -115,18 +115,18 @@ compromising extreme performance in name of safety and simplicity.
 
 \subsection{Summary}
 
-I reviewed four system programming languages, suited for different kinds of environments,
+In this section I reviewed four system programming languages, suited for different kinds of environments,
 C, C++ and Ada can be considered the traditional system languages kind, with a strong emphasis on efficiency
 and support for embedded devices.
-Go on the other hand, could be considered a new generation systems programming language, a language for cloud infrastructure.
-Among the four, only Ada places strong emphasis on safety, with several features allowing for more guarantees at compile time,
-such as contract based programming and non-nullable types by default,
-being the only one which does not suffer from the \equotes{billion dollar mistake}\citeurl{https://tinyurl.com/Hoare2009}{2021-01-25}.
+Go on the other hand, could be considered a \emph{new generation} systems programming language, a language for cloud infrastructure.
+Among the four, only Ada places strong emphasis on safety, with several features allowing for more guarantees at compile-time,
+such as contract based programming, non-nullable types by default and even some theorem proving capabilities,
+being the only one which does not suffer from the \equotes{billion dollar mistake}\citeurl{https://tinyurl.com/Hoare2009}{25/01/2021}.
 
 \section{The Rust Language}\label{sec:rust-lang}
 
 Rust is a fairly recent systems programming language,
-it started as a side project of the author Graydon Hoare and the language public history dates back to 2010\citeurl{https://git.io/JZ3X7}{08/06/2021}.
+it started as a side project of Graydon Hoare and its public history dates back to 2010\citeurl{https://git.io/JZ3X7}{08/06/2021}.
 In 2012 Mozilla picked up Rust to help develop the Servo browser engine, the successor to the previous Gecko engine;
 as a way to test Rust's capabilities \autocite{Klabnik2016}.
 
@@ -134,22 +134,21 @@ as a way to test Rust's capabilities \autocite{Klabnik2016}.
 
 In comparison with other languages, one of the first things someone new to Rust ought to notice is the emphasis put on safety.
 Being a competitor to C++ and achieving memory safety while still providing C++-level performance is quite an accomplishment.
-Rust, however, also aims to allow users to be productive without sacrificing safety or performance.
+Rust, however, also aims to allow users to be productive without sacrificing neither safety nor performance.
 
-The key to all the promises Rust makes is the ownership system and borrow checker.
+The key to all the promises Rust makes is its ownership system and borrow checker.
 The borrow checker is a completely new mechanism when compared with other mainstream languages.
 However, it is a product of years of research both in academia and the industry.
-This mechanism merits most of Rust's accomplishments and also the biggest problem, the learning curve.
+This mechanism merits most of Rust's accomplishments and also its biggest defect, the learning curve.
 While Rust has become more accessible over the years,
 ownership and the borrow checker still require some effort on the part of the developer to learn.
 I provide a small overview of ownership, the borrow checker and their part in Rust's promise of “\emph{fearless concurrency}”.
-
 
 \subsection{Ownership}\label{sec:rust-lang:ownership}
 
 Ownership is the mechanism used by Rust to ensure no memory block stays allocated longer than it is required to.
 Through ownership, the compiler is able to free memory when required,
-inserting the respective deallocation calls in the output program.
+inserting the respective deallocation procedures in the output program.
 Behind ownership, there are three rules:
 
 \begin{displayquote}[{\autocite[Section 4.1]{RustBook2021}}]
@@ -161,21 +160,23 @@ Behind ownership, there are three rules:
 \end{displayquote}
 
 To illustrate the rules, consider \autoref{lst:rust-move}, where we have two variables \texttt{x} and \texttt{y}.
-First, \texttt{"Hello"} is assigned to \texttt{x}, thus \texttt{x} now owns \texttt{"Hello"}.
-After, \texttt{x} is assigned to \texttt{y}, consider the second rule of ownership, since we can only have one owner,
+First, \texttt{"Hello"} is assigned to \texttt{x} (line 2), thus \texttt{x} now owns \texttt{"Hello"}.
+After, \texttt{x} is assigned to \texttt{y} (line 3),
+consider the second rule of ownership, since we can only have one owner,
 \texttt{x}'s value ownership is transferred to \texttt{y}.
-Since we transferred \texttt{x}'s value to \texttt{y}, \texttt{x} is no longer valid, consequently,
+Since we transferred \texttt{x}'s value to \texttt{y}, \texttt{x} is no longer valid on line 4, consequently,
 when compiling the code an error will be issued due to \texttt{x} being moved.
 
-Notice how \texttt{String::from} is used instead of another type,
+Notice how \texttt{\textcolor{violet}{String}::from} is used instead of another type,
 since \keyword{String} type does not implement \keyword{Copy} it can only be moved.
-If the used type implemented \keyword{Copy}, the value would have been copied instead of moved.
+If the used type implemented \keyword{Copy}, the value would have been implicitly copied instead of moved.
 
 \input{Chapters/Listings/C2/rust-move.tex}
 
-So far this illustrates the first two rules. The last rule can be considered invisible,
-as it happens during compilation and the user would not notice it usually.
-What happens is that at the end of the scope, any variable whose owner is in scope, will be freed.
+So far, this example illustrates the first two rules. The last rule can be considered \quotes{invisible},
+as it happens during compilation and the user will not notice it usually.
+What happens is that at the end of the scope, any variable whose owner is in scope,
+will be freed (in Rust's terms, it will be dropped).
 While the developer is not required to explicitly free the memory, the compiler will insert the calls for the developer.
 
 \subsection{Borrowing}\label{sec:rust-lang:borrowing}
@@ -213,7 +214,7 @@ which could lead to inconsistent values.
 \paragraph{$N$ immutable references and $1$ mutable reference,} see \autoref{lst:rust-borrow-n-immut-1-mut}.
 The reason behind not allowing a mutable reference to coexist is similar.
 Consider that each value can be executed by a different thread,
-the first two (\texttt{r1} and \texttt{r2}) are only read and the third (\texttt{r3}) can be read and written.
+the first two (\texttt{r1} and \texttt{r2}, on lines 3 \& 4) are only read and the third (\texttt{r3}, on line 5) can be read and written.
 While there will be no conflicts between writers, it is possible for the readers to read an inconsistent value,
 since it can happen during the write operation.
 
@@ -235,7 +236,7 @@ traits to enable developers to extend upon the existing abstractions.
 
 \subsubsection*{Message-passing}
 
-Rust's message-passing library is inspired on Go's approach to concurrency,
+Rust's message-passing library\citeurl{https://doc.rust-lang.org/std/sync/mpsc/}{01/07/2021} is inspired by Go's approach to concurrency,
 prioritizing message passing over other kinds of concurrent approaches, such as locking.
 
 \begin{displayquote}[Effective Go\citeurl{https://golang.org/doc/effective\_go.html}{08/06/2021}]
@@ -279,7 +280,7 @@ a powerful extension mechanism (i.e. Rust's macros, discussed in \autoref{sec:ru
 and a strong type system, able to provide the necessary abstractions.
 Rust provides both, the type systems goes as far as allowing zero-sized types,
 allowing type-level abstractions to incur no runtime overhead.
-This is a key ingredient in our DSL, aiming to provide the minimal possible runtime with an expressive language.
+This is a key ingredient in our DSL, aiming to minimize possible runtime overhead while providing an expressive language for typestate specification.
 
 \section{Behavioral Types}\label{sec:behavioral-types}
 
@@ -304,8 +305,8 @@ Consider the protocol from \autoref{fig:login-protocol},
 where a user tries to authenticate.
 A developer can use it as a specification
 (for simplicity consider the uppercase messages to be simple strings),
-using behavioral types the developer could be able to specify the described interactions and all boilerplate could be generated for him.
-While using strings as a payload is not very “\emph{interesting}”,
+using behavioral types the developer could be able to specify the described interactions and all boilerplate could be generated for them.
+While using strings as a payload is not very \quotes{interesting},
 consider instead that the object in transit is an encrypted payload,
 the boilerplate will take care of decryption and deserialization.
 Furthermore, consider the constraint that \emph{all interactions end with a message from the server}.
@@ -318,9 +319,9 @@ the code should not compile, raising an error.
 
 Session types are a subset of behavioral types, focused on communication,
 from entities in a distributed system to threads in a computer.
-Session types are based on process calculi and can be thought as “\emph{types for protocols}” \autocite{Honda1993, Honda1998}.
+Session types are based on process calculi and can be thought as \quotes{types for protocols} \autocite{Honda1993, Honda1998}.
 They elevate communication to the type level, allowing expressing them as types in a program,
-in turn this enables the compiler to reason about the protocol during compile-time \autocite{Vasconcelos2006, Gay2015}.
+in turn this enables the compiler to reason about the protocol during compile-time \autocite{Gay2015, Vasconcelos2006}.
 
 In Rust, a channel is created with \mintinline{Rust}{let (tx, rx) = channel::<SenderT, ReceiverT>()},
 where \texttt{SenderT} and \texttt{ReceiverT} are the types sent and received by the channel.
@@ -332,7 +333,7 @@ sending another type over the channel will result in a type error.
 Session types extend on this notion, not only allowing for a single type to be sent or received,
 but also model the protocol.
 Consider \autoref{lst:rust-login-chan}, the example has unnecessary complexity,
-for each receive the developer is required to match all possible replies.
+as for each receive the developer is required to match all possible replies.
 Ideally, we declare the steps and possible outcomes beforehand.
 
 For example, in plain English:
@@ -348,7 +349,7 @@ where the first four assignments ($:=$) are simple aliases, to simplify reading)
 
 \input{Chapters/Figures/C2/session-types.tex}
 
-Consider $!$ to be \emph{sends}, $?$ to be \emph{receives}, $.$ the \emph{sequence} operator finally,
+Consider $!$ to be \emph{sends}, $?$ to be \emph{receives}, $.$ the \emph{sequence} operator,
 $\&$ the \emph{choice offering} and $\oplus$ the \emph{choice selection}.
 Using session types effectively offloads complexity to the type system,
 resulting in more complex types, but simpler implementations,
@@ -371,10 +372,10 @@ extended the concept with new techniques.
 
 \subsubsection*{Automata}
 
-A possible question on the reader's mind is “\emph{how are automata and typestates related?}”.
-This section tries to address that question and exemplify how automata helps prove typestates properties.
+A possible question on the reader's mind is --- \emph{how are automata and typestates related?}
+This section tries to address that question and exemplify how automata helps prove typestate's properties.
 It is possible to express typestates as automata, as the reader can observe in \autoref{fig:file-automata}.
-Each state is a possible state the object can be in, transitions are done through methods.
+Each state is a possible state the object can be in and transitions are done through methods.
 Methods can either mutate the object state, such as \texttt{open} and \texttt{close},
 or leave it unchanged, such as \texttt{nextLine}.
 
@@ -401,7 +402,7 @@ why should we not try and leverage the programming language itself?
 Programming languages allow the programmer to express a set of actions to be taken by the computer,
 they are tools which enable us to achieve a goal.
 Being essential to our work, better tools enable developers to be more productive and achieve higher quality work.
-The remaining question is “\emph{why do we not create better languages?}”.
+The remaining question is --- \emph{why do we not create better languages?}
 Even when considering languages to be cheap to develop,
 the amount of work between a \emph{working} language to be \emph{production ready} is not cheap.
 Furthermore, while adopting a new language for a hobby project is easy,
@@ -409,7 +410,7 @@ the same does not apply for enterprise level projects,
 requiring several developers to know the ins and outs of the language.
 
 \paragraph{Static typed languages.}
-The current trend is to move from dynamically typed languages,
+The current trend is to move away from dynamically typed languages,
 to statically typed ones, or at the very least, add typing support to existing dynamic languages.
 Typescript\citeurl{https://www.typescriptlang.org/}{08/06/2021},
 Reason\citeurl{https://reasonml.github.io/}{08/06/2021} and
@@ -425,15 +426,15 @@ just like type hints, they can be partially used in some languages,
 through tools such as Mungo~\autocite{Voinea2020}, by contract-style assertions as in Ada2012, Eiffel or pre-0.4 Rust,
 or finally by leveraging the existing type system to write typestate enabled code as it is possible in Rust\citeurl{https://git.io/JZ3i7}{08/06/2021}.
 Typestate-related concepts were also used in Singularity OS \autocite[Section 6]{Ancona2016},
-a reliable operating system prototype where programs were written using Sing\# --- a language derived from C\# which supports behavioral typing,
-specifically contracts in a similar capacity to typestates.
+a reliable operating system prototype where programs were written using Sing\# --- a C\# derived language which supports behavioral typing,
+specifically, contracts in a similar capacity to typestates.
 
 \paragraph{Why use typestates?}
 By leveraging the state to the type system, the compiler is able to aid the programmer during development,
 a given set of transitions will be impossible by default, since the types do not implement them.
 By reducing the need for developers to check for a certain set of conditions through the use of typestates,
 it becomes possible to reduce the number of runtime assertions and
-completely eliminate the need for illegal state exceptions since illegal transitions are checked at compile time.
+completely eliminate the need for illegal state exceptions since illegal transitions are checked at compile-time.
 
 
 \subsubsection*{Typestates in action}
@@ -465,7 +466,7 @@ the class methods and behavior change during runtime as state changes,
 in contrast with other languages (e.g. Java) where public methods and fields are always available.
 In \autoref{lst:plaid-file-use}, the \keyword{File} passes through states as it is open, read and closed in \texttt{readClosedFile}.
 
-This property allows the type system to enforce certain properties at compile time,
+This property allows the type system to enforce certain properties at compile-time,
 such as certain methods will never be called in a given state since it is not possible by design
 (i.e. they are not available in the interface).
 
@@ -487,7 +488,7 @@ Notice that in \autoref{lst:obsidian-transaction-ok} the user is able to call \t
 as the switch is in the \texttt{Off} state, as expected.
 However, the user is unable to call \texttt{turnOff} in \autoref{lst:obsidian-transaction-err},
 since the switch is already set to the \texttt{Off} state.
-The Obsidian compiler is able to notice such invalid transitions and provide an error during compile time.
+The Obsidian compiler is able to notice such invalid transitions and provide an error during compile-time.
 
 \input{Chapters/Listings/C2/obsidian-state.tex}
 
