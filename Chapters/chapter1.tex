@@ -64,7 +64,7 @@ with information of the expected computation state at runtime.
 \subsection{The Billion Dollar Mistake}
 
 \begin{displayquote}[Tony Hoare\citeurl{https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/}{01/07/2021}]
-    This led me to suggest that the null value is a member of every type,
+    ... This led me to suggest that the null value is a member of every type,
     and a null check is required on every use of that reference variable,
     and it may be perhaps a billion dollar mistake.
 \end{displayquote}
@@ -82,7 +82,7 @@ class Main {
     \label{lst:java-scanner-null}
 \end{listing}
 
-Consider \autoref{lst:java-scanner-null}, the program compiles but it will crash with a \texttt{NullPointerException} on line 4.
+Consider \autoref{lst:java-scanner-null}; the program compiles but it will crash with a \texttt{NullPointerException} on line 4.
 While anyone can see the explicit \keyword{null} attribution the compiler does not issue an error or warning.
 The original author of the \keyword{null}, Tony Hoare, considers this to be his “\emph{billion dollar mistake}”.
 Since in complex codebases, this error is hard to track down among all possible states and
@@ -116,6 +116,13 @@ class ScannerMisuse {
     \caption{Java's \keyword{Scanner} misuse example.}
     \label{lst:java-scanner}
 \end{listing}
+
+An example of a similar bug would be Jedis' issue \#1747\citeurl{https://github.com/redis/jedis/issues/1747}{14/07/2021};
+while reading a reply from the server, a client would get a \ttt{SocketTimeoutException}\citeurl{https://docs.oracle.com/javase/8/docs/api/java/net/SocketTimeoutException.html}{14/07/2021},
+the exception then calls \ttt{jedis.close()}, however, processing of the underlying would (wrongly) keep going,
+in some cases, the processing procedure would heap-allocate a \emph{very} large array or a negative-space,
+thus causing the \gls{JVM} to crash with an \ttt{OutOfMemoryException}\citeurl{https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/memleaks002.html}{14/07/2021}.
+
 
 As shown in \autoref{lst:java-scanner-typestate}, using a \emph{typestated} Java example,
 the code allows us to trace the state of the object, but even better,
@@ -151,7 +158,7 @@ The current landscape of behavioral types in mainstream languages is bare.
 While projects exist, most are academic and of little impact in the way programmers write their code.
 In this document I focus on two approaches to behavioral types --- session types and typestates.
 
-\paragraph{Session types} will often refer to endpoints and their messages, capturing aspects of communication between them.
+\paragraph{Session types} will often refer to endpoints and their messages, capturing aspects of communication between them \autocite{Honda1993}.
 Languages like ATS provide session type features and further enable the generation of source code in other languages
 such as Erlang \autocite{Xi2016}. ATS also serves as research playground for other topics related with session types \autocite{Xi2016a}.
 There are also tools that plug into existing languages;
@@ -171,17 +178,19 @@ StMungo converts Scribble protocols to Java classes with typestates which are th
 this enables developers to write effectively session-typed Java.
 By itself, Mungo is a typechecker with support for typestates.
 
+% TODO add citation for Honda1993
 
 \paragraph{Typestates} capture the state of the program,
-allowing the developer to express the state of objects during runtime, at compile-time. % TODO
+allowing the developer to express the state of objects during runtime, at compile-time \autocite{Strom1983}.
 I discuss typestates further in \autoref{sec:typestates}.
 Fugue \autocite{DeLine2004} is a protocol checker that achieves similar functionality to typestates.
 The tool provides a series of annotations to be used in code which are then processed into protocols to be checked by Fugue.
 Using the tool, the authors found several errors which would inhibit application scaling in a Microsoft internal project.
 Languages like Plaid \autocite{Aldrich2009} and Obsidian \autocite{Coblenz2020, Coblenz2020a} put typestates to use,
 trying to bridge the gap between academia and industrial usage.
-Plaid is an object-oriented language with first class support for typestates.
-Obsidian is a relatively new language which targets the Hyperledger Fabric blockchain.
+Plaid is an object-oriented language with first class support for typestates,
+it is considered to be a \quotes{done work} and the authors have moved on to other projects\citeurl{https://www.cs.cmu.edu/~aldrich/plaid/}{14/07/2021}.
+Obsidian is a relatively new language which targets the Hyperledger Fabric blockchain, in the development phase.
 The language aims to make writing smart contracts simpler and less error prone
 through the addition of linear types and typestate mechanisms to the language.
 In \autocite{Coblenz2020} the effectiveness of the approach is put to test,
@@ -202,6 +211,7 @@ While Rust dropped typestate support during early development (Rust 0.4), that d
 The type system is able to emulate typestates with efficiency, the approach however comes at the cost of verbosity.
 Regardless of the verbosity typestates are used by the embedded systems development sphere of the Rust community.
 
+% TODO add citation for Strom1986
 
 \section{Contributions}\label{sec:objectives}
 
@@ -221,7 +231,7 @@ Its major features are:
 \end{description}
 To start using the DSL the user can simply add the following line to the \ttt{Cargo.toml} file.
 \begin{minted}[linenos=false]{toml}
-typestate = "0.7"
+typestate = "0.8"
 \end{minted}
 
 \section{Outline}\label{sec:organization}

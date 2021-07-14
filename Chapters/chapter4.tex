@@ -10,7 +10,7 @@
 
 \chapter{The \annotation{typestate} macro}\label{cha:macro}
 
-This chapter presents the core contribution of this thesis, the \annotation{typestate} macro.
+This chapter presents the contributions of the present work, the \annotation{typestate} macro.
 In \autoref{sec:typestates-hard-way}, I start by demonstrating how to implement Rust typestates by hand.
 In \autoref{sec:macro-dsl:architecture} I discuss the macro high-level architecture,
 the DSL is discussed in \autoref{sec:macro-dsl},
@@ -188,7 +188,7 @@ we have declared the vending machine, its states and its \emph{some} of its tran
 
 I say \quotes{some} transitions, because we have not addressed how the diamonds in \autoref{fig:vending-machine} work.
 We use the diamonds to represent a decision between $N$ possible paths, I will refer to them as \emph{decision nodes};
-this representation closely resembles \emph{Deterministic Object Automata} \cite{Trindade2020}.
+this representation closely resembles \gls{DOA} \cite{Trindade2020}.
 To model our decision nodes, we can use Rust's enumerations,
 these allow us to declare possible outcomes and force the \gls{API} client to match them.
 
@@ -349,91 +349,51 @@ impl State for Finish {}
 Now that we know how to build our own typestates,
 we want to automate the error-prone parts of the process.
 In this section I present the macro's DSL,
-I start by exploring its architecture followed by its syntax,
-going through the simpler constructs and how they relate to the typestate first,
+I start presenting the DSL's syntax and semantics, followed by a dive into its internals,
+going through the simpler constructs and how they relate to typestates first,
 finishing on more advanced features.
 
-\subsection{Architecture}\label{sec:macro-dsl:architecture}
-
-Before discussing how the automaton extraction works, it is necessary to discuss the macro architecture and
-provide some insight into its inner workings.
-This section starts by providing an overview over the macro architecture,
-afterwards I will dive into the parsing and code generation details.
-
-The macro's architecture is illustrated in \autoref{fig:dsl-processing},
-everything starts by attaching \annotation{typestate} to a module,
-our macro will be expanded during compilation and thus our code will be run.
-We are given the \gls{AST} of the module, from which we run a series of visitors
-(described \autoref{sec:macro-dsl:architecture:visitors}) which will extract the typestate's state machine,
-afterwards we perform some checks over the state machine (described in \autoref{sec:validation}),
-if the checks fail, an error is issued, pointing the user to the relevant code;
-if all checks pass, the user is ready to start implementing the typestate's functionalities;
-this process is illustrated in \autoref{fig:dsl-processing}.
-
-\input{Chapters/Figures/C4/dsl-processing.tex}
-
-\subsubsection{Parsing}
-
-The macro's parsing procedure leverages the \texttt{syn} crate\footnote{\texttt{syn} is a parsing library for Rust's \texttt{TokenStream},
-    for more information please see \url{https://docs.rs/syn/1.0.72/syn/index.html}.} to simply the parsing process,
-this allowed me to focus on getting the most information out of the user's code rather than worrying about how to parse Rust.
-
-As the \annotation{typestate} macro can only be attached to modules,
-we instruct \texttt{syn} to expect and parse a module item\footnote{\url{https://doc.rust-lang.org/reference/items/modules.html}};
-this simple step already saves us from manually ensuring the macro is attached to the right item.
-The resulting item is the module's \gls{AST}, from which we will run a series of visitors,
-each analyzing a different part of the code. % TODO: AST should probably be named Concrete Syntax Tree
-
-\subsubsection{Visitors}\label{sec:macro-dsl:architecture:visitors}
-
-The macro is split into three separate visitors, each performs a pass over different item kinds and if necessary,
-mutates the tree by generating new code and either adding or replacing existing nodes.
-The following visitors are described in their running other; shown in \autoref{fig:macro-visitors}.
-
-\begin{figure}
-    \centering
-    \begin{tikzpicture}
-        \tikzstyle{visitor}=[draw, align=center];
-        \node[visitor] (state-visitor) {State\\Visitor};
-        \node[visitor, right = of state-visitor] (decision-visitor) {Decision\\Visitor};
-        \node[visitor, right = of decision-visitor] (transition-visitor) {Transition\\Visitor};
-        \draw[->, thick] (state-visitor) -- (decision-visitor);
-        \draw[->, thick] (decision-visitor) -- (transition-visitor);
-    \end{tikzpicture}
-    \caption{The \annotation{typestate} macro visitors, by running order.}
-    \label{fig:macro-visitors}
-\end{figure}
-
-\paragraph{The structure visitor} will visit all structures, as the name states;
-currently, a user can declare one of three possible structures;
-\begin{compactitem}
-    \item A structure annotated with \annotation{automaton} (of which there can only be one).
-    \item One annotated with \annotation{state} (of which there can be $N$).
-    \item One without annotations (of which there can be \emph{none}).
-\end{compactitem}
-From the visited structures we can extract the automaton's structure and its states,
-these are added to the graph and the sealed trait pattern is implemented for each structure.
-
-\paragraph{The enumeration visitor} solely visits enumerations;
-it checks that all enumeration variants exist as states and establishes edges between them and the decision node.
-This visitor is also known as the decision state visitor since each enumeration represents a decision to be made during runtime.
-
-\paragraph{The trait visitor,} or the transitions visitor,
-is responsible for the extraction of all the transitions out of the declared traits.
-This visitor conflicts with the first one since it generates traits which would then be visited;
-to avoid this problem \texttt{typestate} declares an additional, undocumented and inert macro \ie{a macro that returns its input};
-the \annotation{generated} macro.
-When the visitor sees an item attached with \annotation{generated} it ignores the item,
-the \annotation{generated} macro is later processed as a regular macro by the macro system and the annotation is removed.
-
+% TODO switch presentation
 \subsection{Syntax \& Automaton Extraction}\label{sec:macro-dsl:syntax}
+
+\begin{listing}
+    \begin{minted}[linenos]{rust}
+// The entry point to the DSL
+#[typestate]
+mod typestate_dsl {
+    // Only one automaton per typestate specification
+    #[automaton] struct Automaton;
+    // N-states are possible
+    #[state] struct StateA;
+    #[state] struct StateB;
+    // Functions are defined inside traits
+    // Traits share their name with an existing structure
+    trait StateA {
+        // Transitions are functions that consume `self`
+        // and return an existing state
+        fn transition(self) -> StateB;
+        // Functions can declare states as initial/final
+        // Initial state declarations do not take `self`
+        fn new() -> StateA;
+        // Final state declarations consume `self` and
+        // do not return an existing state
+        fn end(self);
+    }
+}
+    \end{minted}
+    \caption{The main elements for the \texttt{\#[typestate]} DSL.}
+    \label{lst:typestate-mod}
+\end{listing}
 
 \annotation{typestate}'s DSL syntax is interlinked with its automaton extraction process,
 as such, I will discuss them in conjunction.
-As we go, I will present parts of the syntax and explain how it relates with the automaton.
+
+A quick primer on the DSL's syntax is presented in \autoref{lst:typestate-mod};
+this section covers each functionality present in the primer by building towards a complete example.
+I will present parts of the syntax and explain how it relates with the automaton.
 We will reuse the vending machine example, illustrated in \autoref{fig:vending-machine} and model it using our DSL.
 
-\paragraph{The \annotation{typestate} macro} is the DSL's entrypoint and it only supports being attached to modules.
+\paragraph{The \annotation{typestate} macro} is the DSL's entrypoint and it only supports being attached to modules (\autoref{lst:typestate-mod} lines 1-3).
 Given that we want to access several parts of Rust's syntax \eg{\keyword{struct}, \keyword{enum}, etc} we can take one of two approaches ---
 either analyze the whole file with an external tool, or annotate and process the best next thing, the module.
 
@@ -465,7 +425,7 @@ error: Missing `#[automaton]` struct.
 \end{listing}
 
 \paragraph{The \annotation{automaton} annotation} is attachable to structures only, % TODO check this
-and allows the macro to know which of the declared structures is the automaton.
+and allows the macro to know which of the declared structures is the automaton (\autoref{lst:typestate-mod} lines 4-5).
 
 \autoref{lst:vending-machine-typestate-module-automaton} fixes the error of \autoref{lst:vending-machine-typestate-module},
 by adding the \texttt{VendingMachine} structure and annotating it with \annotation{automaton}
@@ -504,7 +464,7 @@ mod vending_machine_api {
 Once again, this still does not make the macro happy, while we now have an automaton, we are lacking initial and final states;
 as shown in \autoref{lst:vending-machine-typestate-missing-states-error}.
 
-\paragraph{The \annotation{state} annotation,} like the \annotation{automaton} annotation, is only attachable to structures;
+\paragraph{The \annotation{state} annotation,} like the \annotation{automaton} annotation, is only attachable to structures (\autoref{lst:typestate-mod} lines 6-8);
 it marks them as states and also implements the necessary traits to include the state in the sealed trait state set (\autoref{sec:typestates-hard-way:future}).
 
 As we can observe in \autoref{lst:vending-machine-typestate-module-states},
@@ -575,8 +535,8 @@ function with signature like `fn f(self) -> T` where `T` is not a declared state
 \end{listing}
 
 
-\paragraph{Function declarations} allow us to declare transitions without any kind of annotations;
-we can simply look at the function signature and infer the kind of transition,
+\paragraph{Function declarations} allow us to declare transitions without any kind of annotations (\autoref{lst:typestate-mod} lines 9-21);
+we can simply check the function signature and infer the kind of transition,
 however to do so, we first need to establish rules, those are:
 
 \begin{compactitem}
@@ -685,6 +645,77 @@ in \autoref{tab:dsl-summary-functions} I review the transition inference rules f
     \label{tab:dsl-summary-functions}
 \end{table}
 
+\subsection{Architecture}\label{sec:macro-dsl:architecture}
+
+% Before discussing how the automaton extraction works, it is necessary to discuss the macro architecture and
+% provide some insight into its inner workings.
+This section provides an overview over the macro architecture,
+afterwards I will dive into the parsing and code generation details.
+
+The macro's architecture is illustrated in \autoref{fig:dsl-processing},
+as demonstrated in the previous section, the DSL's entry point is the \annotation{typestate} attribute,
+attaching it to a module will cause the macro system to run our code during expansion and process the module's code as we wish.
+During expansion the \gls{AST} of the module is passed in to the macro code where a series of visitors are defined and run
+(described \autoref{sec:macro-dsl:architecture:visitors}), performing the state's machine extraction and verification (described in \autoref{sec:validation}).
+If verification fails the macro issues an error (or errors), pointing the user to the relevant code;
+if all checks pass, the user is ready to start implementing the typestate's functionalities.
+
+\input{Chapters/Figures/C4/dsl-processing.tex}
+
+\subsubsection{Parsing}
+
+The macro's parsing procedure leverages the \texttt{syn} crate\footnote{\texttt{syn} is a parsing library for Rust's \texttt{TokenStream},
+    for more information please see \url{https://docs.rs/syn/1.0.72/syn/index.html}.} to simplify the parsing process,
+this allowed me to focus on getting the most information out of the user's code rather than worrying about how to parse Rust.
+
+As the \annotation{typestate} macro can only be attached to modules,
+we instruct \texttt{syn} to expect and parse a module item\footnote{\url{https://doc.rust-lang.org/reference/items/modules.html}};
+this simple step already saves us from manually ensuring the macro is attached to the right item.
+The resulting item is the module's \gls{AST}, from which we will run a series of visitors,
+each analyzing a different part of the code. % TODO: AST should probably be named Concrete Syntax Tree
+
+\subsubsection{Visitors}\label{sec:macro-dsl:architecture:visitors}
+
+The macro is split into three separate visitors, each performs a pass over different item kinds and if necessary,
+mutates the tree by generating new code and either adding or replacing existing nodes.
+The following visitors are described in their running other; shown in \autoref{fig:macro-visitors}.
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \tikzstyle{visitor}=[draw, align=center];
+        \node[visitor] (state-visitor) {State\\Visitor};
+        \node[visitor, right = of state-visitor] (decision-visitor) {Decision\\Visitor};
+        \node[visitor, right = of decision-visitor] (transition-visitor) {Transition\\Visitor};
+        \draw[->, thick] (state-visitor) -- (decision-visitor);
+        \draw[->, thick] (decision-visitor) -- (transition-visitor);
+    \end{tikzpicture}
+    \caption{The \annotation{typestate} macro visitors, by running order.}
+    \label{fig:macro-visitors}
+\end{figure}
+
+\paragraph{The structure visitor} will visit all structures, as the name states;
+currently, a user can declare one of three possible structures;
+\begin{compactitem}
+    \item A structure annotated with \annotation{automaton} (of which there can only be one).
+    \item One annotated with \annotation{state} (of which there can be $N$).
+    \item One without annotations (of which there can be \emph{none}).
+\end{compactitem}
+From the visited structures we can extract the automaton's structure and its states,
+these are added to the graph and the sealed trait pattern is implemented for each structure.
+
+\paragraph{The enumeration visitor} solely visits enumerations;
+it checks that all enumeration variants exist as states and establishes edges between them and the decision node.
+This visitor is also known as the decision state visitor since each enumeration represents a decision to be made during runtime.
+
+\paragraph{The trait visitor,} or the transitions visitor,
+is responsible for the extraction of all the transitions out of the declared traits.
+This visitor conflicts with the first one since it generates traits which would then be visited;
+to avoid this problem \texttt{typestate} declares an additional, undocumented and inert macro \ie{a macro that returns its input};
+the \annotation{generated} macro.
+When the visitor sees an item attached with \annotation{generated} it ignores the item,
+the \annotation{generated} macro is later processed as a regular macro by the macro system and the annotation is removed.
+
 
 \subsection{Advanced Features}\label{sec:macro-dsl:advanced}
 
@@ -694,8 +725,58 @@ However, some typestates will require more complex mechanisms, both to develop a
 that is the purpose of this section.
 Once more, we will expand over our recurring example, the vending machine; illustrated in \autoref{fig:vending-machine}.
 
-\subsubsection{Self-transitions}
+\subsubsection{Decision states}
+Decision states were previously discussed in the final of \autoref{sec:typestates-hard-way},
+and were first listed in \autoref{lst:vending-machine-check-finish}.
+I now show how the DSL handles this kind of state.
 
+There are cases where it is required that some uncertainty is modelled into the typestate,
+maybe the typestate depends on a procedure that can fail or maybe, given the input, the resulting state may differ;
+such states are required to be modelled, the used representation is based on \gls{DOA} \autocite{Trindade2020}.
+
+To achieve such goal, I took advantage of Rust's enumerations as they can represent several types under a single \ttt{enum},
+my DSL tweaks their semantic from normal Rust.
+Instead of allowing enumerations containing several kinds of variants, each with their respective name,
+the DSL enforces that each variant is of the \ttt{Unit}\citeurl{https://docs.rs/syn/1.0.73/syn/enum.Fields.html\#variant.Unit}{08/07/2021}
+type and shares its name with an existing state; an example is provided in \autoref{lst:typestate-decision}.
+
+In contrast to \autoref{lst:vending-machine-check-finish}, the DSL's decision state's variant do not have arguments,
+these are generated from their name by the macro.
+
+\begin{listing}
+    \begin{minted}{rust}
+#[state] struct NextState;
+#[state] struct ErrorState;
+
+enum FallibleOperationResult {
+    NextState,
+    ErrorState
+}
+    \end{minted}
+    \caption{Fallible operations can be using enumerations like the \ttt{FallibleOperationResult} decision state.}
+    \label{lst:typestate-decision}
+\end{listing}
+
+\paragraph{Transition labels} can be added through the use of the \ttt{metadata} attribute,
+this attribute allows the addition of relevant metadata to the transition edge.
+This is especially useful to specify under which conditions the transition from a decision state to a specific state happens;
+currently, the attribute only supports the \ttt{label} value.
+A usage example of the \ttt{metadata} attribute is listed in \autoref{lst:typestate-decision-metadata}.
+
+\begin{listing}
+    \begin{minted}{rust}
+enum FallibleOperationResult {
+    #[metadata(label="Success!")]
+    NextState,
+    #[metadata(label="Error happened because network failed.")]
+    ErrorState
+}
+    \end{minted}
+    \caption{\autoref{lst:typestate-decision} enumeration with the \ttt{metadata} attribute.}
+    \label{lst:typestate-decision-metadata}
+\end{listing}
+
+\subsubsection{Self-transitions}
 Consider that we are asked to display a message containing the amount left to pay in the \texttt{NeedMoney} state;
 to do so we can simply add a new function to the \texttt{NeedMoney} trait, like in line 3 of \autoref{lst:vending-machine-advanced-trait}.
 Notice how the new method takes \keyword{\&self} instead of \keyword{self}, thus,
@@ -803,7 +884,7 @@ demonstrated in \autoref{lst:vending-machine-advanced-constructors-expansion}.
 
 
 \begin{listing}
-    \begin{minted}[linenos=false]{rust}
+    \begin{minted}{rust}
 impl NeedMoney {
     pub fn new_state(money: u64, picked_slot: usize) -> Self {
         Self { money, picked_slot }
@@ -840,12 +921,33 @@ Regarding automata, my macro provides the following:
 
 Minimality is not present in the list of provided guarantees because it is unclear how the macro could provide feedback to the user;
 while the macro can simply state --- \equotes{The presented automaton is not minimal}, such message does not help the user correcting the problem.
-Furthermore, non-deterministic automata are required to first be determinized,
+Furthermore, non-deterministic automata are required to first be \emph{determinized},
 producing new states which the user is unable to see and thus providing feedback on them is not the best solution.
 
 \subsection{The Automaton and the Graph}\label{sec:validation:automaton}
 
-The automaton is modelled as a directed graph, this approach is more efficient than that of projects like OFlat which uses sets. % CITE: OFlat
+The automaton is extracted from the intermediate graph,
+this is done by implementing Rust's \ttt{From} conversion trait (see \autoref{lst:rust-igraph-conversion}),
+while the representations are very similar, the \ttt{GenericAutomaton} is a stripped and specialized version of the intermediate graph.
+
+\begin{listing}
+    \begin{minted}{rust}
+impl<S, T> From<IntermediateGraph<S, T>> for GenericAutomaton<S, T>
+where
+    S: Hash + Eq + Debug + Clone + Display,
+    T: Hash + Eq + Debug + Clone + Display,
+{
+    fn from(i: IntermediateGraph<S, T>) -> Self {
+        // ...
+    }
+}
+    \end{minted}
+    \caption{Implementation of the \ttt{From} trait for the conversion between \ttt{IntermediateGraph} and \texttt{GenericAutomaton}}
+    \label{lst:rust-igraph-conversion}
+\end{listing}
+
+
+The automaton is modelled as a directed graph, this approach is more efficient than that of projects like OFlat \autocite{Macedo2019}, which uses sets.
 Originally I used the \texttt{petgraph} library\footnote{\url{https://docs.rs/petgraph/0.5.1/petgraph/index.html}},
 however the library turned out to be inadequate to the problem at hand,
 \texttt{petgraph}'s \texttt{GraphMap}\footnote{\url{https://docs.rs/petgraph/0.5.1/petgraph/graphmap/struct.GraphMap.html}}
@@ -854,10 +956,67 @@ the types I am storing are neither \texttt{Copy} nor defined by me.
 
 To fix the problem, I have implemented a directed graph using adjacency lists, that is, for each node,
 there is a list containing its neighboring nodes and the respective connecting edges.
-This approach takes from the FADo project which also uses adjacency lists; to simplify some algorithms, % CITE: FADo
+This approach takes from the FAdo \autocite{Reis2002} project which also uses adjacency lists; to simplify some algorithms, % CITE: FAdo
 I have added extra structures such as the inverse $\delta$, or $\delta^{-1}$
 (in automata, the delta set $\delta$ represents an automaton's transitions,
 $\delta^{-1}$ is the delta set where each transition has had their direction inverted).
+
+\subsection{Implementing a validation strategy}\label{sec:validation:strategy}
+The current macro architecture implements an intermediate graph over which several transformations and analysis can be done,
+one of which being validation.
+The typestate validation is performed over a general representation of automata (extracted from the intermediate graph),
+the representation has been adapted from the FAdo library \autocite{Reis2002}.
+To allow for multiple validation strategies I defined a \ttt{Validate} trait, presented in \autoref{lst:rust-typestate-validate-trait},
+the trait is implemented for a structure, over a \ttt{Property} (a blanket trait used to define strategies).
+
+\begin{listing}
+    \begin{minted}{rust}
+pub trait Property {}
+
+pub trait Validate<P: Property> {
+    type Out;
+    fn validate(&self, _: P) -> Self::Out;
+}
+    \end{minted}
+    \caption{
+        The \ttt{Validate} trait is generic over the property being validated,
+        but not its output, hence the \ttt{Out} type being declared as an associated type.
+    }
+    \label{lst:rust-typestate-validate-trait}
+\end{listing}
+
+Implementing the \ttt{Validate} trait requires a struct which will implement the \ttt{Property} trait,
+and an implementation of the \ttt{Validate} trait for a structure over the property being validated;
+this is listed in \autoref{lst:rust-typestate-validate-impl}.
+
+\begin{listing}
+    \begin{minted}{rust}
+pub struct UsefulStates;
+
+impl Property for UsefulStates {}
+
+impl<State, Transition> Validate<UsefulStates> for
+    GenericAutomaton<State, Transition>
+where
+    State: Hash + Eq + Debug + Clone + Display,
+    Transition: Hash + Eq + Debug + Clone + Display,
+{
+    type Out = HashSet<State>
+
+    fn validate(&self, _: UsefulStates) -> Self::Out {
+        // ...
+    }
+}
+    \end{minted}
+    \caption{
+        Implementation example of a validation strategy,
+        in this case it checks that all states are useful
+        \ie{all states are part of a path from the initial state to the final state.},
+        implementation details are omitted but can be seen in
+        \url{https://github.com/rustype/typestate-rs/blob/16da7790ef864054eb5bddde4f10c64ed2bcd511/typestate-proc-macro/src/igraph/validate.rs\#L178-L209}.
+    }
+    \label{lst:rust-typestate-validate-impl}
+\end{listing}
 
 \paragraph{The empty language} verification is easy to address, since the automaton is required to have end states,
 I simply store all end states in a set, then I am only required to check if the set is empty or not.
@@ -871,13 +1030,14 @@ Checking for useful states is then as simple as repeating the exploration proced
 the set of visited states can then be intersected with the set of productive states to compute the useful states,
 once more, in the case that not all existing states are useful, an error is issued, highlighting the state at fault.
 
+
 \section{Visualizing Typestates}\label{sec:automata-visualization}
 
 Along with all the previously described features, I have implemented an embedded typestate visualization;
-the visualization supports exporting to Graphviz DOT\footnote{\url{https://graphviz.org/doc/info/lang.html}},
+the visualization supports exporting to Graphviz DOT\footnote{\url{https://graphviz.org/doc/info/lang.html}} and
 PlantUML state diagrams\footnote{\url{https://plantuml.com/state-diagram}},
 along with documentation embedding using Mermaid.js\footnote{\url{https://mermaid-js.github.io/mermaid/\#/stateDiagram}}
-and the Aquamarine crate\footnote{\url{https://docs.rs/aquamarine/0.1.9/aquamarine}} (detailed in \autoref{sec:automata-visualization:documentation-generation}).
+and the \ttt{aquamarine} crate\footnote{\url{https://docs.rs/aquamarine/0.1.9/aquamarine}} (detailed in \autoref{sec:automata-visualization:documentation-generation}).
 All formats have their own feature flags (only \texttt{aquamarine} is part of the default set of features),
 and all formats leverage the graph used by the macro for analysis to export their visualizations.
 
@@ -887,7 +1047,33 @@ The visualization feature was born out of necessity,
 having a tool to visualize the typestate graph extracted by the macro was invaluable,
 reducing the time spent debugging the macro and the generated typestates.
 However, while it was born to debug the macro, it can also be used to visually debug the typestate;
-in large systems it is hard to mentally \quotes{render} the typestate and having an actual picture of the system helps immensely.
+in large systems it is hard for one to visualize the typestate in their mind,
+having an actual picture of the system helps immensely.
+
+The implementation of export formats follows the same pattern used for validation,
+having an \ttt{Export} trait which declares an \texttt{export} function and a \ttt{Format} trait which is then implemented by a structure,
+in the \ttt{Export} trait case, it is implemented by the intermediate graph.
+An example is provided in \autoref{lst:rust-typestate-export}.
+
+\begin{listing}
+    \begin{minted}{rust}
+pub struct Mermaid;
+
+impl super::Format for Mermaid {}
+
+impl<S, T> Export<Mermaid> for IntermediateGraph<S, T>
+where
+    S: Hash + Eq + Debug + Clone + Display,
+    T: Hash + Eq + Debug + Clone + Display,
+{
+    fn export<W: std::io::Write>(&self, w: &mut W, f: Mermaid) -> Result {
+        // ...
+    }
+}
+    \end{minted}
+    \caption{Implementation example of the \ttt{Export} trait for the \ttt{Mermaid} format. The full code is available at \url{https://github.com/rustype/typestate-rs/blob/16da7790ef864054eb5bddde4f10c64ed2bcd511/typestate-proc-macro/src/igraph/export.rs\#L18-L118}}
+    \label{lst:rust-typestate-export}
+\end{listing}
 
 \paragraph{DOT} was the first format to be exported as it was the first one that came to mind,
 it is very simple and there are a lot of tools which leverage the format.
@@ -910,7 +1096,7 @@ which will export all typestates into separate \texttt{\$TYPESTATE\_NAME.uml} fi
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\linewidth]{Chapters/Figures/C4/VendingMachine.uml.pdf}
+    \includegraphics[width=0.7\linewidth]{Chapters/Figures/C4/VendingMachine.uml.pdf}
     \caption{The vending machine's PlantUML typestate, rendered using the command --- \texttt{plantuml -tsvg VendingMachine.uml}.}
     \label{fig:vending-machine-typestate-uml}
 \end{figure}
@@ -943,7 +1129,7 @@ Unfortunately, embedding images in Rust documentation requires a link to that im
 this constraint makes it more complicated to embed the DOT or PlantUML render inside the documentation.
 Ideally, we want everything in one place, generated in one step!
 
-Fortunately, Aquamarine addresses that problem;
+Fortunately, \ttt{aquamarine} addresses that problem;
 it allows the declaration of Mermaid.js diagrams as documentation and then renders them as HTML inside the Rust documentation.
 Its syntax is \emph{very similar} to PlantUML's,
 thus this feature's implementation process was mostly porting the PlantUML generation code and fixing any bugs which appeared.
@@ -951,7 +1137,7 @@ thus this feature's implementation process was mostly porting the PlantUML gener
 \paragraph{Rendering the state diagram} starts by adding \emph{doc comments}\footnote{\url{https://doc.rust-lang.org/reference/comments.html\#doc-comments}}
 to the module during the macro processing, the \emph{doc comment} contains the diagram description in the Mermaid.js specification language;
 the expanded code for the vending machine example (\autoref{fig:vending-machine}) can be seen in \autoref{lst:vending-machine-mermaid-doc-comment}.
-When the user runs the documentation command --- \texttt{cargo doc}; the Aquamarine attribute is attached and
+When the user runs the documentation command --- \texttt{cargo doc}; the \ttt{aquamarine} attribute is attached and
 the comment is processed by the \texttt{aquamarine} macro, the final diagram is then made available in the documentation;
 pictured in \autoref{fig:vending-machine-mermaid-docs}.
 
@@ -959,25 +1145,19 @@ pictured in \autoref{fig:vending-machine-mermaid-docs}.
     \begin{minted}{Rust}
 ///```mermaid
 ///stateDiagram-v2
-///  [*] --> Waiting : on
-///  Waiting --> [*] : off
-///  Waiting --> HasPick : pick_slot
-///  Waiting --> HasMoney : insert_money
-///  Finish --> Waiting : finish
-///  NeedMoney --> NeedMoney : update_pick
-///  NeedMoney --> NeedMoney : get_message
-///  state C_NeedMoney <<choice>>
-///  NeedMoney --> C_NeedMoney: insert_money
-///  C_NeedMoney --> Finish
-///  C_NeedMoney --> NeedMoney
-///  state C_HasMoney <<choice>>
-///  HasMoney --> C_HasMoney: pick_slot
-///  C_HasMoney --> NeedMoney
-///  C_HasMoney --> Finish
-///  state C_HasPick <<choice>>
-///  HasPick --> C_HasPick: insert_money
-///  C_HasPick --> Finish
-///  C_HasPick --> NeedMoney
+///[*] --> Waiting : on
+///state CheckFinish <<choice>>
+///CheckFinish --> NeedMoney : not enough money
+///CheckFinish --> Finish : transaction can be finished
+///HasMoney --> CheckFinish : pick_slot
+///HasPick --> CheckFinish : insert_money
+///Waiting --> HasMoney : insert_money
+///Waiting --> [*] : off
+///Waiting --> HasPick : pick_slot
+///NeedMoney --> CheckFinish : insert_money
+///NeedMoney --> NeedMoney : get_message
+///NeedMoney --> NeedMoney : update_pick
+///Finish --> Waiting : finish
 ///```
 mod vending_machine_api { /* ... */ }
     \end{minted}
@@ -1000,9 +1180,9 @@ we want users to simply import the \texttt{typestate} library and be able to emb
 Rust applies some restrictions to procedural macro libraries, namely,
 such libraries cannot export anything else other than the defined macros;
 this is a deal-breaker since the \texttt{typestate} crate \emph{is} a procedural macro crate and
-forcing the user to explicitly import Aquamarine into their project is more overhead than necessary.
+forcing the user to explicitly import \ttt{aquamarine} into their project is more overhead than necessary.
 
-The solution for this is to create a \emph{frontend} crate which imports both the \texttt{typestate} macro and Aquamarine,
+The solution for this is to create a \emph{frontend} crate which imports both the \texttt{typestate} macro and \ttt{aquamarine},
 and then exports both, this sidesteps the previous issue since the crate exporting the items \emph{is not} the macro crate;
 this process is pictured in \autoref{fig:typestate-rs-deps}, \autoref{fig:typestate-rs-deps-naive} and \autoref{fig:typestate-rs-deps-export}.
 

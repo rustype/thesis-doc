@@ -62,16 +62,6 @@
   volume    = {42},
   year      = {2007}
 }
-@article{CheckerFramework2018,
-  author = {{Checker Framework}},
-  file   = {:home/jmgd/Documents/work/msc/biblio/checker-framework-manual.pdf:pdf},
-  number = {page 15},
-  pages  = {253},
-  title  = {{The Checker Framework Manual : Custom pluggable types for Java}},
-  url    = {https://checkerframework.org/},
-  volume = {0},
-  year   = {2018}
-}
 @book{Stroustrup1986,
   abstract = {The new C++11 standard allows programmers to express ideas more clearly, simply, and directly, and to write faster, more efficient code. Bjarne Stroustrup, the designer and original implementer of C++, has reorganized, extended, and completely rewritten his definitive reference and tutorial for programmers who want to use C++ most effectively.},
   author   = {Stroustrup, Bjarne},
@@ -93,15 +83,6 @@
   title    = {{Language primitives and type discipline for structured communication-based programming}},
   volume   = {1381},
   year     = {1998}
-}
-@article{Honda1993,
-  author  = {Honda, Kohei},
-  file    = {:home/jmgd/Documents/work/msc/biblio/behavioral/session-types/dyadic-inter-1993.pdf:pdf},
-  journal = {October},
-  number  = {April 1992},
-  pages   = {1--17},
-  title   = {{Types for Dyadic Interaction 2 Typed Terms}},
-  year    = {1993}
 }
 @phdthesis{Mota2020,
   abstract = {Detecting programming errors and vulnerabilities in software is increasingly impor- tant, and building tools that help with this task is an area of investigation, crucial for the industry these days. When programming in an object-oriented language, one naturally defines stateful objects that are non-uniform, i.e., their methods' availability depend on their internal state. One might represent their intended usage protocol with an automaton or a state machine. Behavioral types allow to statically check if all the code of a program respects the usage protocol of each object. Mungo is a tool that extends Java with typestate definitions. These typestates are as- sociated with Java classes and define the behavior of instances of those classes, specifying the sequences of method calls allowed. The Mungo tool checks statically that method calls happen in order, following the specified behavior. Mungo misses crucial features to allow common programming practices: generics and collections are the main ones. The need for these features is illustrated by examples, like an auction that stores a collection of clients, where a usage protocol must be followed. Our goal is to define rigorously the extension to the language, develop the compiler to cope with the required functionalities, and test it with examples of realistic protocols, like Europay Mastercard Visa. Additionally, we will improve developer experience by, for instance, removing artificial restrictions that are not necessary for the verification of code, like the use of an enumeration when a boolean value is preferable. Furthermore, we will explore if the currently used frameworks, JastAdd and ExtendJ, can be replaced by a different one, for example, the Checker Framework, to increase productivity and reduce maintenance burden.},
@@ -570,32 +551,60 @@
   year    = {2020}
 }
 
-@misc{Rauglaudre2003,
-  author = {de Rauglaudre, Daniel},
-  title  = {{Camlp4 - Reference Manual}},
-  url    = {https://caml.inria.fr/pub/docs/manual-camlp4/manual007.html},
-  year   = {2003}
-}
-
 @inproceedings{Cutner2021,
-  author = {Zak Cutner and Nobuko Yoshida},
-  title = {{Safe Session-Based Asynchronous Coordination in Rust}},
+  author    = {Zak Cutner and Nobuko Yoshida},
+  title     = {{Safe Session-Based Asynchronous Coordination in Rust}},
   booktitle = {23rd International Conference on Coordination Models and Languages},
-  pages = {--},
+  pages     = {--},
   publisher = {Springer},
-  year = 2021
+  year      = 2021
 }
 
 @inproceedings{Neykova2018,
-  author = {Rumyana Neykova and Raymond Hu and Nobuko Yoshida and Fahd Abdeljallal},
-  title = {{A Session Type Provider: Compile-time API Generation for Distributed Protocols with Interaction Refinements in F\#}},
+  author    = {Rumyana Neykova and Raymond Hu and Nobuko Yoshida and Fahd Abdeljallal},
+  title     = {{A Session Type Provider: Compile-time API Generation for Distributed Protocols with Interaction Refinements in F\#}},
   booktitle = {27th International Conference on Compiler Construction},
-  pages = {128--138},
+  pages     = {128--138},
   publisher = {ACM},
-  doi = "10.1145/3178372.3179495",
-  year = 2018
+  doi       = {10.1145/3178372.3179495},
+  year      = 2018
 }
 
+@misc{Reis2002,
+  author = {Rogerio Reis and Nelma Moreira},
+  title = {FAdo: tools for finite automata and regular expressions manipulation},
+  year = {2002}
+}
+
+@article{Macedo2019,
+  author    = {Rita Macedo and
+               Artur Miguel Dias and
+               Ant{\'{o}}nio Ravara},
+  title     = {Visualiza{\c{c}}{\~{a}}o e anima{\c{c}}{\~{a}}o de aut{\'{o}}matos
+               em Ocsigen Framework},
+  journal   = {CoRR},
+  volume    = {abs/1907.05384},
+  year      = {2019},
+  url       = {http://arxiv.org/abs/1907.05384},
+  archivePrefix = {arXiv},
+  eprint    = {1907.05384},
+  timestamp = {Wed, 17 Jul 2019 10:27:36 +0200},
+  biburl    = {https://dblp.org/rec/journals/corr/abs-1907-05384.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{Honda1993,
+  author    = {Honda, Kohei},
+  editor    = {Best, Eike},
+  title     = {Types for dyadic interaction},
+  booktitle = {CONCUR'93},
+  year      = {1993},
+  publisher = {Springer Berlin Heidelberg},
+  address   = {Berlin, Heidelberg},
+  pages     = {509--523},
+  abstract  = {We formulate a typed formalism for concurrency where types denote freely composable structure of dyadic interaction in the symmetric scheme. The resulting calculus is a typed reconstruction of name passing process calculi. Systems with both the explicit and implicit typing disciplines, where types form a simple hierarchy of types, are presented, which are proved to be in accordance with each other. A typed variant of bisimilarity is formulated and it is shown that typed $\beta$-equality has a clean embedding in the bisimilarity. Name reference structure induced by the simple hierarchy of types is studied, which fully characterises the typable terms in the set of untyped terms. It turns out that the name reference structure results in the deadlock-free property for a subset of terms with a certain regular structure, showing behavioural significance of the simple type discipline.},
+  isbn      = {978-3-540-47968-0}
+}
 
 % TODO: review the ones below
 

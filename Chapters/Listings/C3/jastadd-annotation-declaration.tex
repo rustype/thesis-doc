@@ -1,17 +1,17 @@
 \begin{listing}
     \centering
     \begin{minted}{Java}
-@any Person people;
-people += new Person("Bob");
-people += new Person("Gene");
-people += new Person("Tina");
-for (Person person : people) {
-    System.out.println(person.getName());
+@any Animal animals;
+animals += new Animal("Magali");
+animals += new Animal("Snow");
+animals += new Animal("Coal");
+for (Animal animal : animals) {
+    System.out.println(animal.getName());
 }
     \end{minted}
     \caption{
         The \texttt{@any} annotation allows an object to carry several instances of itself.
-        In the example, \texttt{@any Person} is rather a collection of \texttt{Person}.
+        In the example, \texttt{@any Animal} is rather a collection of \texttt{Animal}.
         This extension is enabled by the ExtendJ compiler.
     }
     \label{lst:jastadd-annotation-declaration}
