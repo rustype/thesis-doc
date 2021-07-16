@@ -9,10 +9,12 @@
 \typeout{NT FILE chapter3.tex}
 \chapter{Related Work}\label{cha:related-work}
 
-In this chapter I review related work to this thesis,
+In this chapter I review the work related to this thesis.
 I start by reviewing a series of existing tools designed to help with code preprocessing,
-the languages considered were OCaml, Java and Kotlin, followed by a more detailed discussion \wrt~Rust;
-then I review previous work regarding behavioral types, discussing both session types and typestates.
+the languages considered were OCaml, Java and Kotlin, given the existing documentation, and academic work over them,
+projects like OCaml's \gls{PPX}, Java's JastAdd \autocite{Ekman2007} and Kotlin's compiler plugins;
+followed by a more detailed discussion \wrt~Rust;
+finally I review previous work regarding behavioral types, discussing both session types and typestates.
 
 % TODO explain that the pre-processors are well documented and carry several academic studies
 % CITE some of the studies
@@ -605,10 +607,13 @@ In summary, behavioral types is a topic which for now, is still mostly confined 
 Despite the efforts put into the development of tools for “\emph{business}” languages,
 the tools were either abandoned (e.g. Fugue) or
 superseded by other developments in the field (e.g. the initial work in session types for Rust).
-% TODO extend paragraph
 Languages developed for research purposes (e.g. Vault and Plaid) seem to make little to no effect on the outside world.
 While adoption of the language itself is not expected, such could be expected for the mechanisms,
 though it does not seem to be the case.
+% NOTE new paragraph
+Possibly, the main factor working against newer academic ideas is that they are \emph{bleeding-edge} research,
+making companies wary of their application, preferring to keep their old but tested development methods,
+instead of investing on newer and untested ones.
 Finally, in the case of tools (e.g. Scribble and Mungo), they seem to pick the most traction from academia.
 The motivation seems to be based on the possibility of extension and continuous improvement.
 However, they seem to suffer the same destiny as others, causing little to no impact in the outside world.
