@@ -45,22 +45,22 @@ visualized in \autoref{fig:ring}.
 Before comparing both APIs, it is important to notice that Rumpsteak is aimed at \gls{MPST}
 for Rust's \texttt{async}/\texttt{await} syntax,
 enabling the description and enforcement of communication patterns using the type system.
-\annotation{typestate} was designed with typestates and API constraints in mind,
+\textcolor{attrgreen}{\annotation{typestate}} was designed with typestates and API constraints in mind,
 while it is unable to describe and enforce communication patterns,
 it is able to enforce function call ordering at compile-time, avoiding API misuses.
 
 Taking it a step further, consider \autoref{fig:ring},
 Rumpsteak is enforces constraints on the edges of that graph \ie{\quotes{external} protocol},
 such as where they come from and where they go to,
-while \annotation{typestate} enforces constraints on the nodes \ie{\quotes{internal} protocol},
+while \textcolor{attrgreen}{\annotation{typestate}} enforces constraints on the nodes \ie{\quotes{internal} protocol},
 such as the possible steps the node will follow.
 
 \subsection{Comparison}
 
-\paragraph{Rumpsteak} first declares a series of types, the global type --- \ttt{Roles};
-each participant endpoint --- \ttt{struct}s \ttt{A}, \ttt{B} and \ttt{C};
-the message being passed around --- \ttt{Value};
-finally, each session type --- \ttt{struct}s \ttt{RingA}, \ttt{RingB} and \ttt{RingC}.
+\paragraph{Rumpsteak} first declares a series of types, the global type --- \textcolor{structblue}{\ttt{Roles}};
+each participant endpoint --- \ttt{struct}s \textcolor{structblue}{\ttt{A}}, \textcolor{structblue}{\ttt{B}} and \textcolor{structblue}{\ttt{C}};
+the message being passed around --- \textcolor{structblue}{\ttt{Value}};
+finally, each session type --- \ttt{struct}s \textcolor{structblue}{\ttt{RingA}}, \textcolor{structblue}{\ttt{RingB}} and \textcolor{structblue}{\ttt{RingC}}.
 The functionality of each participant is then declared as an \ttt{async} function,
 notice that \ttt{ring\_b} (lines 32-39 from \autoref{lst:rumpsteak-ring})
 and \ttt{ring\_c} (lines 41-48 from \autoref{lst:rumpsteak-ring}) are identical, except for the types used.
@@ -68,7 +68,7 @@ and \ttt{ring\_c} (lines 41-48 from \autoref{lst:rumpsteak-ring}) are identical,
 Given the session type nature of Rumpsteak, the library is able to enforce communication patterns at the type level,
 In lines 19-21 of \autoref{lst:rumpsteak-ring} we can see through \ttt{RingA}'s type that
 \ttt{A} will forcibly send the value to \ttt{B} and will then receive the value from \ttt{C};
-this is not enforceable using \annotation{typestate}.
+this is not enforceable using \textcolor{attrgreen}{\annotation{typestate}}.
 
 The launch routine \autoref{lst:rumpsteak-ring-main} is standard,
 using the executor from the \ttt{future} crate along with the \ttt{try\_join} macro as a convenience to launch each one.
@@ -164,42 +164,42 @@ one for the participant starting the value propagation,
 and one for the all other participants, which need to receive the value first.
 The participants typestates are visualized in \autoref{fig:ring-typestate}.
 
-Both \ttt{RingA} and \ttt{RingB} receive two channels
+Both \textcolor{structblue}{\ttt{RingA}} and \textcolor{structblue}{\ttt{RingB}} receive two channels
 (respectively, lines 12 \& 23-25 in \autoref{lst:typestate-ring-starter}, and lines 18 \& 38-40 in \autoref{lst:typestate-ring-follower}),
 one from which they will receive the value, and one to which they will send the value,
 these channels, respectively, connect to the previous and next participants in the ring;
-the channels are received upon instantiation of the respective \ttt{Ring} object.
+the channels are received upon instantiation of the respective \textcolor{structblue}{\ttt{Ring}} object.
 
-\ttt{RingA} (\autoref{lst:typestate-ring-starter}) starts the process,
+\textcolor{structblue}{\ttt{Ring}A} (\autoref{lst:typestate-ring-starter}) starts the process,
 thus, it is the only participant starting in a \emph{sending} state
 (lines 10-16, emphasizing line 12, which declares the initial state);
 in this state the \gls{API} allows the client to inspect the value with \ttt{get\_value} (lines 13 \& 27);
 transition to the next state with \ttt{send} (lines 14 \& 29-36);
 or end the protocol with \ttt{end} (lines 15 \& 38).
 
-Inversly to \ttt{RingA}, \ttt{RingB} will first receive the value,
+Inversely to \textcolor{structblue}{\ttt{RingA}}, \textcolor{structblue}{\ttt{RingB}} will first receive the value,
 as it would be the participant next to the first sender and thus all other participants;
 conversely, the protocol (\autoref{lst:typestate-ring-follower}) will start in a \emph{receiving} state
 (lines 16-21, emphasizing line 18, which declares the initial state).
-The main difference from \ttt{RingA} to \ttt{RingB} is the initial state, the inner logic is the same
+The main difference from \textcolor{structblue}{\ttt{RingA}} to \textcolor{structblue}{\ttt{RingB}} is the initial state, the inner logic is the same
 and besides \ttt{new} (lines 18 \& 38-40) and \ttt{end} (lines 20 \& 51), other functions belong to the same states.
 
-While \annotation{typestate} is unable to enforce communication patterns,
+While \textcolor{attrgreen}{\annotation{typestate}} is unable to enforce communication patterns,
 it is able to reuse the participants more effectively \ie{who sends to whom};
-given that \ttt{B} and \ttt{C} perform the same operations, we can simply reuse \ttt{RingB} (\autoref{lst:typestate-ring-follower})
-for both \ttt{B} and \ttt{C} (lines 7-8 of \autoref{lst:typestate-ring-main}).
+given that \textcolor{structblue}{\ttt{B}} and \textcolor{structblue}{\ttt{C}} perform the same operations, we can simply reuse \textcolor{structblue}{\ttt{RingB}} (\autoref{lst:typestate-ring-follower})
+for both \textcolor{structblue}{\ttt{B}} and \textcolor{structblue}{\ttt{C}} (lines 7-8 of \autoref{lst:typestate-ring-main}).
 
 \subsection{Summary}
 
 As previously stated, Rumpsteak allows the developer to enforce communication patterns at compile-time,
-while \annotation{typestate} does not, however, the latter is able to enforce behavior patterns at the participant level;
-\annotation{typestate} is thus more flexible, being usable in synchronous or parallel programming,
+while \textcolor{attrgreen}{\annotation{typestate}} does not, however, the latter is able to enforce behavior patterns at the participant level;
+\textcolor{attrgreen}{\annotation{typestate}} is thus more flexible, being usable in synchronous or parallel programming,
 while Rumpsteak was designed with \ttt{async}/\ttt{await} in mind.
 
 It is important to note that in both cases (\autoref{lst:rumpsteak-ring} and \autoref{lst:typestate-ring-main})
 there is opportunity to improve modularity,
 one can use macros to abstract over the mostly repeated bits of code.
-For \annotation{typestate}, for example, one can define a macro like \autoref{lst:typestate-ring-macro} and
+For \textcolor{attrgreen}{\annotation{typestate}}, for example, one can define a macro like \autoref{lst:typestate-ring-macro} and
 shorten the lines 17-28 in \autoref{lst:typestate-ring-main} into lines 17 \& 18 in \autoref{lst:typestate-ring-main-macro}.
 
 
@@ -263,7 +263,7 @@ impl RecvAState for RingA<RecvA> {
     }
 }
     \end{minted}
-    \caption{\annotation{typestate}'s implementation of participant A.}
+    \caption{\textcolor{attrgreen}{\annotation{typestate}}'s implementation of participant A.}
     \label{lst:typestate-ring-starter}
 \end{listing}
 
@@ -322,7 +322,7 @@ impl RecvBState for RingB<RecvB> {
     fn end(self) {}
 }
     \end{minted}
-    \caption{\annotation{typestate}'s implementation of participant B.}
+    \caption{\textcolor{attrgreen}{\annotation{typestate}}'s implementation of participant B.}
     \label{lst:typestate-ring-follower}
 \end{listing}
 
@@ -363,7 +363,7 @@ fn main() {
     .unwrap()
 }
     \end{minted}
-    \caption{The \ttt{main} implementing for \annotation{typestate}'s ring.}
+    \caption{The \ttt{main} implementing for \textcolor{attrgreen}{\annotation{typestate}}'s ring.}
     \label{lst:typestate-ring-main}
 \end{listing}
 
@@ -380,7 +380,7 @@ macro_rules! spawn_ring_b {
     };
 }
     \end{minted}
-    \caption{\ttt{macro\_rules!} to abstract over the thread launching routing for \ttt{RingB}.}
+    \caption{\ttt{macro\_rules!} to abstract over the thread launching routing for \textcolor{structblue}{\ttt{RingB}}.}
     \label{lst:typestate-ring-macro}
 \end{listing}
 
@@ -411,7 +411,7 @@ fn main() {
     .unwrap()
 }
     \end{minted}
-    \caption{The \ttt{main} implementing for \annotation{typestate}'s ring using \autoref{lst:typestate-ring-macro}.}
+    \caption{The \ttt{main} implementing for \textcolor{attrgreen}{\annotation{typestate}}'s ring using \autoref{lst:typestate-ring-macro}.}
     \label{lst:typestate-ring-main-macro}
 \end{listing}
 
@@ -422,26 +422,29 @@ read by the card reader (\autoref{lst:typestate-reader}), which is used by the f
 
 To use the card, the reader ensures that the card is present by calling \ttt{check\_for\_card}
 (line 10 of \autoref{lst:typestate-reader});
-in the case the card is not present the reader transitions to the \ttt{Error} state,
-otherwise, the reader transitions to the \ttt{CardPresent} state (line 13 of \autoref{lst:typestate-reader}).
-The \ttt{CardPresent} state not only requires a reference to the card,
-but also that the card itself is in the \ttt{Start} state (line 14 of \autoref{lst:typestate-reader}
+in the case the card is not present the reader transitions to the \textcolor{structblue}{\ttt{Error}} state,
+otherwise, the reader transitions to the \textcolor{structblue}{\ttt{CardPresent}} state (line 13 of \autoref{lst:typestate-reader}).
+The \textcolor{structblue}{\ttt{CardPresent}} state not only requires a reference to the card,
+but also that the card itself is in the \textcolor{structblue}{\ttt{Start}} state (line 14 of \autoref{lst:typestate-reader}
 and lines 8-13 of \autoref{lst:typestate-card}).
-From the \ttt{CardPresent} state, the reader can issue an authentication operation,
+From the \textcolor{structblue}{\ttt{CardPresent}} state, the reader can issue an authentication operation,
 which is done by the card by checking the PIN against the on stored inside the card;
 if the authentication succeeds, the card reference is now required to reflect the reader's state,
-enforcing that the card is also in the \ttt{Authenticated} state
+enforcing that the card is also in the \textcolor{structblue}{\ttt{Authenticated}} state
 (line 21 of \autoref{lst:typestate-reader} and lines 15-19 of \autoref{lst:typestate-card});
 this relationship is visualized in \autoref{fig:reader-card-typestates}.
 
 Any client of the reader API is thus required to check all steps before proceeding with the card.
-The state embedding also guarantees that the \ttt{Reader} is a well-behaved client of the \ttt{Card},
+The state embedding also guarantees that the \textcolor{structblue}{\ttt{Reader}} is a well-behaved client of the \textcolor{structblue}{\ttt{Card}},
 similar to Fugue \autocite{DeLine2004}.
 
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{Chapters/Figures/C5/reader_typestates.pdf}
-    \caption{The \ttt{Reader} and \ttt{Card} typestates, the green arrows indicate the dependency relationship between states.}
+    \caption{
+        The \textcolor{structblue}{\ttt{Reader}} and \textcolor{structblue}{\ttt{Card}} typestates,
+        the green arrows indicate the dependency relationship between states.
+    }
     \label{fig:reader-card-typestates}
 \end{figure}
 
@@ -485,7 +488,7 @@ pub mod reader_api {
     pub enum AuthResult { Authenticated, Error }
 }
     \end{minted}
-    \caption{The \texttt{Reader} typestate specification.}
+    \caption{The \textcolor{structblue}{\texttt{Reader}} typestate specification.}
     \label{lst:typestate-reader}
 \end{listing}
 
@@ -525,7 +528,7 @@ pub mod card_api {
     pub enum AuthResult { Authenticated, Blocked, Error }
 }
     \end{minted}
-    \caption{The \texttt{Card} typestate specification.}
+    \caption{The \textcolor{structblue}{\texttt{Card}} typestate specification.}
     \label{lst:typestate-card}
 \end{listing}
 
@@ -543,14 +546,14 @@ if the auction closes, bidding is closed; all checks are performed at runtime.
 
 The client is required to check if the auction is running before any action can be performed.
 This is done through the \ttt{has\_ended} function (line 13 of \autoref{lst:typestate-auction-client}),
-which returns the \ttt{AuctionState} state (line 46 of \autoref{lst:typestate-auction-client}),
+which returns the \textcolor{structblue}{\ttt{AuctionState}} state (line 46 of \autoref{lst:typestate-auction-client}),
 an enumeration representing the two possible outcomes of the transition;
 in case the auction has ended, the only thing the user can do is end its \quotes{session};
-otherwise the user will be placed in the \ttt{NoBids} state, as they have not submitted any bids.
-From the \ttt{NoBids} state, the user can perform a bid;
+otherwise the user will be placed in the \textcolor{structblue}{\ttt{NoBids}} state, as they have not submitted any bids.
+From the \textcolor{structblue}{\ttt{NoBids}} state, the user can perform a bid;
 in the case that the bid is not the highest, the user is forced to withdraw its bid;
 if the bid is the highest the user can then check if their bid is still the highest or if the auction has ended.
-In the case that the user's bid is no longer the highest, the user transitions into the \ttt{Withdraw} state again;
+In the case that the user's bid is no longer the highest, the user transitions into the \textcolor{structblue}{\ttt{Withdraw}} state again;
 in the case that the auction has ended, the user will then check if they have won the auction or not,
 and take the according action before ending the \quotes{session}.
 
@@ -670,14 +673,14 @@ mod auction_client_api {
 
 \section{Summary}
 
-In this chapter I have presented three examples which highlight different capabilities of the \annotation{typestate} macro.
-The first example (\autoref{sec:case-study:ring}) shows how \annotation{typestate} is able to constrain the behavior of objects in multi threaded environments;
+In this chapter I have presented three examples which highlight different capabilities of the \textcolor{attrgreen}{\annotation{typestate}} macro.
+The first example (\autoref{sec:case-study:ring}) shows how \textcolor{attrgreen}{\annotation{typestate}} is able to constrain the behavior of objects in multi threaded environments;
 the second example (\autoref{sec:case-study:pin}) highlights how using multiple typestates in conjunction allows the developer to provide extra guarantees,
 especially when compared with non-typestated APIs;
-finally, the final example (\autoref{sec:case-study:auction}) illustrates how one can wrap an existing API using \annotation{typestate}
+finally, the final example (\autoref{sec:case-study:auction}) illustrates how one can wrap an existing API using \textcolor{attrgreen}{\annotation{typestate}}
 to provide a safe-to-use API.
 
-While in some cases one can further abstract over the code written using \annotation{typestate},
+While in some cases one can further abstract over the code written using \textcolor{attrgreen}{\annotation{typestate}},
 such cases are often trivial to address using Rust's \ttt{macro\_rules!}.
-Overall, \annotation{typestate} is able to address the problem at hand and
+Overall, \textcolor{attrgreen}{\annotation{typestate}} is able to address the problem at hand and
 allow the developer to write an elegant solution while providing the desired API constraints.

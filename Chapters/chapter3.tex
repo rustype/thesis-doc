@@ -44,12 +44,12 @@ These criticisms are found throughout documents which discuss \gls{Camlp4}\citeu
 In OCaml version 4.02 syntax extensions were introduced, to enable preprocessor extensions.
 This meta programming mechanism came to replace \gls{Camlp4}, which was not well liked by the community given its complexity.
 The resources on \gls{PPX} are not as widespread as the resources for similar mechanisms in other languages \eg{Rust's macros}.
-There are two main entry points to the \gls{PPX} system, attribute and extension nodes \autocite[Sections 8.12 \& 8.13]{Leroy2020}.
+There are two main entry points to the \gls{PPX} system, attribute and extension nodes \autocite[Chapter 8, Sections 12 \& 13]{Leroy2020}.
 
 \paragraph{Attribute Nodes} are attached to the existing AST nodes,
 they are not forcefully compiled, that is, if the compiler is not aware of a matching extension they will be ignored.
 There are three kinds of attribute nodes (example in \autoref{lst:ocaml-attr-bindings}):
-\begin{displayquote}[{\autocite[Section 8.12]{Leroy2020}}]
+\begin{displayquote}[{\autocite[Chapter 8, Section 12]{Leroy2020}}]
 	\begin{compactitem}
 		\item \mintinline{ocaml}{[@attr payload]} - attached with a postfix notation on “algebraic” categories.
 		\item \mintinline{ocaml}{[@@attr payload]} - attached to “blocks” such as type declarations, class fields, etc.
@@ -76,7 +76,7 @@ let b = "some string" [@@attr pl]
 	}
 	\label{lst:ocaml-attr-bindings}
 \end{listing}
-\footnotetext{\url{https://tarides.com/blog/2019-05-09-an-introduction-to-ocaml-ppx-ecosystem} (visited in 08/06/2021).}
+\footnotetext{\url{https://tarides.com/blog/2019-05-09-an-introduction-to-ocaml-ppx-ecosystem}\\(visited in 08/06/2021).}
 
 
 \paragraph{Extension Nodes} are similar in syntax to the attribute nodes (instead of \texttt{@} they use \texttt{\%}).
@@ -85,7 +85,7 @@ That means they get replaced with the expanded code (like attribute macros in Ru
 They are also required to be expanded by a \gls{PPX} during compile-time,
 if such does not happen an \texttt{Uninterpreted expression} error is issued.
 
-\begin{displayquote}[{\autocite[Section 8.13]{Leroy2020}}]
+\begin{displayquote}[{\autocite[Chapter 8, Section 13]{Leroy2020}}]
 	\begin{compactitem}
 		\item \mintinline{ocaml}{[%attr payload]} - used for “algebraic” categories.
 		\item \mintinline{ocaml}{[%%attr payload]} - used in structures and signatures, both in the module and object languages.
@@ -96,8 +96,8 @@ if such does not happen an \texttt{Uninterpreted expression} error is issued.
 The current state of affairs regarding the \gls{PPX} brings up mixed reactions.
 From my research, the environment is well maintained, with regular commits to the main \gls{PPX} repositories.
 However, the entry-barrier is high due to the lack of introductory materials.
-Despite this, \gls{PPX} has seen use in the ReasonML community, more specifically in the ReasonReact framework,
-where the Tailwind CSS dialect is supported by \gls{PPX} to enhance developer ergonomics.
+Despite this, \gls{PPX} has seen use in the ReasonML community, more specifically in the ReasonReact framework\citeurl{https://reasonml.github.io/reason-react/en/}{19/07/2021},
+where the Tailwind CSS\citeurl{https://tailwindcss.com/}{19/07/2021} dialect is supported by \gls{PPX} to enhance developer ergonomics.
 
 \subsection{Java}\label{sec:lang-preprocessors:java}
 
@@ -171,7 +171,7 @@ with few quality resources available.
 
 ExtendJ is an extensible compiler aiming at facilitating the development of Java compiler tools.
 The compiler supports Java from version 5 up to 8.
-The extensions are written in JastAdd\citeurl{https://jastadd.cs.lth.se/web/}{08/06/2021}, a meta-compilation system upon which ExtendJ is built.
+The extensions are written in JastAdd\citeurl{https://jastadd.cs.lth.se/web/}{08/06/2021}, a meta-compilation system, upon which ExtendJ is built.
 It is possible to extend the compiler during any of the following phases: \emph{Scanning}, \emph{Parsing}, \emph{Analysis} and \emph{Code Generation}.
 Extending the language with new syntax requires the modification of the \emph{Scanner} and \emph{Parser}.
 The \emph{Analysis} phase occurs after parsing, when types are checked.
@@ -307,25 +307,24 @@ Repetition operators are the same as the regular expression ones:
 	\item \texttt{?} — indicates zero or one repetition.
 \end{compactitem}
 
-\paragraph{Hygiene} works by attaching an invisible \emph{syntactic context} to all identifiers \autocite{Wirth2021}.
+\paragraph{Hygiene} works by attaching an invisible \emph{syntactic context} to all identifiers\citeurl{https://veykril.github.io/tlborm}{17/07/2021}.
 Identifiers are compared over two pieces of information,
 the \emph{textual value} and their \emph{syntactic context}.
 The textual value consists of the variables name (e.g. \texttt{four}),
 the syntactic context is a kind of scope added to variables declared inside the macro.
 This is done to keep the macro declared variables from interfering with existing ones.
 
-When expanding a declarative macro\footnotemark variables declared inside the macro belong in a different scope,
+When expanding a declarative macro\footnote{
+	The same mechanism does not apply to procedural macros since they are not hygienic.
+	Their output will interfere with existing code if precautions are not taken.
+	See \url{https://gist.github.com/Kestrer/8c05ebd4e0e9347eb05f265dfb7252e1} (visited in 17/07/2021) for more information.}
+variables declared inside the macro belong in a different scope,
 consider the macro declared in \autoref{lst:rust-macro-hygiene:declaration} and
 the respective expansion in \autoref{lst:rust-macro-hygiene:expansion}.
 As illustrated by \autoref{lst:rust-macro-hygiene:expansion},
 line 2 is considered to be in a different context than the rest of the expanded code.
 This will rightfully raise an error (shown in \autoref{lst:rust-macro-hygiene:error}),
 since line's 3 \texttt{a} will not exist due to not being in the same syntactic context as line 2.
-
-\footnotetext{
-	The same mechanism does not apply to procedural macros since they are not hygienic.
-	Their output will interfere with existing code if precautions are not taken \autocite{Koxiaet2020}.
-}
 
 \input{Chapters/Listings/C3/rust-macro-rules.tex}
 
@@ -361,7 +360,7 @@ the possibility to run Python inside Rust\citeurl{https://github.com/fusion-engi
 
 % \input{Chapters/Listings/C3/rust-html-dsl.tex}
 \begin{listing}
-    \begin{minted}{Rust}
+	\begin{minted}{Rust}
 html! {
     h1 { "Hello, world!" }
     p.intro {
@@ -371,8 +370,8 @@ html! {
     }
 }
     \end{minted}
-    \caption[HTML DSL embedded in Rust.]{HTML DSL embedded in Rust.\footnotemark}
-    \label{lst:rust-html-dsl}
+	\caption[HTML DSL embedded in Rust.]{HTML DSL embedded in Rust.\footnotemark}
+	\label{lst:rust-html-dsl}
 \end{listing}
 \footnotetext{\url{https://github.com/lambda-fairy/maud} (visited in 08/06/2021)}
 
@@ -411,8 +410,8 @@ Like the other macros, attribute macros are also declared by a public function w
 however, their function signature takes two parameters instead of one, being \texttt{(TokenStream, TokenStream) -> TokenStream}.
 
 The first parameter is the token tree following the attribute name, for example, in \autoref{lst:rust-rocket-attr}
-it would contain the token tree of \texttt{("/hello/<name>/<age>")},
-in the case the attribute is written as a bare attribute name (e.g. \texttt{\#[attribute]}),
+it would contain the token tree of \ttt{(}\textcolor{stringred}{\texttt{"/hello/<name>/<age>"}}\ttt{)},
+in the case the attribute is written as a bare attribute name (e.g. \textcolor{attrgreen}{\texttt{\#[attribute]}}),
 the token tree is empty.
 
 The second parameter is the token tree of the item the macro is attached to,
@@ -468,12 +467,12 @@ where projects aim to implement them in existing languages such as Java, Go and 
 \subsection{Session Types}
 As established so far, session types are mostly used for communication protocols,
 defining message types and their order in a \quotes{conversation}.
-Session types also share common ground with typestates as works StMungo \autocite{Dardha2017, Kouzapas2018, Voinea2020}
+Session types also share common ground with typestates as works StMungo \autocite{Kouzapas2018, Voinea2020}
 and others \autocite{Gay2015, Vasconcelos2017} demonstrate.
 
 \paragraph{StMungo} it is a transpiler from Scribble \autocite{Yoshida2014} to Java based on session types and typestate.
 The transpilation process takes Scribble local protocols as input, generating Mungo typestate specifications and Java skeleton implementation code.
-The output is then checked by Mungo \autocite{Dardha2017, Kouzapas2018, Voinea2020}.
+The output is then checked by Mungo \autocite{Kouzapas2018, Voinea2020}.
 This process is based on a formal translation of session types into typestate specifications for channel objects, and
 extends the translation from binary to multiparty session types.
 
@@ -484,7 +483,7 @@ these are described using Scribble \autocite{Yoshida2014} along with the rest of
 the protocol and its respective refinements are validated and the .NET platform generates the required code for the F\# \gls{API}s.
 
 Furthermore, this approach allows users to still use features like autocomplete
-(something that is still being worked in Rust's ecosystem) and documentation.
+(something that is still being worked on in the Rust ecosystem) and documentation.
 This approach also reduces bugs and simplifies several error-prone parts of development.
 
 \paragraph{Session Types for Rust.}
@@ -589,12 +588,12 @@ Plaid also introduces a series of aliasing control keywords,
 \keyword{shared} makes an object behave like it normally would in Java,
 allowing aliasing (since it allows aliasing, it also requires runtime checks over state on sensitive operations).
 
-\paragraph{Mungo} is a static analysis tool \autocite{Dardha2017, Kouzapas2018, Voinea2020} for Java programs.
+\paragraph{Mungo} is a static analysis tool \autocite{Kouzapas2018, Voinea2020} for Java programs.
 It checks typestate properties and can be divided into two components, a Java-like language to define typestate specifications
 and a typechecker, which checks that objects follow the typestate specification.
 Specifications are written as separate files and can then be used in Java classes through annotations, as demonstrated in \autoref{lst:java-mungo-typestate}.
 The annotations enable Mungo to be unobtrusive in projects since annotations are not required to be processed (as seen in \autoref{sec:lang-preprocessors:java:annotation}).
-\begin{displayquote}[{\autocite[Section 1.2]{Dardha2017}}]
+\begin{displayquote}[{\autocite[Chapter 14, Section 1.2]{Gay2017}}]
 	If a class has a typestate specification, the Mungo typechecker analyses each object of that class in the program and extracts the method call behaviour (sequences of method calls) through
 	the object’s life. Finally, it checks the extracted information against the sequences of method calls allowed by the typestate specification.
 \end{displayquote}

@@ -106,10 +106,10 @@ Ideally we want such illegal states to be detected at compile-time.
     \begin{minted}{java}
 class ScannerMisuse {
     public static void main(String... args) {
-        Scanner s = new Scanner(System.in);         // open the stream
-        s.nextLine();                               // read
-        s.close();                                  // close the stream
-        s.nextLine();                               // IllegalStateException
+        Scanner s = new Scanner(System.in);  // Open the `Scanner`.
+        s.nextLine();                        // Read.
+        s.close();                           // Close the `Scanner`.
+        s.nextLine();                        // Throws an `IllegalStateException`.
     }
 }
     \end{minted}
@@ -120,7 +120,7 @@ class ScannerMisuse {
 An example of a similar bug would be Jedis' issue \#1747\citeurl{https://github.com/redis/jedis/issues/1747}{14/07/2021};
 while reading a reply from the server, a client would get a \ttt{SocketTimeoutException}\citeurl{https://docs.oracle.com/javase/8/docs/api/java/net/SocketTimeoutException.html}{14/07/2021},
 the exception then calls \ttt{jedis.close()}, however, processing of the underlying would (wrongly) keep going,
-in some cases, the processing procedure would heap-allocate a \emph{very} large array or a negative-space,
+in some cases, the processing procedure could then heap-allocate a \emph{very} large or negative-space array,
 thus causing the \gls{JVM} to crash with an \ttt{OutOfMemoryException}\citeurl{https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/memleaks002.html}{14/07/2021}.
 
 
@@ -178,10 +178,8 @@ StMungo converts Scribble protocols to Java classes with typestates which are th
 this enables developers to write effectively session-typed Java.
 By itself, Mungo is a typechecker with support for typestates.
 
-% TODO add citation for Honda1993
-
 \paragraph{Typestates} capture the state of the program,
-allowing the developer to express the state of objects during runtime, at compile-time \autocite{Strom1983}.
+allowing the developer to express the state of objects during runtime, at compile-time \autocite{Strom1983, Strom1986}.
 I discuss typestates further in \autoref{sec:typestates}.
 Fugue \autocite{DeLine2004} is a protocol checker that achieves similar functionality to typestates.
 The tool provides a series of annotations to be used in code which are then processed into protocols to be checked by Fugue.
@@ -193,7 +191,7 @@ it is considered to be a \quotes{done work} and the authors have moved on to oth
 Obsidian is a relatively new language which targets the Hyperledger Fabric blockchain, in the development phase.
 The language aims to make writing smart contracts simpler and less error prone
 through the addition of linear types and typestate mechanisms to the language.
-In \autocite{Coblenz2020} the effectiveness of the approach is put to test,
+Coblenz et al. \autocite{Coblenz2020} put the effectiveness of the approach to test,
 achieving positive results when compared with the Solidity programming language.
 
 The \texttt{state\_machine\_future} crate\citeurl{https://github.com/fitzgen/state\_machine\_future}{08/06/2021}, provides typestated futures in Rust as well as some state machine related guarantees,
@@ -201,17 +199,17 @@ such as every state being reachable from the start,
 there are no states unable to reach the final state and that all state transitions are valid.
 Furthermore, these guarantees are provided at compile-time --- for example, invalid state transitions will fail to compile.
 The crate, however, revolves around futures, requiring an asynchronous runtime and thus making it unsuitable for other kinds of applications.
-Other crates exist, they focus on finite state machines but are unable to provide static guarantees.
+Other crates exist, they focus on finite state machines but are unable to provide static~guarantees.
 
+% TODO check this
 Like other mainstream programming languages, Rust does not have first class support for session types.
 Implementations are rare and rooted in the meta-programming system.
+% TODO check this
 The work done by \autocite{Jespersen2015} introduces bi-directional session types to Rust,
 since then, this line of work has been expanded by \autocite{Lagaillardie2020}, extending it to multiparty session types.
 While Rust dropped typestate support during early development (Rust 0.4), that does not mean Rust is not able to provide them.
 The type system is able to emulate typestates with efficiency, the approach however comes at the cost of verbosity.
 Regardless of the verbosity typestates are used by the embedded systems development sphere of the Rust community.
-
-% TODO add citation for Strom1986
 
 \section{Contributions}\label{sec:objectives}
 

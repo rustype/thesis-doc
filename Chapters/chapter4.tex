@@ -10,7 +10,7 @@
 
 \chapter{The \annotation{typestate} macro}\label{cha:macro}
 
-This chapter presents the contributions of the present work, the \annotation{typestate} macro.
+This chapter presents the contributions of the present work, the \textcolor{attrgreen}{\annotation{typestate}} macro.
 In \autoref{sec:typestates-hard-way}, I start by demonstrating how to implement Rust typestates by hand.
 In \autoref{sec:macro-dsl:architecture} I discuss the macro high-level architecture,
 the DSL is discussed in \autoref{sec:macro-dsl},
@@ -68,10 +68,10 @@ however, consider that the vending machine is required to keep track of both the
 
 Looking back at \autoref{fig:vending-machine}, we can infer the following:
 \begin{compactitem}
-    \item The \texttt{Waiting} and \texttt{Finish} states do not require any fields.
-    \item The \texttt{HasMoney} and \texttt{HasPick} states require their own fields,
+    \item The \textcolor{structblue}{\texttt{Waiting}} and \textcolor{structblue}{\texttt{Finish}} states do not require any fields.
+    \item The \textcolor{structblue}{\texttt{HasMoney}} and \textcolor{structblue}{\texttt{HasPick}} states require their own fields,
     the money inserted so far and the slot picked by the client, respectively.
-    \item The \texttt{NeedMoney} state requires both the money and picked slot.
+    \item The \textcolor{structblue}{\texttt{NeedMoney}} state requires both the money and picked slot.
 \end{compactitem}
 With that in mind, we are required to take the second approach, enabling states to have inner values.
 
@@ -161,8 +161,8 @@ impl VendingMachine<Waiting> {
 }
 
 To better understand what is going on, lets implement the \texttt{insert\_money} function;
-the function will perform the transition from the \texttt{Waiting} state (declared as the generic parameter in line 1 of \autoref{lst:vending-machine-waiting-insert-money}),
-to the \texttt{HasMoney} state, declared as the generic parameter of the \texttt{VendingMachine} return type, line 3 of \autoref{lst:vending-machine-waiting-insert-money}.
+the function will perform the transition from the \textcolor{structblue}{\texttt{Waiting}} state (declared as the generic parameter in line 1 of \autoref{lst:vending-machine-waiting-insert-money}),
+to the \textcolor{structblue}{\texttt{HasMoney}} state, declared as the generic parameter of the \textcolor{structblue}{\texttt{VendingMachine}} return type, line 3 of \autoref{lst:vending-machine-waiting-insert-money}.
 
 \begin{listing}
     \begin{minted}{rust}
@@ -184,7 +184,7 @@ impl VendingMachine<Waiting> {
 \end{listing}
 
 Before going further, a quick recap over what has been done so far ---
-we have declared the vending machine, its states and its \emph{some} of its transitions.
+we have declared the vending machine, its states and \emph{some} of its transitions.
 
 I say \quotes{some} transitions, because we have not addressed how the diamonds in \autoref{fig:vending-machine} work.
 We use the diamonds to represent a decision between $N$ possible paths, I will refer to them as \emph{decision nodes};
@@ -192,8 +192,8 @@ this representation closely resembles \gls{DOA} \cite{Trindade2020}.
 To model our decision nodes, we can use Rust's enumerations,
 these allow us to declare possible outcomes and force the \gls{API} client to match them.
 
-We continue our path, following the \texttt{pick\_slot} transition from the \texttt{HasMoney} state to a decision node,
-we have \emph{either} the \texttt{Finish} state or the \texttt{NeedsMoney} state;
+We continue our path, following the \texttt{pick\_slot} transition from the \textcolor{structblue}{\texttt{HasMoney}} state to a decision node,
+we have \emph{either} the \textcolor{structblue}{\texttt{Finish}} state or the \textcolor{structblue}{\texttt{NeedsMoney}} state;
 the implementation of the decision node is described in \autoref{lst:vending-machine-check-finish}.
 
 \begin{listing}
@@ -208,9 +208,9 @@ enum CheckFinish {
     \label{lst:vending-machine-check-finish}
 \end{listing}
 
-Using the \texttt{CheckFinish} enumeration, we are now able to properly define \texttt{HasMoney}'s \texttt{pick\_slot} function;
-if the user has inserted enough money, a purchase is made (\autoref{lst:vending-machine-pick-slot} --- lines 6-13),
-otherwise, the vending machine asks for more money (\autoref{lst:vending-machine-pick-slot} --- lines 14-22),
+Using the \textcolor{structblue}{\texttt{CheckFinish}} enumeration, we are now able to properly define \textcolor{structblue}{\texttt{HasMoney}}'s \texttt{pick\_slot} function;
+if the user has inserted enough money, a purchase is made (\autoref{lst:vending-machine-pick-slot} --- lines 7-15),
+otherwise, the vending machine asks for more money (\autoref{lst:vending-machine-pick-slot} --- lines 17-24),
 in either case, it returns a variant of the declared \keyword{enum}.
 
 \begin{listing}
@@ -222,19 +222,23 @@ impl VendingMachine<HasMoney> {
         // Check if there is enough money
         if money >= price {
             // If yes, return the `Finish` state
-            CheckFinish::Finish(VendingMachine::<Finish> {
-                // update the machine's balance
-                balance: self.balance + money,
-                contents: self.contents,
-                state: Finish,
-            })
+            CheckFinish::Finish(
+                VendingMachine::<Finish> {
+                    // update the machine's balance
+                    balance: self.balance + money,
+                    contents: self.contents,
+                    state: Finish,
+                }
+            )
         } else {
             // If not, return the `NeedMoney` state
-            CheckFinish::NeedMoney(VendingMachine::<NeedMoney> {
-                balance: self.balance,
-                contents: self.contents,
-                state: NeedMoney { money, picked_slot },
-            })
+            CheckFinish::NeedMoney(
+                VendingMachine::<NeedMoney> {
+                    balance: self.balance,
+                    contents: self.contents,
+                    state: NeedMoney { money, picked_slot },
+                }
+            )
         }
     }
 }
@@ -260,7 +264,7 @@ match vm {
 }
 \end{minted}
     \caption{
-        Matching \texttt{CheckFinish} in two different ways;
+        Matching \textcolor{structblue}{\texttt{CheckFinish}} in two different ways;
         lines 2-4 --- using a \keyword{while} loop,
         lines 5-9 --- using common \keyword{match}.
     }
@@ -353,7 +357,7 @@ I start presenting the DSL's syntax and semantics, followed by a dive into its i
 going through the simpler constructs and how they relate to typestates first,
 finishing on more advanced features.
 
-% TODO switch presentation
+
 \subsection{Syntax \& Automaton Extraction}\label{sec:macro-dsl:syntax}
 
 \begin{listing}
@@ -385,7 +389,7 @@ mod typestate_dsl {
     \label{lst:typestate-mod}
 \end{listing}
 
-\annotation{typestate}'s DSL syntax is interlinked with its automaton extraction process,
+\textcolor{attrgreen}{\annotation{typestate}}'s DSL syntax is interlinked with its automaton extraction process,
 as such, I will discuss them in conjunction.
 
 A quick primer on the DSL's syntax is presented in \autoref{lst:typestate-mod};
@@ -402,14 +406,14 @@ while being possible to analyze using the macro system;
 inside a module we can declare structures, enumerations, free functions and so on.
 
 To start modeling the vending machine we first declare a module, to which we will call \texttt{vending\_machine\_api},
-and annotate it with \annotation{typestate}; as shown in \autoref{lst:vending-machine-typestate-module}.
+and annotate it with \textcolor{attrgreen}{\annotation{typestate}}; as shown in \autoref{lst:vending-machine-typestate-module}.
 This alone is not enough, as the macro will throw an error due to the lack of an automaton; shown in \autoref{lst:vending-machine-typestate-missing-automaton-error}.
 
 \begin{listing}
     \begin{minted}[linenos=false]{Rust}
 #[typestate] mod vending_machine_api {}
     \end{minted}
-    \caption{The vending machine's \gls{API} module, annotated with the \annotation{typestate} macro.}
+    \caption{The vending machine's \gls{API} module, annotated with the \textcolor{attrgreen}{\annotation{typestate}} macro.}
     \label{lst:vending-machine-typestate-module}
 \end{listing}
 
@@ -428,7 +432,7 @@ error: Missing `#[automaton]` struct.
 and allows the macro to know which of the declared structures is the automaton (\autoref{lst:typestate-mod} lines 4-5).
 
 \autoref{lst:vending-machine-typestate-module-automaton} fixes the error of \autoref{lst:vending-machine-typestate-module},
-by adding the \texttt{VendingMachine} structure and annotating it with \annotation{automaton}
+by adding the \textcolor{structblue}{\texttt{VendingMachine}} structure and annotating it with \textcolor{attrgreen}{\annotation{automaton}}
 the macro is now able to know which structure is the main state machine \ie{which structure will be \emph{typestated}}.
 
 \begin{listing}
@@ -442,7 +446,7 @@ the macro is now able to know which structure is the main state machine \ie{whic
 \end{listing}
 
 Notice how the code from \autoref{lst:vending-machine-typestate-module-automaton-expansion} does not contain any reference to the current state,
-that is added by macro through the \annotation{automaton} annotation,
+that is added by macro through the \textcolor{attrgreen}{\annotation{automaton}} annotation,
 along with the sealed pattern skeleton; described in \autoref{sec:typestates-hard-way:future}.
 
 \begin{listing}
@@ -464,7 +468,7 @@ mod vending_machine_api {
 Once again, this still does not make the macro happy, while we now have an automaton, we are lacking initial and final states;
 as shown in \autoref{lst:vending-machine-typestate-missing-states-error}.
 
-\paragraph{The \annotation{state} annotation,} like the \annotation{automaton} annotation, is only attachable to structures (\autoref{lst:typestate-mod} lines 6-8);
+\paragraph{The \annotation{state} annotation,} like the \textcolor{attrgreen}{\annotation{automaton}} annotation, is only attachable to structures (\autoref{lst:typestate-mod} lines 6-8);
 it marks them as states and also implements the necessary traits to include the state in the sealed trait state set (\autoref{sec:typestates-hard-way:future}).
 
 As we can observe in \autoref{lst:vending-machine-typestate-module-states},
@@ -602,7 +606,7 @@ impl WaitingState for VendingMachine<Waiting> { /* ... */ }
 \end{minted}
 
 This way, the compiler is able to point out which methods are missing
-(and in the future, tools like \texttt{rust-analyzer}\footnote{\url{https://rust-analyzer.github.io/}} might add all missing signatures for the developer).
+(and in the future, tools like \texttt{rust-analyzer}\citeurl{https://rust-analyzer.github.io/}{19/07/2021} might add all missing signatures for the developer).
 The rest of the implementation is made in the same way as the one in \autoref{sec:typestates-hard-way}.
 
 
@@ -610,7 +614,7 @@ The rest of the implementation is made in the same way as the one in \autoref{se
 
 In \autoref{sec:macro-dsl:syntax} I have introduced the basic features of the DSL;
 in \autoref{tab:dsl-summary-annotations} I provide a quick overview of the available annotations,
-\annotation{typestate}, \annotation{automaton} and \annotation{state};
+\textcolor{attrgreen}{\textcolor{attrgreen}{\annotation{typestate}}}, \textcolor{attrgreen}{\annotation{automaton}} and \textcolor{attrgreen}{\annotation{state}};
 in \autoref{tab:dsl-summary-functions} I review the transition inference rules for function declarations.
 
 % TODO: complete the summary
@@ -618,13 +622,13 @@ in \autoref{tab:dsl-summary-functions} I review the transition inference rules f
 \begin{table}
     \centering
     \begin{tabular}{l|l|l}
-        Annotation             & Attaches to & Declares            \\
+        Annotation                                    & Attaches to & Declares            \\
         \hline
-        \annotation{typestate} & Module      & API                 \\
+        \textcolor{attrgreen}{\textcolor{attrgreen}{\annotation{typestate}}} & Module      & API                 \\
         \hline
-        \annotation{automaton} & Structure   & Automaton/Typestate \\
+        \textcolor{attrgreen}{\annotation{automaton}} & Structure   & Automaton/Typestate \\
         \hline
-        \annotation{state}     & Structure   & State
+        \textcolor{attrgreen}{\annotation{state}}     & Structure   & State
     \end{tabular}
     \caption{Overview of the DSL's annotations.}
     \label{tab:dsl-summary-annotations}
@@ -653,7 +657,7 @@ This section provides an overview over the macro architecture,
 afterwards I will dive into the parsing and code generation details.
 
 The macro's architecture is illustrated in \autoref{fig:dsl-processing},
-as demonstrated in the previous section, the DSL's entry point is the \annotation{typestate} attribute,
+as demonstrated in the previous section, the DSL's entry point is the \textcolor{attrgreen}{\annotation{typestate}} attribute,
 attaching it to a module will cause the macro system to run our code during expansion and process the module's code as we wish.
 During expansion the \gls{AST} of the module is passed in to the macro code where a series of visitors are defined and run
 (described \autoref{sec:macro-dsl:architecture:visitors}), performing the state's machine extraction and verification (described in \autoref{sec:validation}).
@@ -668,7 +672,7 @@ The macro's parsing procedure leverages the \texttt{syn} crate\footnote{\texttt{
     for more information please see \url{https://docs.rs/syn/1.0.72/syn/index.html}.} to simplify the parsing process,
 this allowed me to focus on getting the most information out of the user's code rather than worrying about how to parse Rust.
 
-As the \annotation{typestate} macro can only be attached to modules,
+As the \textcolor{attrgreen}{\annotation{typestate}} macro can only be attached to modules,
 we instruct \texttt{syn} to expect and parse a module item\footnote{\url{https://doc.rust-lang.org/reference/items/modules.html}};
 this simple step already saves us from manually ensuring the macro is attached to the right item.
 The resulting item is the module's \gls{AST}, from which we will run a series of visitors,
@@ -690,15 +694,15 @@ The following visitors are described in their running other; shown in \autoref{f
         \draw[->, thick] (state-visitor) -- (decision-visitor);
         \draw[->, thick] (decision-visitor) -- (transition-visitor);
     \end{tikzpicture}
-    \caption{The \annotation{typestate} macro visitors, by running order.}
+    \caption{The \textcolor{attrgreen}{\annotation{typestate}} macro visitors, by running order.}
     \label{fig:macro-visitors}
 \end{figure}
 
 \paragraph{The structure visitor} will visit all structures, as the name states;
 currently, a user can declare one of three possible structures;
 \begin{compactitem}
-    \item A structure annotated with \annotation{automaton} (of which there can only be one).
-    \item One annotated with \annotation{state} (of which there can be $N$).
+    \item A structure annotated with \textcolor{attrgreen}{\annotation{automaton}} (of which there can only be one).
+    \item One annotated with \textcolor{attrgreen}{\annotation{state}} (of which there can be $N$).
     \item One without annotations (of which there can be \emph{none}).
 \end{compactitem}
 From the visited structures we can extract the automaton's structure and its states,
@@ -712,9 +716,9 @@ This visitor is also known as the decision state visitor since each enumeration 
 is responsible for the extraction of all the transitions out of the declared traits.
 This visitor conflicts with the first one since it generates traits which would then be visited;
 to avoid this problem \texttt{typestate} declares an additional, undocumented and inert macro \ie{a macro that returns its input};
-the \annotation{generated} macro.
-When the visitor sees an item attached with \annotation{generated} it ignores the item,
-the \annotation{generated} macro is later processed as a regular macro by the macro system and the annotation is removed.
+the \textcolor{attrgreen}{\annotation{generated}} macro.
+When the visitor sees an item attached with \textcolor{attrgreen}{\annotation{generated}} it ignores the item,
+the \textcolor{attrgreen}{\annotation{generated}} macro is later processed as a regular macro by the macro system and the annotation is removed.
 
 
 \subsection{Advanced Features}\label{sec:macro-dsl:advanced}
@@ -753,11 +757,11 @@ enum FallibleOperationResult {
     ErrorState
 }
     \end{minted}
-    \caption{Fallible operations can be using enumerations like the \ttt{FallibleOperationResult} decision state.}
+    \caption{Fallible operations can be using enumerations like the \textcolor{structblue}{\ttt{FallibleOperationResult}} decision state.}
     \label{lst:typestate-decision}
 \end{listing}
 
-\paragraph{Transition labels} can be added through the use of the \ttt{metadata} attribute,
+\paragraph{Transition labels} can be added through the use of the \textcolor{attrgreen}{\ttt{metadata}} attribute,
 this attribute allows the addition of relevant metadata to the transition edge.
 This is especially useful to specify under which conditions the transition from a decision state to a specific state happens;
 currently, the attribute only supports the \ttt{label} value.
@@ -772,13 +776,13 @@ enum FallibleOperationResult {
     ErrorState
 }
     \end{minted}
-    \caption{\autoref{lst:typestate-decision} enumeration with the \ttt{metadata} attribute.}
+    \caption{\autoref{lst:typestate-decision} enumeration with the \textcolor{attrgreen}{\ttt{metadata}} attribute.}
     \label{lst:typestate-decision-metadata}
 \end{listing}
 
 \subsubsection{Self-transitions}
-Consider that we are asked to display a message containing the amount left to pay in the \texttt{NeedMoney} state;
-to do so we can simply add a new function to the \texttt{NeedMoney} trait, like in line 3 of \autoref{lst:vending-machine-advanced-trait}.
+Consider that we are asked to display a message containing the amount left to pay in the \textcolor{structblue}{\texttt{NeedMoney}} state;
+to do so we can simply add a new function to the \textcolor{structblue}{\texttt{NeedMoney}} trait, like in line 3 of \autoref{lst:vending-machine-advanced-trait}.
 Notice how the new method takes \keyword{\&self} instead of \keyword{self}, thus,
 it takes the state as an \emph{immutable} reference, instead of consuming the state;
 disabling mutation of the current state.
@@ -794,7 +798,7 @@ pub trait NeedMoney {
     fn update_pick(&mut self, new_pick: usize);
 }
     \end{minted}
-    \caption{The \texttt{NeedMoney}, extended with the \texttt{get\_message} and \texttt{update\_pick} functions.}
+    \caption{The \textcolor{structblue}{\texttt{NeedMoney}}, extended with the \texttt{get\_message} and \texttt{update\_pick} functions.}
     \label{lst:vending-machine-advanced-trait}
 \end{listing}
 
@@ -814,7 +818,7 @@ impl NeedMoneyState for VendingMachine<NeedMoney> {
     }
 }
     \end{minted}
-    \caption{The implementation of \texttt{NeedMoney}'s new functions, as declared in lines 3 \& 4 of \autoref{lst:vending-machine-advanced-trait}.}
+    \caption{The implementation of \textcolor{structblue}{\texttt{NeedMoney}}'s new functions, as declared in lines 3 \& 4 of \autoref{lst:vending-machine-advanced-trait}.}
     \label{lst:vending-machine-advanced-trait-impl}
 \end{listing}
 
@@ -827,14 +831,14 @@ hence the name of \emph{self-transitions}.
 
 There are some cases in which an enumeration might come in handy,
 one of them is when you are required to loop forever,
-and you may \quotes{stop during processing} \ie{not complete a full \texttt{Waiting} to \texttt{Waiting} cycle}.
+and you may \quotes{stop during processing} \ie{not complete a full \textcolor{structblue}{\texttt{Waiting}} to \textcolor{structblue}{\texttt{Waiting}} cycle}.
 In this case you will need a variable that can contain one of the many possible states the machine might be in,
 given that you cannot replace a variable's type once it is assigned, you will need to use Rust's enumerations.
 
 For large state machines, writing the enumeration by hand is error-prone and not practical;
-to address these issues \annotation{typestate} offers the \texttt{enumerate} macro attribute.
+to address these issues \textcolor{attrgreen}{\annotation{typestate}} offers the \textcolor{attrgreen}{\texttt{enumerate}} macro attribute.
 
-By changing the attached \annotation{typestate} annotation to \annotation{typestate(enumerate)},
+By changing the attached \textcolor{attrgreen}{\annotation{typestate}} annotation to \textcolor{attrgreen}{\annotation{typestate(enumerate)}},
 as demonstrated in \autoref{lst:vending-machine-advanced-enumerate},
 it will generate the enumeration described in \autoref{lst:vending-machine-advanced-enumerate-expansion}.
 Along with the enumeration, the macro will also implement the \texttt{From} conversion trait between the enumeration and the respective states;
@@ -846,7 +850,7 @@ they will be able to perform the conversion using \texttt{.into()} or \texttt{.f
     \begin{minted}[linenos=false]{rust}
 #[typestate(enumerate)] mod vending_machine { /* ... */ }
     \end{minted}
-    \caption{Using the \texttt{enumerate} macro attribute.}
+    \caption{Using the \textcolor{attrgreen}{\texttt{enumerate}} macro attribute.}
     \label{lst:vending-machine-advanced-enumerate}
 \end{listing}
 
@@ -860,7 +864,7 @@ enum EVendingMachine {
     Finish(VendingMachine<Finish>),
 }
     \end{minted}
-    \caption{The resulting enumeration of the \texttt{enumerate} attribute, demonstrated in \autoref{lst:vending-machine-advanced-enumerate}.}
+    \caption{The resulting enumeration of the \textcolor{attrgreen}{\texttt{enumerate}} attribute, demonstrated in \autoref{lst:vending-machine-advanced-enumerate}.}
     \label{lst:vending-machine-advanced-enumerate-expansion}
 \end{listing}
 
@@ -870,15 +874,15 @@ A small quality-of-life improvement is the automatic declaration of state constr
 shortening the declaration of a new state instance;
 these are only generated for states containing named fields and
 the constructor's parameters will be named after them. % TODO: "them" might be confusing
-Its usage is similar to that of the \texttt{enumerate} attribute, as shown in \autoref{lst:vending-machine-advanced-constructors},
-declaring \annotation{typestate(state\_constructors)} will generate the constructors with the default name \texttt{new\_state},
+Its usage is similar to that of the \textcolor{attrgreen}{\texttt{enumerate}} attribute, as shown in \autoref{lst:vending-machine-advanced-constructors},
+declaring \textcolor{attrgreen}{\annotation{typestate(state\_constructors)}} will generate the constructors with the default name \texttt{new\_state},
 demonstrated in \autoref{lst:vending-machine-advanced-constructors-expansion}.
 
 \begin{listing}
     \begin{minted}[linenos=false]{rust}
 #[typestate(state_constructors)] mod vending_machine { /* ... */ }
     \end{minted}
-    \caption{Using the \texttt{state\_constructors} macro attribute.}
+    \caption{Using the \textcolor{attrgreen}{\texttt{state\_constructors}} macro attribute.}
     \label{lst:vending-machine-advanced-constructors}
 \end{listing}
 
@@ -892,7 +896,7 @@ impl NeedMoney {
 }
     \end{minted}
     \caption{
-        The generated constructor for the \texttt{NeedMoney} state;
+        The generated constructor for the \textcolor{structblue}{\texttt{NeedMoney}} state;
         using the attribute shown in \autoref{lst:vending-machine-advanced-constructors}.
     }
     \label{lst:vending-machine-advanced-constructors-expansion}

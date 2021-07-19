@@ -10,9 +10,10 @@
 
 \chapter{Background}\label{cha:background}
 
-% TODO add paragraph about the content of this chapter
-% general presentation of session types and typestates
-% detailed discussion of such topics and their relation with the present work is done in chapt 3
+In this chapter I briefly discuss the current panorama regarding systems programming languages and their presence in the ecosystem,
+justify why Rust was the language of choice for the current work and
+provide a general presentation of session types and typestates,
+a detailed discussion \wrt~the latter and its relation with the present work is done in \autoref{cha:related-work}.
 
 \section{Systems Programming Languages}\label{sec:systems-programming}
 
@@ -29,13 +30,13 @@ binary able to run on a variety of machines without requiring extra software.
 
 The subjects of this analysis have been picked due to their relevance in the area of systems programming,
 being present in indices such as TIOBE\citeurl{https://www.tiobe.com/tiobe-index/}{14/07/2021},
-or developer surveys such as StackOverflow's\citeurl{https://insights.stackoverflow.com/survey/2020\#most-popular-technologies}{14/07/2021} and
+or developer surveys such as StackOverflow's\footnote{\url{https://insights.stackoverflow.com/survey/2020\#most-popular-technologies}\\(visited in 14/07/2021)} and
 JetBrains'\citeurl{https://www.jetbrains.com/lp/devecosystem-2020/}{14/07/2021}.
 
 \subsection{C}
 C is a general-purpose programming language, while it can be considered a high-level programming language
 when put besides assembly, it also fits the description of a low-level level programming language when besides languages like Python.
-It was originally designed by Dennis Ritchie for the PDP-11 and has been around since 1972 \autocite{Kernighan1988},
+It was originally designed by Dennis Ritchie for the PDP-11 and has been around since 1972 \autocite{Ritchie1993, Kernighan1978},
 C is by no means modern, being older than myself and most likely to outlive me.
 
 Designed in a different time, C's mental model is also different, the language is simple and straight forward,
@@ -116,7 +117,7 @@ Go's categorization as a systems programming language can be discussed.
 When put against its peers in the systems programming language ecosystem,
 Go's performance may be considered \emph{lacking}, not being enough for certain use cases.
 This was Discord's case, the popular internet voice server company, as demand increased,
-Go was not able to meet the expected performance requirements and the company replaced it with Rust\citeurl{https://blog.discord.com/why-discord-is-switching-from-go-to-rust-a190bbca2b1f}{08/06/2021}.
+Go was not able to meet the expected performance requirements and the company replaced it with Rust\footnote{\url{https://blog.discord.com/why-discord-is-switching-from-go-to-rust-a190bbca2b1f}\\(visited in 08/06/2021)}.
 In \autocite{Torre2014}, one of Go's authors, Robert Pike, says that he regrets categorizing Go as a systems programming language,
 being rather a server programming language that evolved into a cloud infrastructure language.
 Regardless of discussion, Go has proven to be a viable alternative to existing counterparts,
@@ -174,7 +175,7 @@ After, \texttt{x} is assigned to \texttt{y} (line 3),
 consider the second rule of ownership, since we can only have one owner,
 \texttt{x}'s value ownership is transferred to \texttt{y}.
 Since we transferred \texttt{x}'s value to \texttt{y}, \texttt{x} is no longer valid on line 4, consequently,
-when compiling the code an error will be issued due to \texttt{x} being moved.
+when compiling the code an error will be issued due to \texttt{x} being~moved.
 
 Notice how \texttt{\textcolor{violet}{String}::from} is used instead of another type,
 since \keyword{String} type does not implement \keyword{Copy} it can only be moved.
@@ -205,7 +206,7 @@ Rather, \texttt{y} borrowed \texttt{x} through a reference.
 Going back to the rules (\autoref{sec:rust-lang:ownership}), Rust's references obey them just like all other values.
 The variable containing them has ownership \emph{over the reference}; it still is a single owner
 (if \mintinline{Rust}{let z = y;} was to be added, the reference would be copied instead of moved);
-and finally, when the owner goes out of scope \emph{the reference is dropped}, but not the original value.
+and finally, when the owner goes out of scope \emph{the reference is dropped}, but not the original~value.
 
 \input{Chapters/Listings/C2/rust-borrow.tex}
 
@@ -358,8 +359,8 @@ where the first four assignments ($:=$) are simple aliases, to simplify reading)
 
 \input{Chapters/Figures/C2/session-types.tex}
 
-Consider $!$ to be \emph{sends}, $?$ to be \emph{receives}, $.$ the \emph{sequence} operator,
-$\&$ the \emph{choice offering} and $\oplus$ the \emph{choice selection}.
+Consider \textcolor{violet}{$!$} to be \emph{sends}, \textcolor{violet}{$?$} to be \emph{receives}, \textcolor{violet}{$.$} the \emph{sequence} operator,
+\textcolor{violet}{$\&$} the \emph{choice offering} and \textcolor{violet}{$\oplus$} the \emph{choice selection}.
 Using session types effectively offloads complexity to the type system,
 resulting in more complex types, but simpler implementations,
 since protocol compliance can be checked during compilation and boilerplate can be added by the compiler.
@@ -376,7 +377,7 @@ Notice how the server provides more than one operation, but the user does not ca
 \end{displayquote}
 
 The first language to make use of typestates was NIL~\autocite{Strom1983},
-afterwards languages like Hermes~\autocite{Strom1990} and Plaid~\autocite{Aldrich2009}
+afterwards languages like Hermes\citeurl{https://researcher.watson.ibm.com/researcher/files/us-bacon/Strom90HermesTutorial.pdf}{17/07/2021} and Plaid~\autocite{Aldrich2009}
 extended the concept with new techniques.
 
 \subsubsection*{Automata}
@@ -482,7 +483,7 @@ such as certain methods will never be called in a given state since it is not po
 \input{Chapters/Listings/C2/plaid-file-use.tex}
 
 \paragraph{Obsidian} is a smart-contract language targeting Hyperledger Fabric blockchain\citeurl{https://www.hyperledger.org/use/fabric}{08/06/2021},
-among other features it makes use of typestates to reduce the amount of bugs when dealing with assets.
+among other features it makes use of typestates to reduce the amount of bugs when dealing with~assets.
 
 In \autocite{Coblenz2020} an empirical study tested and proved Obsidian claims,
 when compared with Solidity, the leading blockchain language,
@@ -520,7 +521,7 @@ however such does not happen and the error is only caught at runtime.
 
 As the next paragraph discusses, this behavior can be prevented using the language's type system.
 However, such utilization requires complex types.
-Since it is not “\emph{part}” of the language, most users will neither use it nor be aware of it.
+Since it is not \quotes{part} of the language, most users will neither use it nor be aware of it.
 
 \paragraph{Embedded Rust.} As any systems programming language, Rust penetrated the embedded development space.
 Providing features in line with the area's requirements, along with community efforts to make Rust viable in embedded systems.
