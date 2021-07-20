@@ -12,8 +12,8 @@
 
 In this chapter I briefly discuss the current panorama regarding systems programming languages and their presence in the ecosystem,
 justify why Rust was the language of choice for the current work and
-provide a general presentation of session types and typestates,
-a detailed discussion \wrt~the latter and its relation with the present work is done in \autoref{cha:related-work}.
+provide a general presentation of session types and typestates.
+A detailed discussion \wrt~the latter and its relation with the present work is done in \autoref{cha:related-work}.
 
 \section{Systems Programming Languages}\label{sec:systems-programming}
 
@@ -377,7 +377,7 @@ Notice how the server provides more than one operation, but the user does not ca
 \end{displayquote}
 
 The first language to make use of typestates was NIL~\autocite{Strom1983},
-afterwards languages like Hermes\citeurl{https://researcher.watson.ibm.com/researcher/files/us-bacon/Strom90HermesTutorial.pdf}{17/07/2021} and Plaid~\autocite{Aldrich2009}
+afterwards languages like Hermes\footnote{\url{https://researcher.watson.ibm.com/researcher/files/us-bacon/Strom90HermesTutorial.pdf}\\(visited in 17/07/2021)} and Plaid~\autocite{Aldrich2009}
 extended the concept with new techniques.
 
 \subsubsection*{Automata}
@@ -517,7 +517,26 @@ enforcing protocols is important and an aspect not covered by the language.
 Consider \autoref{lst:rust-protocol}, the example is expected to call first \texttt{F1}, followed by \texttt{F2} and finally \texttt{F3},
 however such does not happen and the error is only caught at runtime.
 
-\input{Chapters/Listings/C2/rust-protocol.tex}
+% \input{Chapters/Listings/C2/rust-protocol.tex}
+
+\begin{listing}
+    \centering
+    \begin{minted}{rust}
+fn main() {
+    let protocol = Protocol::new();
+    protocol.F1();
+    protocol.F3(); // possible crash during runtime
+    protocol.F2();
+}
+    \end{minted}
+    \caption{
+        Rust example of an unchecked failure protocol compliance.
+        The protocol expected operation order is \texttt{F1}, \texttt{F2}, \texttt{F3},
+        however, the developer placed the operations in the wrong order.
+        This mistake is only caught during runtime.
+    }
+    \label{lst:rust-protocol}
+\end{listing}
 
 As the next paragraph discusses, this behavior can be prevented using the language's type system.
 However, such utilization requires complex types.
@@ -527,7 +546,7 @@ Since it is not \quotes{part} of the language, most users will neither use it no
 Providing features in line with the area's requirements, along with community efforts to make Rust viable in embedded systems.
 
 \emph{The Embedded Rust Book}'s\citeurl{https://rust-embedded.github.io/book/}{08/06/2021} Chapter 4 is dedicated to static guarantees,
-introducing programmers to the concepts of typestate in its Section 4.1\citeurl{https://docs.rust-embedded.org/book/static-guarantees/typestate-programming.html}{01/07/2021},
+introducing programmers to the concepts of typestate in its Section 4.1\footnote{\url{https://docs.rust-embedded.org/book/static-guarantees/typestate-programming.html}\\(visited in 01/07/2021)},
 and their usage in embedded systems.
 
 As for real-world usage, typestates are abundantly used in the area (not just discussed in the book),

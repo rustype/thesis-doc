@@ -1,25 +1,53 @@
+@inproceedings{Aldrich2009,
+  author    = {Aldrich, Jonathan and Sunshine, Joshua and Saini, Darpan and Sparks, Zachary},
+  title     = {Typestate-Oriented Programming},
+  year      = {2009},
+  _address  = {New York, NY, USA},
+  _url      = {https://doi.org/10.1145/1639950.1640073},
+  doi       = {10.1145/1639950.1640073},
+  booktitle = {Proceedings of the 24th ACM SIGPLAN Conference on Object Oriented Programming Systems Languages and Applications (OOPSLA'09)},
+  pages     = {1015–1022},
+  numpages  = {8}
+}
+
+@article{Coblenz2020,
+  author     = {Coblenz, Michael and Aldrich, Jonathan and Myers, Brad A. and Sunshine, Joshua},
+  title      = {Can Advanced Type Systems Be Usable? An Empirical Study of Ownership, Assets, and Typestate in Obsidian},
+  year       = {2020},
+  issue_date = {November 2020},
+  publisher  = {Association for Computing Machinery},
+  _volume    = {4},
+  doi        = {10.1145/3428200},
+  journal    = {Proceedings of the ACM on Programming Languages (OOPSLA'20)},
+  month      = nov,
+  articleno  = {132},
+  numpages   = {28},
+  keywords   = {smart contracts, empirical studies of programming languages, permissions, ownership, typestate, blockchain, assets, linear types}
+}
+
+@misc{Coblenz2020a,
+  title         = {Obsidian: Typestate and Assets for Safer Blockchain Programming},
+  author        = {Michael Coblenz and Reed Oei and Tyler Etzel and Paulette Koronkevich and Miles Baker and Yannick Bloem and Brad A. Myers and Joshua Sunshine and Jonathan Aldrich},
+  year          = {2019},
+  eprint        = {1909.03523},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.PL}
+}
+
 @inproceedings{Pucella2008,
   author    = {Pucella, Riccardo and Tov, Jesse A.},
   title     = {Haskell Session Types with (Almost) No Class},
   year      = {2008},
-  isbn      = {9781605580647},
-  publisher = {Association for Computing Machinery},
-  _address  = {New York, NY, USA},
-  _url      = {https://doi.org/10.1145/1411286.1411290},
   doi       = {10.1145/1411286.1411290},
-  booktitle = {Proceedings of the First ACM SIGPLAN Symposium on Haskell},
+  booktitle = {Proceedings of the First ACM SIGPLAN Symposium on Haskell (Haskell'08)},
   pages     = {25–36},
   numpages  = {12},
-  keywords  = {functional programming, phantom types, haskell, concurrency, session types, embedded type systems, type classes},
-  location  = {Victoria, BC, Canada},
-  series    = {Haskell '08}
+  location  = {Victoria, BC, Canada}
 }
 
 @article{Kokke2019,
   title     = {Rusty Variation: Deadlock-free Sessions with Failure in Rust},
   volume    = {304},
-  issn      = {2075-2180},
-  _url      = {http://dx.doi.org/10.4204/EPTCS.304.4},
   doi       = {10.4204/EPTCS.304.4},
   journal   = {Electronic Proceedings in Theoretical Computer Science},
   publisher = {Open Publishing Association},
@@ -33,30 +61,12 @@
   author    = {Ekman, Torbj\"{o}rn and Hedin, G\"{o}rel},
   title     = {The Jastadd Extensible Java Compiler},
   year      = {2007},
-  isbn      = {9781595937865},
-  publisher = {Association for Computing Machinery},
-  _address  = {New York, NY, USA},
   _url      = {https://doi.org/10.1145/1297027.1297029},
   doi       = {10.1145/1297027.1297029},
-  _abstract = {The JastAdd Extensible Java Compiler is a high quality Java compiler that is easy
-to extend in order to build static analysis tools for Java, and to extend Java with
-new language constructs. It is built modularly, with a Java 1.4 compiler that is extended
-to a Java 5 compiler. Example applications that are built as extensions include an
-alternative backend that generates Jimple, an extension of Java with AspectJ constructs,
-and the implementation of a pluggable type system for non-null checking and inferenc.The
-system is implemented using JastAdd, a declarative Java-like language. We describe
-the compiler architecture, the major design ideas for building and extending the compiler,
-in particular, for dealing with complex extensions that affect name and type analysis.
-Our extensible compiler compares very favorably concerning quality, speed and size
-with other extensible Java compiler frameworks. It also compares favorably in quality
-and size compared with traditional non-extensible Java compilers, and it runs within
-a factor of three compared to javac.},
-  booktitle = {Proceedings of the 22nd Annual ACM SIGPLAN Conference on Object-Oriented Programming Systems, Languages and Applications},
+  booktitle = {Proceedings of the 22nd Annual ACM SIGPLAN Conference on Object-Oriented Programming Systems, Languages and Applications (OOPSLA'07)},
   pages     = {1–18},
   numpages  = {18},
-  keywords  = {java, modularity, OOP, declarative frameworks, compilers, extensibility},
-  location  = {Montreal, Quebec, Canada},
-  series    = {OOPSLA '07}
+  keywords  = {java, modularity, OOP, declarative frameworks, compilers, extensibility}
 }
 
 @book{Stroustrup1986,
@@ -72,42 +82,31 @@ a factor of three compared to javac.},
 
 @inproceedings{Honda1998,
   author    = {Honda, Kohei and Vasconcelos, Vasco T. and Kubo, Makoto},
-  editor    = {Hankin, Chris},
   title     = {Language primitives and type discipline for structured communication-based programming},
-  booktitle = {Programming Languages and Systems},
+  booktitle = {Proceedings of the European Symposium on Programming (ESOP 1998)},
   year      = {1998},
-  publisher = {Springer Berlin Heidelberg},
-  _address  = {Berlin, Heidelberg},
+  publisher = {Springer},
   pages     = {122--138},
   abstract  = {We introduce basic language constructs and a type discipline as a foundation of structured communication-based concurrent programming. The constructs, which are easily translatable into the summation-less asynchronous $\pi$-calculus, allow programmers to organise programs as a combination of multiple flows of (possibly unbounded) reciprocal interactions in a simple and elegant way, subsuming the preceding communication primitives such as method invocation and rendez-vous. The resulting syntactic structure is exploited by a type discipline {\`a} la ML, which offers a high-level type abstraction of interactive behaviours of programs as well as guaranteeing the compatibility of interaction patterns between processes in a well-typed program. After presenting the formal semantics, the use of language constructs is illustrated through examples, and the basic syntactic results of the type discipline are established. Implementation concerns are also addressed.},
-  isbn      = {978-3-540-69722-0}
+  doi       = {10.1007/BFb0053567},
+  series    = {LNCS},
+  volume    = {1381}
 }
 
 @mscthesis{Mota2020,
-  _abstract = {Detecting programming errors and vulnerabilities in software is increasingly important, and building tools that help with this task is an area of investigation, crucial for the industry these days. When programming in an object-oriented language, one naturally defines stateful objects that are non-uniform, i.e., their methods' availability depend on their internal state. One might represent their intended usage protocol with an automaton or a state machine. Behavioral types allow to statically check if all the code of a program respects the usage protocol of each object. Mungo is a tool that extends Java with typestate definitions. These typestates are as- sociated with Java classes and define the behavior of instances of those classes, specifying the sequences of method calls allowed. The Mungo tool checks statically that method calls happen in order, following the specified behavior. Mungo misses crucial features to allow common programming practices: generics and collections are the main ones. The need for these features is illustrated by examples, like an auction that stores a collection of clients, where a usage protocol must be followed. Our goal is to define rigorously the extension to the language, develop the compiler to cope with the required functionalities, and test it with examples of realistic protocols, like Europay Mastercard Visa. Additionally, we will improve developer experience by, for instance, removing artificial restrictions that are not necessary for the verification of code, like the use of an enumeration when a boolean value is preferable. Furthermore, we will explore if the currently used frameworks, JastAdd and ExtendJ, can be replaced by a different one, for example, the Checker Framework, to increase productivity and reduce maintenance burden.},
-  author    = {Mota, Jo{\~{a}}o},
-  school    = {NOVA School of Science and Technology},
-  title     = {{Coping with the reality: adding crucial features to a typestate-oriented language}},
-  year      = {2020},
-  url       = {https://github.com/jdmota/java-typestate-checker/blob/28a0acc90e5e3352ec20f8bbd71ab24383976a1e/docs/msc-thesis.pdf}
+  author = {Mota, Jo{\~{a}}o},
+  note   = {MSc Thesis, NOVA School of Science and Technology},
+  title  = {{Coping with the reality: adding crucial features to a typestate-oriented language}},
+  year   = {2020},
+  url    = {https://github.com/jdmota/java-typestate-checker/blob/28a0acc90e5e3352ec20f8bbd71ab24383976a1e/docs/msc-thesis.pdf}
 }
 
 @inproceedings{Klabnik2016,
   author    = {Klabnik, Steve},
   title     = {The History of Rust},
   year      = {2016},
-  isbn      = {9781450344647},
-  publisher = {Association for Computing Machinery},
-  _address  = {New York, NY, USA},
-  _url      = {https://doi.org/10.1145/2959689.2960081},
   doi       = {10.1145/2959689.2960081},
-  abstract  = {The Rust programming language recently celebrated its one year anniversary since 1.0.
-While that's not a long time, there were eight years of development before that, which
-saw radical changes in the language. In this talk, Steve will show off some of Rust's
-history, with all of the decisions and changes that were made along the way.},
-  booktitle = {Applicative 2016},
-  location  = {New York, NY, USA},
-  series    = {Applicative 2016}
+  booktitle = {Proceedings of ACM Conference Applicative 2016}
 }
 
 @book{Kernighan1978,
@@ -126,57 +125,22 @@ history, with all of the decisions and changes that were made along the way.},
   year       = {2017},
   issue_date = {January 2017},
   publisher  = {Society for Industrial and Applied Mathematics},
-  _address   = {USA},
   volume     = {59},
   number     = {1},
-  issn       = {0036-1445},
-  _url       = {https://doi.org/10.1137/141000671},
   doi        = {10.1137/141000671},
   journal    = {SIAM Rev.},
   month      = jan,
   pages      = {65–98},
-  numpages   = {34},
-  keywords   = {97P40, 68N15, 65Y05, Julia, numerical, scientific computing, parallel}
-}
-
-@article{Coblenz2020,
-  author     = {Coblenz, Michael and Aldrich, Jonathan and Myers, Brad A. and Sunshine, Joshua},
-  title      = {Can Advanced Type Systems Be Usable? An Empirical Study of Ownership, Assets, and Typestate in Obsidian},
-  year       = {2020},
-  issue_date = {November 2020},
-  publisher  = {Association for Computing Machinery},
-  _address   = {New York, NY, USA},
-  volume     = {4},
-  number     = {OOPSLA},
-  _url       = {https://doi.org/10.1145/3428200},
-  doi        = {10.1145/3428200},
-  journal    = {Proc. ACM Program. Lang.},
-  month      = nov,
-  articleno  = {132},
-  numpages   = {28},
-  keywords   = {smart contracts, empirical studies of programming languages, permissions, ownership, typestate, blockchain, assets, linear types}
-}
-
-@misc{Coblenz2020a,
-  title         = {Obsidian: Typestate and Assets for Safer Blockchain Programming},
-  author        = {Michael Coblenz and Reed Oei and Tyler Etzel and Paulette Koronkevich and Miles Baker and Yannick Bloem and Brad A. Myers and Joshua Sunshine and Jonathan Aldrich},
-  year          = {2019},
-  eprint        = {1909.03523},
-  archiveprefix = {arXiv},
-  primaryclass  = {cs.PL}
+  numpages   = {34}
 }
 
 @inproceedings{Yoshida2014,
   author    = {Yoshida, Nobuko and Hu, Raymond and Neykova, Rumyana and Ng, Nicholas},
-  editor    = {Abadi, Mart{\'i}nand Lluch Lafuente, Alberto},
   title     = {The Scribble Protocol Language},
-  booktitle = {Trustworthy Global Computing},
+  booktitle = {Proceedings of the International Symposium on Trustworthy Global Computing (TGC'13)},
   year      = {2014},
   publisher = {Springer International Publishing},
-  _address  = {Cham},
   pages     = {22--41},
-  _abstract = {This paper describes a brief history of how Kohei Honda initiated the Scribble project, and summarises the current status of Scribble.},
-  isbn      = {978-3-319-05119-2},
   doi       = {10.1007/978-3-319-05119-2_3}
 }
 
@@ -184,25 +148,10 @@ history, with all of the decisions and changes that were made along the way.},
   author    = {Strom, Robert E.},
   title     = {Mechanisms for Compile-Time Enforcement of Security},
   year      = {1983},
-  isbn      = {0897910907},
-  publisher = {Association for Computing Machinery},
-  _address  = {New York, NY, USA},
-  _url      = {https://doi.org/10.1145/567067.567093},
   doi       = {10.1145/567067.567093},
-  abstract  = {This paper discusses features of a secure systems programming language designed and
-implemented at IBM's Watson Research Lab. Two features of the language design were
-instrumental in permitting security to be enforced with minimum run-time cost: (1)
-Language constructs (e.g. pointer variables) which could result in aliasing were removed
-from the programmer's direct control and replaced by higher level primitive types;
-and (2) traditional strong type checking was enhanced with typestate checking, a new
-mechanism in which the compiler guarantees that for all execution paths, the sequence
-of operations on each variable obeys a finite state grammar associated with that variable's
-type. Examples are given to illustrate the application of these mechanisms.},
-  booktitle = {Proceedings of the 10th ACM SIGACT-SIGPLAN Symposium on Principles of Programming Languages},
   pages     = {276–284},
   numpages  = {9},
-  location  = {Austin, Texas},
-  series    = {POPL '83}
+  booktitle = {Proceedings of the 10th ACM SIGACT-SIGPLAN Symposium on Principles of Programming Languages (POPL '83)}
 }
 
 @article{Strom1986,
@@ -219,8 +168,6 @@ type. Examples are given to illustrate the application of these mechanisms.},
 @article{Trindade2020,
   title     = {Typestates to Automata and back: a tool},
   volume    = {324},
-  issn      = {2075-2180},
-  _url      = {http://dx.doi.org/10.4204/EPTCS.324.4},
   doi       = {10.4204/EPTCS.324.4},
   journal   = {Electronic Proceedings in Theoretical Computer Science},
   publisher = {Open Publishing Association},
@@ -234,9 +181,7 @@ type. Examples are given to illustrate the application of these mechanisms.},
   _abstract = {We define a language whose type system, incorporating session types, allows complex protocols to be specified by types and verified by static type checking. A session type, associated with a communication channel, specifies the state transitions of a protocol and also the data types of messages associated with transitions; thus type checking can verify both correctness of individual messages and correctness of sequences of transitions. Previously, session types have mainly been studied in the context of the $\pi$-calculus; instead, our formulation is based on a multithreaded functional language with side-effecting input/output operations. Our typing judgements statically describe dynamic changes in the types of channels, and our function types not only specify argument and result types but also describe changes in channels. We formalize the syntax, semantics and type checking system of our language, and prove subject reduction and runtime type safety theorems. {\textcopyright} 2006 Elsevier B.V. All rights reserved.},
   author    = {Vasconcelos, Vasco T. and Gay, Simon J. and Ravara, Ant{\'{o}}nio},
   doi       = {10.1016/j.tcs.2006.06.028},
-  issn      = {03043975},
   journal   = {Theoretical Computer Science},
-  keywords  = {Concurrent programming,Session types,Specification of communication protocols,Static type checking},
   number    = {1-2},
   pages     = {64--87},
   title     = {{Type checking a multithreaded functional language with session types}},
@@ -247,27 +192,22 @@ type. Examples are given to illustrate the application of these mechanisms.},
 @article{Macedo2019,
   author        = {Rita Macedo and Artur Miguel Dias and Ant{\'{o}}nio Ravara},
   title         = {Visualiza{\c{c}}{\~{a}}o e anima{\c{c}}{\~{a}}o de aut{\'{o}}matos em Ocsigen Framework},
-  journal       = {CoRR},
-  volume        = {abs/1907.05384},
   year          = {2019},
   _url          = {http://arxiv.org/abs/1907.05384},
   archiveprefix = {arXiv},
-  eprint        = {1907.05384},
-  timestamp     = {Wed, 17 Jul 2019 10:27:36 +0200}
+  eprint        = {1907.05384}
 }
 
 @inproceedings{Lagaillardie2020,
   author    = {Lagaillardie, Nicolas and Neykova, Rumyana and Yoshida, Nobuko},
-  editor    = {Bliudze, Simon and Bocchi, Laura},
   title     = {Implementing Multiparty Session Types in Rust},
-  booktitle = {Coordination Models and Languages},
+  booktitle = {Proceedings of the International Conference on Coordination Languages and Models (COORDINATION'20)},
   year      = {2020},
   publisher = {Springer International Publishing},
-  address   = {Cham},
   pages     = {127--136},
-  abstract  = {Multiparty Session Types (MPST) is a typing discipline for distributed protocols, which ensures communication safety and deadlock-freedom for more than two participants. This paper reports on our research project, implementing multiparty session types in Rust. Current Rust implementations of session types are limited to binary (two-party communications). We extend an existing library for binary session types to MPST. We have implemented a simplified Amazon Prime Video Streaming protocol using our library for both shared and distributed communication transports.},
-  isbn      = {978-3-030-50029-0},
-  doi       = {10.1007/978-3-030-50029-0_8}
+  doi       = {10.1007/978-3-030-50029-0_8},
+  series    = {LNCS},
+  volume    = {12134}
 }
 
 @techreport{Reis2002,
@@ -282,82 +222,43 @@ type. Examples are given to illustrate the application of these mechanisms.},
   author    = {Jespersen, Thomas Bracht Laumann and Munksgaard, Philip and Larsen, Ken Friis},
   title     = {Session Types for Rust},
   year      = {2015},
-  isbn      = {9781450338103},
-  publisher = {Association for Computing Machinery},
-  _address  = {New York, NY, USA},
-  _url      = {https://doi.org/10.1145/2808098.2808100},
   doi       = {10.1145/2808098.2808100},
-  _abstract = { We present a library for specifying session types implemented in Rust, and discuss
-practical use cases through examples and demonstrate how session types may be used
-in a large-scale application. Specifically we adapt parts of the ad-hoc communication
-patterns in the Servo browser engine to use session typed channels. Session types
-provide a protocol abstraction, expanding on traditional typed communication channels,
-to ensure that communication takes place according to a specified protocol. Thus,
-the library allows us to provide compile-time guarantees of adherence to a specific
-protocol without incurring significant run-time penalties. },
-  booktitle = {Proceedings of the 11th ACM SIGPLAN Workshop on Generic Programming},
+  booktitle = {Proceedings of the 11th ACM SIGPLAN Workshop on Generic Programming (WGP'15)},
   pages     = {13–22},
-  numpages  = {10},
-  keywords  = {Rust, Session types, concurrency, generic types},
-  location  = {Vancouver, BC, Canada},
-  series    = {WGP 2015}
+  numpages  = {10}
 }
 
 @article{Kouzapas2018,
-  title     = {Typechecking protocols with Mungo and StMungo: A session type toolchain for Java},
-  journal   = {Science of Computer Programming},
-  volume    = {155},
-  pages     = {52-75},
-  year      = {2018},
-  note      = {Selected and Extended papers from the International Symposium on Principles and Practice of Declarative Programming 2016},
-  issn      = {0167-6423},
-  doi       = {10.1016/j.scico.2017.10.006},
-  _url      = {https://www.sciencedirect.com/science/article/pii/S0167642317302186},
-  author    = {Dimitrios Kouzapas and Ornela Dardha and Roly Perera and Simon J. Gay},
-  keywords  = {Session types, Object-oriented programming, Typestate, Type inference},
-  _abstract = {Static typechecking is an important feature of many standard programming languages. However, static typing focuses on data rather than communication, and therefore does not help programmers correctly implement communication protocols in distributed systems. The theory of session types provides a basis for tackling this problem; we use it to develop two tools that support static typechecking of communication protocols in Java. The first tool, Mungo, extends Java with typestate definitions, which allow classes to be associated with state machines defining permitted sequences of method calls: for example, communication methods. The second tool, StMungo, takes a session type describing a communication protocol, and generates a typestate specification of the permitted sequences of messages in the protocol. Protocol implementations can be validated by Mungo against their typestate definitions and then compiled with a standard Java compiler. The result is a toolchain for static typechecking of communication protocols in Java. We formalise and prove soundness of the typestate inference system used by Mungo, and show that our toolchain can be used to typecheck a client for the standard Simple Mail Transfer Protocol (SMTP).}
+  title   = {Typechecking protocols with Mungo and StMungo: A session type toolchain for Java},
+  journal = {Science of Computer Programming},
+  volume  = {155},
+  pages   = {52-75},
+  year    = {2018},
+  doi     = {10.1016/j.scico.2017.10.006},
+  _url    = {https://www.sciencedirect.com/science/article/pii/S0167642317302186},
+  author  = {Dimitrios Kouzapas and Ornela Dardha and Roly Perera and Simon J. Gay}
 }
 
 @article{Gay2015,
-  title     = {{Modular session types for objects}},
-  author    = {Simon J. Gay and Nils Gesbert and António Ravara and Vasco T. Vasconcelos},
-  _url      = {https://lmcs.episciences.org/1613},
-  doi       = {10.2168/LMCS-11(4:12)2015},
-  journal   = {{Logical Methods in Computer Science}},
-  volume    = {{Volume 11, Issue 4}},
-  year      = {2015},
-  month     = Dec,
-  _keywords = {Computer Science - Programming Languages}
+  title   = {{Modular session types for objects}},
+  author  = {Simon J. Gay and Nils Gesbert and António Ravara and Vasco T. Vasconcelos},
+  _url    = {https://lmcs.episciences.org/1613},
+  doi     = {10.2168/LMCS-11(4:12)2015},
+  journal = {{Logical Methods in Computer Science}},
+  volume  = {{Volume 11, Issue 4}},
+  year    = {2015},
+  month   = dec
 }
 
 @inproceedings{Vasconcelos2017,
   author    = {Vasconcelos, Cl\'{a}udio and Ravara, Ant\'{o}nio},
   title     = {From Object-Oriented Code with Assertions to Behavioural Types},
   year      = {2017},
-  isbn      = {9781450344869},
   publisher = {Association for Computing Machinery},
-  _address  = {New York, NY, USA},
-  _url      = {https://doi.org/10.1145/3019612.3019733},
   doi       = {10.1145/3019612.3019733},
-  abstract  = {The widespread use of service-oriented and cloud computing is creating a need for
-a communication-based programming approach to distributed concurrent software systems.
-Protocols play a central role in the design and development of such systems but mainstream
-programming languages still give poor support to ensure protocol compatibility. Testing
-alone is insufficient to ensure it, so there is a pressing need for tools to assist
-the development of these kind of systems. While there are tools to verify statically
-object-oriented code equipped with assertions, these mainly help to prevent runtime
-errors. However, a program can be ill-behaved and still execute without terminating
-abruptly. It is important to guarantee that the code implements correctly its communication
-protocol. Our contribution is a tool to analyse source code written in a subset of
-Java, equipped with assertions, and return it annotated with its respective behavioural
-types that can be used to verify statically that the code implements the intended
-protocol of the application. A running example illustrates each step of the tool.},
-  booktitle = {Proceedings of the Symposium on Applied Computing},
+  booktitle = {Proceedings of the Symposium on Applied Computing (SAC'17)},
   pages     = {1492–1497},
-  numpages  = {6},
-  keywords  = {behavioural types, assertions, object-oriented programming},
-  location  = {Marrakech, Morocco},
-  series    = {SAC '17}
+  numpages  = {6}
 }
 
 @article{Xi2016,
@@ -387,28 +288,23 @@ protocol of the application. A running example illustrates each step of the tool
 }
 
 @book{Gay2017,
-  _abstract = {Behavioural type systems in programming languages support the specification and verification of properties of programs beyond the traditional use of type systems to describe data processing. A major example of such a property is correctness of communication in concurrent and distributed systems, motivated by the importance of structured communication in modern software. Behavioural Types: from Theory to Tools presents programming languages and software tools produced by members of COST Action IC1201: Behavioural Types for Reliable Large-Scale Software Systems, a European research network that was funded from October 2012 to October 2016. As a survey of the most recent developments in the application of behavioural type systems, it is a valuable reference for researchers in the field, as well as an introduction to the area for graduate students and software developers.},
   author    = {Gay, Simon and Ravara, Ant{\'{o}}nio},
   booktitle = {Behavioural Types: from Theory to Tools English},
   doi       = {10.13052/rp-9788793519817},
-  isbn      = {9788793519817},
-  pages     = {1--375},
   title     = {{Behavioural types: From theory to tools english}},
   year      = {2017}
 }
 
 @inproceedings{Voinea2020,
   author    = {Voinea, A. Laura and Dardha, Ornela and Gay, Simon J.},
-  editor    = {Gotsman, Alexey and Sokolova, Ana},
   title     = {Typechecking Java Protocols with [St]Mungo},
-  booktitle = {Formal Techniques for Distributed Objects, Components, and Systems},
+  booktitle = {Proceedings of the International Conference on Formal Techniques for Distributed Objects, Components, and Systems (FORTE'20)},
   year      = {2020},
   publisher = {Springer International Publishing},
-  _address  = {Cham},
   pages     = {208--224},
-  _abstract = {This is a tutorial paper on [St]Mungo, a toolchain based on multiparty session types and their connection to typestates for safe distributed programming in Java language.},
-  isbn      = {978-3-030-50086-3},
-  doi       = {10.1007/978-3-030-50086-3_12}
+  doi       = {10.1007/978-3-030-50086-3_12},
+  series    = {LNCS},
+  volume    = {12136}
 }
 
 @techreport{DeLine2004,
@@ -422,33 +318,6 @@ protocol of the application. A running example illustrates each step of the tool
   number    = {MSR-TR-2004-07}
 }
 
-@inproceedings{Aldrich2009,
-  author    = {Aldrich, Jonathan and Sunshine, Joshua and Saini, Darpan and Sparks, Zachary},
-  title     = {Typestate-Oriented Programming},
-  year      = {2009},
-  isbn      = {9781605587684},
-  publisher = {Association for Computing Machinery},
-  _address  = {New York, NY, USA},
-  _url      = {https://doi.org/10.1145/1639950.1640073},
-  doi       = {10.1145/1639950.1640073},
-  abstract  = {Objects model the world, and state is fundamental to a faithful modeling. Engineers
-use state machines to understand and reason about state transitions, but programming
-languages provide little support for reasoning about or implementing these state machines,
-causing software defects and lost productivity when objects are misused.We propose
-Typestate-Oriented Programming as a natural extension to the object paradigm, where
-objects are modeled not just in terms of classes, but in terms of changing states.
-Each state may have its own representation and methods which may transition the object
-into a new state. A flow-sensitive, permission-based type system helps developers
-track which state objects are in. First-class typestates are a powerful abstraction
-that will help developers model and reuse objects more efficiently and correctly.},
-  booktitle = {Proceedings of the 24th ACM SIGPLAN Conference Companion on Object Oriented Programming Systems Languages and Applications},
-  pages     = {1015–1022},
-  numpages  = {8},
-  keywords  = {paradigms, objects, permissions, types, typestate, programming language, states},
-  location  = {Orlando, Florida, USA},
-  series    = {OOPSLA '09}
-}
-
 @article{Ancona2016,
   _url    = {http://dx.doi.org/10.1561/2500000031},
   year    = {2016},
@@ -456,40 +325,9 @@ that will help developers model and reuse objects more efficiently and correctly
   journal = {Foundations and Trends® in Programming Languages},
   title   = {Behavioral Types in Programming Languages},
   doi     = {10.1561/2500000031},
-  issn    = {2325-1107},
   number  = {2-3},
   pages   = {95-230},
   author  = {Davide Ancona and Viviana Bono and Mario Bravetti and Joana Campos and Giuseppe Castagna and Pierre-Malo Deniélou and Simon J. Gay and Nils Gesbert and Elena Giachino and Raymond Hu and Einar Broch Johnsen and Francisco Martins and Viviana Mascardi and Fabrizio Montesi and Rumyana  Neykova and Nicholas Ng and Luca Padovani and Vasco T. Vasconcelos and Nobuko Yoshida}
-}
-
-@inproceedings{10.1145/512529.512532,
-  author    = {Fahndrich, Manuel and DeLine, Robert},
-  title     = {Adoption and Focus: Practical Linear Types for Imperative Programming},
-  year      = {2002},
-  isbn      = {1581134630},
-  publisher = {Association for Computing Machinery},
-  address   = {New York, NY, USA},
-  url       = {https://doi.org/10.1145/512529.512532},
-  doi       = {10.1145/512529.512532},
-  abstract  = {A type system with linearity is useful for checking software protocols andresource
-management at compile time. Linearity provides powerful reasoning about state changes,
-but at the price of restrictions on aliasing. The hard division between linear and
-nonlinear types forces the programmer to make a trade-off between checking a protocol
-on an object and aliasing the object. Most onerous is the restriction that any type
-with a linear component must itself be linear. Because of this, checking a protocol
-on an object imposes aliasing restrictions on any data structure that directly or
-indirectly points to the object. We propose a new type system that reduces these restrictions
-with the adoption and focus constructs. Adoption safely allows a programmer to alias
-objects on which she is checking protocols, and focus allows the reverse. A programmer
-can alias data structures that point to linear objects and use focus for safe access
-to those objects. We discuss how we implemented these ideas in the Vault programming
-language.},
-  booktitle = {Proceedings of the ACM SIGPLAN 2002 Conference on Programming Language Design and Implementation},
-  pages     = {13–24},
-  numpages  = {12},
-  keywords  = {region-based memory management, heap aliasing, linear types},
-  location  = {Berlin, Germany},
-  series    = {PLDI '02}
 }
 
 @article{Fahndrich2002,
@@ -498,25 +336,10 @@ language.},
   year       = {2002},
   issue_date = {May 2002},
   publisher  = {Association for Computing Machinery},
-  _address   = {New York, NY, USA},
   volume     = {37},
   number     = {5},
-  issn       = {0362-1340},
   _url       = {https://doi.org/10.1145/543552.512532},
   doi        = {10.1145/543552.512532},
-  abstract   = {A type system with linearity is useful for checking software protocols andresource
-management at compile time. Linearity provides powerful reasoning about state changes,
-but at the price of restrictions on aliasing. The hard division between linear and
-nonlinear types forces the programmer to make a trade-off between checking a protocol
-on an object and aliasing the object. Most onerous is the restriction that any type
-with a linear component must itself be linear. Because of this, checking a protocol
-on an object imposes aliasing restrictions on any data structure that directly or
-indirectly points to the object. We propose a new type system that reduces these restrictions
-with the adoption and focus constructs. Adoption safely allows a programmer to alias
-objects on which she is checking protocols, and focus allows the reverse. A programmer
-can alias data structures that point to linear objects and use focus for safe access
-to those objects. We discuss how we implemented these ideas in the Vault programming
-language.},
   journal    = {SIGPLAN Not.},
   month      = may,
   pages      = {13–24},
@@ -526,28 +349,24 @@ language.},
 
 @inproceedings{Cutner2021,
   author    = {Cutner, Zak and Yoshida, Nobuko},
-  editor    = {Damiani, Ferruccio and Dardha, Ornela},
   title     = {Safe Session-Based Asynchronous Coordination in Rust},
-  booktitle = {Coordination Models and Languages},
+  booktitle = {Proceedings of the International Conference on Coordination Languages and Models (COORDINATION 2021)},
   year      = {2021},
   publisher = {Springer International Publishing},
-  address   = {Cham},
   pages     = {80--89},
-  abstract  = {Rust is a popular systems language focused on performance and reliability, with an emphasis on providing ``fearless concurrency''. Message passing has become a widely-used pattern by Rust developers although the potential for communication errors leaves developing safe and concurrent applications an unsolved challenge. In this ongoing work, we use multiparty session types to provide safety guarantees such as deadlock-freedom by coordinating message-passing processes. In contrast to previous contributions [20--22], our implementation targets asynchronous applications using /code in Rust. Specifically, we incorporate asynchronous subtyping theory, which allows program optimisation through reordering input and output actions. We evaluate our ideas by developing several representative use cases from the literature and by taking microbenchmarks. We discuss our plans to support full API generation integrating asynchronous optimisations.},
-  isbn      = {978-3-030-78142-2}
+  doi       = {10.1007/978-3-030-78142-2_5},
+  series    = {LNCS},
+  volume    = {12717}
 }
 
 @inproceedings{Hu2008,
   author    = {Hu, Raymond and Yoshida, Nobuko and Honda, Kohei},
-  editor    = {Vitek, Jan},
   title     = {Session-Based Distributed Programming in Java},
-  booktitle = {ECOOP 2008 -- Object-Oriented Programming},
+  booktitle = {Proceedings of the European Conference on Object-Oriented Programming (ECOOP 2008)},
   year      = {2008},
-  publisher = {Springer Berlin Heidelberg},
-  address   = {Berlin, Heidelberg},
+  publisher = {Springer},
   pages     = {516--541},
-  abstract  = {This paper demonstrates the impact of integrating session types and object-oriented programming, through their implementation in Java. Session types provide high-level abstraction for structuring a series of interactions in a concise syntax, and ensure type-safe communications between distributed peers. We present the first full implementation of a language and runtime for session-based distributed programming featuring asynchronous message passing, delegation, and session subtyping and interleaving, combined with class downloading and failure handling. The compilation-runtime framework of our language effectively maps session abstraction onto underlying transports and guarantees communication safety through static and dynamic session type checking. We have implemented two alternative mechanisms for performing distributed session delegation and prove their correctness. Benchmark results show session abstraction can be realised with low runtime overhead.},
-  isbn      = {978-3-540-70592-5}
+  doi       = {10.1007/978-3-540-70592-5_22}
 }
 
 @article{Huttel2016,
@@ -555,22 +374,11 @@ language.},
   title      = {Foundations of Session Types and Behavioural Contracts},
   year       = {2016},
   issue_date = {July 2016},
-  publisher  = {Association for Computing Machinery},
-  _address   = {New York, NY, USA},
   volume     = {49},
   number     = {1},
-  issn       = {0360-0300},
   _url       = {https://doi.org/10.1145/2873052},
   doi        = {10.1145/2873052},
-  abstract   = {Behavioural type systems, usually associated to concurrent or distributed computations,
-encompass concepts such as interfaces, communication protocols, and contracts, in
-addition to the traditional input/output operations. The behavioural type of a software
-component specifies its expected patterns of interaction using expressive type languages,
-so types can be used to determine automatically whether the component interacts correctly
-with other components. Two related important notions of behavioural types are those
-of session types and behavioural contracts. This article surveys the main accomplishments
-of the last 20 years within these two approaches.},
-  journal    = {ACM Comput. Surv.},
+  journal    = {ACM Computing Survey},
   month      = apr,
   articleno  = {3},
   numpages   = {36},
@@ -589,44 +397,23 @@ of the last 20 years within these two approaches.},
   author    = {Neykova, Rumyana and Hu, Raymond and Yoshida, Nobuko and Abdeljallal, Fahd},
   title     = {A Session Type Provider: Compile-Time API Generation of Distributed Protocols with Refinements in F\#},
   year      = {2018},
-  isbn      = {9781450356442},
-  publisher = {Association for Computing Machinery},
-  _address  = {New York, NY, USA},
-  _url      = {https://doi.org/10.1145/3178372.3179495},
   doi       = {10.1145/3178372.3179495},
-  _abstract = {We present a library for the specification and implementation of distributed protocols
-in native F# (and other .NET languages) based on multiparty session types (MPST).
-There are two main contributions. Our library is the first practical development of
-MPST to support what we refer to as interaction refinements: a collection of features
-related to the refinement of protocols, such as message-type refinements (value constraints)
-and message value dependent control flow. A well-typed endpoint program using our
-library is guaranteed to perform only compliant session I/O actions w.r.t. to the
-refined protocol, up to premature termination. Second, our library is developed as
-a session type provider, that performs on-demand compile-time protocol validation
-and generation of protocol-specific .NET types for users writing the distributed endpoint
-programs. It is implemented by extending and integrating Scribble (a toolchain for
-MPST) with an SMT solver into the type providers framework. The safety guarantees
-are achieved by a combination of static type checking of the generated types for messages
-and I/O operations, correctness by construction from code generation, and automated
-inlining of assertions.},
-  booktitle = {Proceedings of the 27th International Conference on Compiler Construction},
+  booktitle = {Proceedings of the 27th International Conference on Compiler Construction (CC'18)},
   pages     = {128–138},
   numpages  = {11},
-  location  = {Vienna, Austria},
-  series    = {CC 2018}
+  location  = {Vienna, Austria}
 }
 
 @inproceedings{Honda1993,
   author    = {Honda, Kohei},
-  editor    = {Best, Eike},
   title     = {Types for dyadic interaction},
-  booktitle = {CONCUR'93},
+  booktitle = {Proceedings of the International Conference on Concurrency Theory (CONCUR'93)},
   year      = {1993},
-  publisher = {Springer Berlin Heidelberg},
-  _address  = {Berlin, Heidelberg},
+  publisher = {Springer},
   pages     = {509--523},
-  _abstract = {We formulate a typed formalism for concurrency where types denote freely composable structure of dyadic interaction in the symmetric scheme. The resulting calculus is a typed reconstruction of name passing process calculi. Systems with both the explicit and implicit typing disciplines, where types form a simple hierarchy of types, are presented, which are proved to be in accordance with each other. A typed variant of bisimilarity is formulated and it is shown that typed $\beta$-equality has a clean embedding in the bisimilarity. Name reference structure induced by the simple hierarchy of types is studied, which fully characterises the typable terms in the set of untyped terms. It turns out that the name reference structure results in the deadlock-free property for a subset of terms with a certain regular structure, showing behavioural significance of the simple type discipline.},
-  isbn      = {978-3-540-47968-0}
+  doi       = {10.1007/3-540-57208-2_35},
+  series    = {LNCS},
+  volume    = {715}
 }
 
 @misc{Torre2014,
@@ -650,47 +437,13 @@ inlining of assertions.},
   year    = {2021}
 }
 
-@article{10.1145/155360.155580,
-  author     = {Ritchie, Dennis M.},
-  title      = {The Development of the C Language},
-  year       = {1993},
-  issue_date = {March 1993},
-  publisher  = {Association for Computing Machinery},
-  address    = {New York, NY, USA},
-  volume     = {28},
-  number     = {3},
-  issn       = {0362-1340},
-  url        = {https://doi.org/10.1145/155360.155580},
-  doi        = {10.1145/155360.155580},
-  abstract   = {The C programming language was devised in the early 1970s as a system implementation
-language for the nascent Unix operating system. Derived from the typeless language
-BCPL, it evolved a type structure; created on a tiny machine as a tool to improve
-a meager programming environment, it has become one of the dominant languages of today.
-This paper studies its evolution.},
-  journal    = {SIGPLAN Not.},
-  month      = mar,
-  pages      = {201–208},
-  numpages   = {8}
-}
-
 @inproceedings{Ritchie1993,
   author    = {Ritchie, Dennis M.},
   title     = {The Development of the C Language},
   year      = {1993},
-  isbn      = {0897915704},
-  publisher = {Association for Computing Machinery},
-  _address   = {New York, NY, USA},
-  _url       = {https://doi.org/10.1145/154766.155580},
   doi       = {10.1145/154766.155580},
-  abstract  = {The C programming language was devised in the early 1970s as a system implementation
-language for the nascent Unix operating system. Derived from the typeless language
-BCPL, it evolved a type structure; created on a tiny machine as a tool to improve
-a meager programming environment, it has become one of the dominant languages of today.
-This paper studies its evolution.},
-  booktitle = {The Second ACM SIGPLAN Conference on History of Programming Languages},
+  booktitle = {The Second ACM SIGPLAN Conference on History of Programming Languages (HOPL-II)},
   pages     = {201–208},
-  numpages  = {8},
-  location  = {Cambridge, Massachusetts, USA},
-  series    = {HOPL-II}
+  numpages  = {8}
 }
 

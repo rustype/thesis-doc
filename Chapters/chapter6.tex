@@ -25,7 +25,7 @@ and provide an elegant DSL along with extra features over Rust's existing typest
 While the DSL is a single contribution, its parts constitute several points of improvement over the current \emph{status quo}:
 \begin{description}
     \item[Tool independent DSL.] The DSL requires no dependencies external to Rust itself,
-    a user is able to start working with my work by simply adding a dependency to their project.
+    a user is able to start working with my work by simply adding a dependency to their~project.
     \item[Verification tool.] The macro executes several verifications over the declared typestate (discussed in \autoref{sec:validation}).
     \item[Visualization tool.] The macro behind the DSL also works as a visualization tool for the developed typestates (discussed in \autoref{sec:automata-visualization}),
     it provides three formats, one of which can be embedded in the client's API, avoiding documentation rot.
@@ -65,7 +65,7 @@ using a single graph structure as the result of the information extraction proce
 The graph could then be \quotes{reduced} into several specialized use cases, such as state machine verification and visualization.
 
 The two previous items, visitors and graph,
-can be leveraged to take the macro from a simple tool to an experimentation platform for typestates and automata verification in Rust.
+can be leveraged to take the macro from a simple tool to an experimentation platform for typestates and automata verification in~Rust.
 
 Finally, planning for the development of such work in the future ---
 I believe that starting with the re-architecture of the visitors followed by the graph would yield the best results,

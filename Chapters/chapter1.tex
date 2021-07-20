@@ -118,10 +118,10 @@ class ScannerMisuse {
 \end{listing}
 
 An example of a similar bug would be Jedis' issue \#1747\citeurl{https://github.com/redis/jedis/issues/1747}{14/07/2021};
-while reading a reply from the server, a client would get a \ttt{SocketTimeoutException}\citeurl{https://docs.oracle.com/javase/8/docs/api/java/net/SocketTimeoutException.html}{14/07/2021},
+while reading a reply from the server, a client would get a \ttt{SocketTimeoutException}\footnote{\url{https://docs.oracle.com/javase/8/docs/api/java/net/SocketTimeoutException.html}\\(visited in 14/07/2021)},
 the exception then calls \ttt{jedis.close()}, however, processing of the underlying would (wrongly) keep going,
 in some cases, the processing procedure could then heap-allocate a \emph{very} large or negative-space array,
-thus causing the \gls{JVM} to crash with an \ttt{OutOfMemoryException}\citeurl{https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/memleaks002.html}{14/07/2021}.
+thus causing the \gls{JVM} to crash with an \ttt{OutOfMemoryException}\footnote{\url{https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/memleaks002.html}\\(visited in 14/07/2021)}.
 
 
 As shown in \autoref{lst:java-scanner-typestate}, using a \emph{typestated} Java example,

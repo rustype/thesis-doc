@@ -59,8 +59,8 @@ struct VendingMachine<State> { state: State }
     \texttt{PhantomData} is a zero-sized type used to \quotes{pretend} that it owns a previously-unused type parameter (or lifetime).
     This is required since Rust's compiler will complain in the case that a type parameter is unused. % NOTE this is kinda repeated
     To know more about \texttt{PhantomData},
-    please refer to its documentation page --- \url{https://doc.rust-lang.org/std/marker/struct.PhantomData.html};
-    or to its page on \emph{The Rustonomicon} --- \url{https://doc.rust-lang.org/nomicon/phantom-data.html}.
+    please refer to its documentation page --- \url{https://doc.rust-lang.org/std/marker/struct.PhantomData.html} (visited 20/07/2021);
+    or to \emph{The Rustonomicon} --- \url{https://doc.rust-lang.org/nomicon/phantom-data.html} (visited 20/07/2021).
 }
 
 The former is useful where all states are simply markers \ie{do not carry additional information},
@@ -138,7 +138,7 @@ inside the block, we declare the transition function, it will take \keyword{self
 exemplified in lines 4 \& 5 of \autoref{lst:vending-machine-state-impl}.
 \footnotetext{
     The \keyword{impl} keyword is used for implementation blocks, whether it is for inherent or trait implementations.
-    For further details, refer to \emph{The Rust Reference} --- \url{https://doc.rust-lang.org/reference/items/implementations.html}.
+    For further details, refer to \emph{The Rust Reference} --- \url{https://doc.rust-lang.org/reference/items/implementations.html} (visited 20/07/2021).
 }
 
 \begin{listing}
@@ -156,8 +156,8 @@ impl VendingMachine<Waiting> {
 \footnotetext{
     \keyword{Self} is a keyword which acts as a type alias to the \quotes{current} type,
     it is native to Rust and works in the context of traits and their implementations.
-    In \autoref{lst:vending-machine-state-impl} the \keyword{Self} will refer to \texttt{VendingMachine<Waiting>}.
-    For more information on \keyword{Self}, refer to \url{https://doc.rust-lang.org/std/keyword.SelfTy.html}
+    In \autoref{lst:vending-machine-state-impl}, \keyword{Self} will refer to \texttt{VendingMachine<Waiting>}.
+    For more information, refer to \url{https://doc.rust-lang.org/std/keyword.SelfTy.html} (visited in 20/07/2021).
 }
 
 To better understand what is going on, lets implement the \texttt{insert\_money} function;
@@ -190,7 +190,7 @@ I say \quotes{some} transitions, because we have not addressed how the diamonds 
 We use the diamonds to represent a decision between $N$ possible paths, I will refer to them as \emph{decision nodes};
 this representation closely resembles \gls{DOA} \cite{Trindade2020}.
 To model our decision nodes, we can use Rust's enumerations,
-these allow us to declare possible outcomes and force the \gls{API} client to match them.
+these allow us to declare possible outcomes and force the \gls{API} client to match~them.
 
 We continue our path, following the \texttt{pick\_slot} transition from the \textcolor{structblue}{\texttt{HasMoney}} state to a decision node,
 we have \emph{either} the \textcolor{structblue}{\texttt{Finish}} state or the \textcolor{structblue}{\texttt{NeedsMoney}} state;
@@ -308,7 +308,7 @@ methods cannot be called in state they do not belong to and the compiler will ev
 However, there is a problem, nothing stops a developer from extending the \gls{API} by implementing a \quotes{foreign} type
 (in this context, consider \quotes{foreign} to be a type which is not a state), such as the unit type --- \texttt{()}.
 Disregarding the fact that implementing the unit type as a vending machine state makes no sense;
-we need to avoid these situations and to do so \emph{The Rust API Guidelines}\footnote{\url{https://rust-lang.github.io/api-guidelines/future-proofing.html\#sealed-traits-protect-against-downstream-implementations-c-sealed}} offer an answer! % CITE
+we need to avoid these situations and to do so \emph{The Rust API Guidelines}\citeurl{https://rust-lang.github.io/api-guidelines/future-proofing.html\#sealed-traits-protect-against-downstream-implementations-c-sealed}{20/07/2021} offer an answer! % CITE
 
 We can implement the \quotes{sealed trait pattern},
 which is just a way of stopping downstream users from modifying our state hierarchy.
@@ -669,11 +669,11 @@ if all checks pass, the user is ready to start implementing the typestate's func
 \subsubsection{Parsing}
 
 The macro's parsing procedure leverages the \texttt{syn} crate\footnote{\texttt{syn} is a parsing library for Rust's \texttt{TokenStream},
-    for more information please see \url{https://docs.rs/syn/1.0.72/syn/index.html}.} to simplify the parsing process,
+    for more information please see \url{https://docs.rs/syn/1.0.72/syn/index.html} (visited in 20/07/2021).} to simplify the parsing process,
 this allowed me to focus on getting the most information out of the user's code rather than worrying about how to parse Rust.
 
 As the \textcolor{attrgreen}{\annotation{typestate}} macro can only be attached to modules,
-we instruct \texttt{syn} to expect and parse a module item\footnote{\url{https://doc.rust-lang.org/reference/items/modules.html}};
+we instruct \texttt{syn} to expect and parse a module item\citeurl{https://doc.rust-lang.org/reference/items/modules.html}{20/07/2021};
 this simple step already saves us from manually ensuring the macro is attached to the right item.
 The resulting item is the module's \gls{AST}, from which we will run a series of visitors,
 each analyzing a different part of the code. % TODO: AST should probably be named Concrete Syntax Tree
@@ -952,10 +952,10 @@ where
 
 
 The automaton is modelled as a directed graph, this approach is more efficient than that of projects like OFlat \autocite{Macedo2019}, which uses sets.
-Originally I used the \texttt{petgraph} library\footnote{\url{https://docs.rs/petgraph/0.5.1/petgraph/index.html}},
+Originally I used the \texttt{petgraph} library\citeurl{https://docs.rs/petgraph/0.5.1/petgraph/index.html}{20/07/2021},
 however the library turned out to be inadequate to the problem at hand,
-\texttt{petgraph}'s \texttt{GraphMap}\footnote{\url{https://docs.rs/petgraph/0.5.1/petgraph/graphmap/struct.GraphMap.html}}
-required node types to be \texttt{Copy}\footnote{\url{https://doc.rust-lang.org/std/marker/trait.Copy.html}} and
+\texttt{petgraph}'s \texttt{GraphMap}\citeurl{https://docs.rs/petgraph/0.5.1/petgraph/graphmap/struct.GraphMap.html}{20/07/2021}
+required node types to be \texttt{Copy}\citeurl{https://doc.rust-lang.org/std/marker/trait.Copy.html}{20/07/2021} and
 the types I am storing are neither \texttt{Copy} nor defined by me.
 
 To fix the problem, I have implemented a directed graph using adjacency lists, that is, for each node,
@@ -1038,10 +1038,10 @@ once more, in the case that not all existing states are useful, an error is issu
 \section{Visualizing Typestates}\label{sec:automata-visualization}
 
 Along with all the previously described features, I have implemented an embedded typestate visualization;
-the visualization supports exporting to Graphviz DOT\footnote{\url{https://graphviz.org/doc/info/lang.html}} and
-PlantUML state diagrams\footnote{\url{https://plantuml.com/state-diagram}},
-along with documentation embedding using Mermaid.js\footnote{\url{https://mermaid-js.github.io/mermaid/\#/stateDiagram}}
-and the \ttt{aquamarine} crate\footnote{\url{https://docs.rs/aquamarine/0.1.9/aquamarine}} (detailed in \autoref{sec:automata-visualization:documentation-generation}).
+the visualization supports exporting to Graphviz DOT\citeurl{https://graphviz.org/doc/info/lang.html}{20/07/2021} and
+PlantUML state diagrams\citeurl{https://plantuml.com/state-diagram}{20/07/2021},
+along with documentation embedding using Mermaid.js\citeurl{https://mermaid-js.github.io/mermaid/\#/stateDiagram}{20/07/2021}
+and the \ttt{aquamarine} crate\citeurl{https://docs.rs/aquamarine/0.1.9/aquamarine}{20/07/2021} (detailed in \autoref{sec:automata-visualization:documentation-generation}).
 All formats have their own feature flags (only \texttt{aquamarine} is part of the default set of features),
 and all formats leverage the graph used by the macro for analysis to export their visualizations.
 
@@ -1138,7 +1138,7 @@ it allows the declaration of Mermaid.js diagrams as documentation and then rende
 Its syntax is \emph{very similar} to PlantUML's,
 thus this feature's implementation process was mostly porting the PlantUML generation code and fixing any bugs which appeared.
 
-\paragraph{Rendering the state diagram} starts by adding \emph{doc comments}\footnote{\url{https://doc.rust-lang.org/reference/comments.html\#doc-comments}}
+\paragraph{Rendering the state diagram} starts by adding \emph{doc comments}\citeurl{https://doc.rust-lang.org/reference/comments.html\#doc-comments}{20/07/2021}
 to the module during the macro processing, the \emph{doc comment} contains the diagram description in the Mermaid.js specification language;
 the expanded code for the vending machine example (\autoref{fig:vending-machine}) can be seen in \autoref{lst:vending-machine-mermaid-doc-comment}.
 When the user runs the documentation command --- \texttt{cargo doc}; the \ttt{aquamarine} attribute is attached and
